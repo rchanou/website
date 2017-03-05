@@ -1,21 +1,24 @@
-import { observable } from "mobx";
+import { observable, toJS } from "mobx";
 import { groupTypes, physicalTypes, entitySchemas } from "./constants";
+import ice from "icepick";
 
 export class LevelStore {
   constructor(entities) {
-    this.entities = observable(entities);
-
-    this.actions = {
-      movePlayer(axis, dir) {
-      }
-    };
+    this.entityStates = observable([entities]);
+    window.t = o=> console.table(toJS(this.entityStates))
   }
 
-  get entityList() {
-    return this.entities.slice();
+  get entities() {
+    return this.entityStates[this.entityStates.length - 1];
+  }
+
+  get playerIndex() {
+    return this.entities.findIndex(ent => ent.isPlayer);
   }
 
   get player() {
+    return this.entities[this.playerIndex];
+
     for (const entity of this.entities) {
       if (entity.isPlayer) {
         return entity;
@@ -24,20 +27,21 @@ export class LevelStore {
   }
 
   tryMove(axis, step) {
-    //console.log("move", axis, step);
-    const player = this.player.position;
+    const playerPos = this.player.position;
+    console.log(playerPos.x, playerPos.y);
     const positionToTry = {
-      ...player,
-      [axis]: player[axis] + step
+      ...playerPos,
+      [axis]: playerPos[axis] + step
     };
 
     const entities = this.entities;
-    const entityThere = entities.find(
+    const entityThereIndex = entities.findIndex(
       ent =>
         ent.physicalType &&
           ent.position.x === positionToTry.x &&
           ent.position.y === positionToTry.y
     );
+    const entityThere = entities[entityThereIndex];
     if (entityThere) {
       if (entityThere.physicalType === physicalTypes.obstacle) {
         return;
@@ -45,8 +49,8 @@ export class LevelStore {
 
       if (entityThere.physicalType === physicalTypes.pushable) {
         const nextPositionOver = {
-          ...player,
-          [axis]: player[axis] + step * 2
+          ...playerPos,
+          [axis]: playerPos[axis] + step * 2
         };
         const nextEntityOver = entities.find(
           ent =>
@@ -58,9 +62,32 @@ export class LevelStore {
           return;
         }
         //console.log("st");
-        entityThere.position[axis] += step;
+        this.entityStates.push(
+          ice
+            .chain(entities.peek())
+            .setIn(
+              [entityThereIndex, "position", axis],
+              entityThere.position[axis] + step
+            )
+            .setIn([this.playerIndex, "position", axis], playerPos[axis] + step)
+            .value()
+        );
+        //entityThere.position[axis] += step;
+
+        return;
       }
     }
-    this.player.position[axis] += step;
+
+    this.entityStates.push(
+      (
+        ice.setIn(
+          entities.peek(),
+          [this.playerIndex, "position", axis],
+          playerPos[axis] + step
+        ) 
+      )
+    );
+    console.log("after", this.player.position.x, this.player.position.y);
+    //this.player.position[axis] += step;
   }
 }

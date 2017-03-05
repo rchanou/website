@@ -10,7 +10,7 @@ const baseEntityStyle = {
 };
 
 const LevelView = observer(({ entities = [], scale = 40 }) => (
-  <div
+  console.log('rerend') || <div
     style={{
       position: "relative",
       height: 8 * scale,
