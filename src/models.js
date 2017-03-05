@@ -1,3 +1,5 @@
+const { observable, toJS, createTransformer } = require("mobx");
+
 class Entity {
   constructor({ x, y }) {
     this.x = x;
@@ -16,12 +18,61 @@ class Level {
   }
 }
 
+class LevelStore {
+  constructor(entities) {
+    this.store = observable({
+      entities,
+      get player() {
+        for (const entity of entities) {
+          if (entity instanceof Player) {
+            return entity;
+          }
+        }
+      },
+      get positionMap() {
+        const positionMap = {};
+        for (const entity of entities) {
+          const entityY = entity.y;
+          if (!positionMap[entityY]) {
+            positionMap[entityY] = {};
+          }
+          positionMap[entityY][entity.x] = true;
+        }
+        //console.log(positionMap);
+        return positionMap;
+      },
+      get canMoveRight() {
+        const playerX = this.player.x;
+        const playerY = this.player.y;
+        const rightEntity = this.positionMap[playerY][playerX + 1];
+        if (rightEntity instanceof Wall) {
+          return false;
+        } else if (rightEntity instanceof Box) {
+          const righterEntity = this.positionMap[playerY][playerX + 2];
+          if (righterEntity instanceof Wall || righterEntity instanceof Box) {
+            return false;
+          } else {
+            return true;
+          }
+        }
+      }
+    });
+
+    this.actions = {
+      movePlayer(axis, dir) {
+      }
+    };
+  }
+}
+
 const loadLevelMap = levelMap => {
   let entities = [];
-  for (const y in levelMap) {
-    const row = levelMap[y];
-    for (const x in row) {
+  levelMap.forEach((row, y) => {
+    for (let x in row) {
+      x = Number(x);
       switch (row[x]) {
+        case " ":
+          break;
         case "p":
           entities.push(new Player({ x, y }));
           break;
@@ -44,10 +95,9 @@ const loadLevelMap = levelMap => {
           break;
       }
     }
-  }
-  return new Level(entities);
+  });
+  return new LevelStore(entities);
 };
-
 
 const exampleLevelMap = [
   " xxxxxx ",
@@ -58,4 +108,4 @@ const exampleLevelMap = [
 ];
 
 const test = loadLevelMap(exampleLevelMap);
-console.log(test);
+console.log(toJS(test.store.positionMap));
