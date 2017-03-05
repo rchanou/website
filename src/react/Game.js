@@ -38,7 +38,7 @@ class Controls extends React.Component {
 
 const Sokoban = ({ store = levelStore }) => (
   <div>
-    <LevelView store={store.entities} />
+    <LevelView entities={store.entities} />
 
     <Controls store={store} />
   </div>
