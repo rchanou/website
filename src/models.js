@@ -1,22 +1,6 @@
 const { computed, createTransformer, observable, toJS } = require("mobx");
 
-class Entity {
-  constructor({ x, y }) {
-    this.x = x;
-    this.y = y;
-  }
-}
-
-class Player extends Entity {}
-class Target extends Entity {}
-class Box extends Entity {}
-class Wall extends Entity {}
-
-class Level {
-  constructor(entities) {
-    this.entities = entities;
-  }
-}
+import { Player, Box, Wall, Target } from './classes';
 
 const createDirectionCheck = (axis, dir) => {
   return computed(() => {
@@ -139,15 +123,12 @@ const loadLevelMap = levelMap => {
   return new LevelStore(entities);
 };
 
-const exampleLevelMap = [
-  " xxxxxx ",
-  " x   px ",
-  " x b bx ",
-  " x   bx ",
-  " xxxxxx "
-];
 
+export default loadLevelMap;
+
+/*
 const test = loadLevelMap(exampleLevelMap);
 console.log(toJS(test.player));
 test.tryMove("y", 1);
 console.log(toJS(test.player));
+*/
