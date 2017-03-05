@@ -54,10 +54,7 @@ class LevelStore {
               ent.position.y === nextPositionOver.y
         );
 
-        if (
-          nextEntityOver &&
-          nextEntityOver.physicalType === physicalTypes.obstacle
-        ) {
+        if (nextEntityOver && nextEntityOver.physicalType) {
           return;
         }
         //console.log("st");
