@@ -1,4 +1,5 @@
 import React from "react";
+import { observable } from 'mobx';
 
 import loadLevelMap from "../models";
 

@@ -1,6 +1,6 @@
-import { computed, createTransformer, observable, toJS } from 'mobx'
+import { computed, createTransformer, observable, toJS } from "mobx";
 
-import { Player, Box, Wall, Target } from './classes';
+import { Player, Box, Wall, Target } from "./classes";
 
 const createDirectionCheck = (axis, dir) => {
   return computed(() => {
@@ -61,9 +61,10 @@ class LevelStore {
 
   tryMove(axis, step) {
     const player = this.player;
-    const positionToTry = Object.assign({}, player, {
+    const positionToTry = {
+      ...player,
       [axis]: player[axis] + step
-    });
+    };
 
     const entities = this.entities;
     const entityThere = entities.find(
@@ -74,9 +75,10 @@ class LevelStore {
         return;
       }
       if (entityThere instanceof Box) {
-        const nextPositionOver = Object.assign({}, player, {
+        const nextPositionOver = {
+          ...player,
           [axis]: player[axis] + step * 2
-        });
+        };
         const nextEntityOver = entities.find(
           ent => ent.x === nextPositionOver.x && ent.y === nextPositionOver.y
         );
@@ -123,12 +125,4 @@ const loadLevelMap = levelMap => {
   return new LevelStore(entities);
 };
 
-
 export default loadLevelMap;
-
-/*
-const test = loadLevelMap(exampleLevelMap);
-console.log(toJS(test.player));
-test.tryMove("y", 1);
-console.log(toJS(test.player));
-*/
