@@ -1,24 +1,25 @@
 import React from "react";
-import { autorun } from "mobx";
+import { autorun, observe, toJS } from "mobx";
 import { Observer } from "mobx-react";
 
 import loadSokobanMap from "../models";
+import { groupTypes } from "../constants";
 
 const exampleLevelMap = [
   " xxxxxx ",
   " x   px ",
-  " x b bx ",
-  " x   bx ",
+  " x * bx ",
+  " x   tx ",
   " xxxxxx "
 ];
 
 const levelStore = loadSokobanMap(exampleLevelMap);
 
 const colorMap = {
-  Player: "orange",
-  Box: "beige",
-  Wall: "gray",
-  Target: "aquamarine"
+  [groupTypes.player]: "orange",
+  [groupTypes.box]: "beige",
+  [groupTypes.wall]: "gray",
+  [groupTypes.target]: "aquamarine"
 };
 
 class Sokoban extends React.Component {
@@ -42,27 +43,53 @@ class Sokoban extends React.Component {
             <div
               style={{
                 position: "relative",
-                height: 5 * scale,
-                width: 6 * scale,
-                background: "steelblue"
+                height: 8 * scale,
+                width: 8 * scale,
+                background: "#eee"
               }}
             >
-              {store.entities.slice().map((ent, i) => {
-                return (
-                  <div
-                    key={i}
-                    style={{
-                      position: "absolute",
-                      background: colorMap[ent.constructor.name],
-                      width: scale,
-                      height: scale,
-                      transform: (
-                        `translateX(${ent.position.x *
-                          scale}px) translateY(${ent.position.y * scale}px)`
-                      )
-                    }}
-                  />
-                );
+              {store.entities.map((ent, i) => {
+                const baseStyle = {
+                  position: "absolute",
+                  width: scale,
+                  height: scale,
+                  background: "gray",
+                  opacity: 0.8,
+                  transform: (
+                    `translateX(${ent.position.x *
+                      scale}px) translateY(${ent.position.y * scale}px)`
+                  )
+                };
+
+                let finalStyle = baseStyle;
+
+                if (ent.group === groupTypes.player) {
+                  finalStyle = {
+                    ...baseStyle,
+                    background: "orange",
+                    borderRadius: "50%"
+                  };
+                }
+
+                if (ent.group === groupTypes.target) {
+                  finalStyle = {
+                    ...baseStyle,
+                    background: "tomato",
+                    borderRadius: "50%",
+                    transformOrigin: "50% 50%",
+                    transform: (
+                      `translateX(${ent.position.x *
+                        scale}px) translateY(${ent.position.y *
+                        scale}px) scale(0.5)`
+                    )
+                  };
+                }
+
+                if (ent.group === groupTypes.box) {
+                  finalStyle = { ...baseStyle, background: "brown" };
+                }
+
+                return <div key={ent.id} style={finalStyle} />;
               })}
 
             </div>
@@ -78,19 +105,5 @@ class Sokoban extends React.Component {
   }
 }
 
-autorun(() => {
-  console.table(
-    levelStore.entities.slice().map(ent => ({
-      type: ent.constructor.name,
-      pos: `${ent.position.x},${ent.position.y}`,
-      block: ent.blockType
-    }))
-  );
-});
-
-autorun(() => {
-  console.log(levelStore.player);
-});
-console.log(levelStore.entities[7])
 
 export default Sokoban;

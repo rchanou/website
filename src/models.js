@@ -1,6 +1,5 @@
 import { computed, createTransformer, observable, toJS } from "mobx";
-
-import { Player, Box, Wall, Target, Entity } from "./classes";
+import { groupTypes, physicalTypes, entitySchemas } from "./constants";
 
 class LevelStore {
   constructor(entities) {
@@ -18,14 +17,14 @@ class LevelStore {
 
   get player() {
     for (const entity of this.entities) {
-      if (entity instanceof Player) {
+      if (entity.isPlayer) {
         return entity;
       }
     }
   }
 
   tryMove(axis, step) {
-    console.log("move", axis, step);
+    //console.log("move", axis, step);
     const player = this.player.position;
     const positionToTry = {
       ...player,
@@ -35,14 +34,16 @@ class LevelStore {
     const entities = this.entities;
     const entityThere = entities.find(
       ent =>
-        ent.position.x === positionToTry.x && ent.position.y === positionToTry.y
+        ent.physicalType &&
+          ent.position.x === positionToTry.x &&
+          ent.position.y === positionToTry.y
     );
     if (entityThere) {
-      if (entityThere.isObstacle) {
+      if (entityThere.physicalType === physicalTypes.obstacle) {
         return;
       }
 
-      if (entityThere.isPushable) {
+      if (entityThere.physicalType === physicalTypes.pushable) {
         const nextPositionOver = {
           ...player,
           [axis]: player[axis] + step * 2
@@ -53,10 +54,13 @@ class LevelStore {
               ent.position.y === nextPositionOver.y
         );
 
-        if (nextEntityOver && nextEntityOver.isPhysical) {
+        if (
+          nextEntityOver &&
+          nextEntityOver.physicalType === physicalTypes.obstacle
+        ) {
           return;
         }
-
+        //console.log("st");
         entityThere.position[axis] += step;
       }
     }
@@ -72,29 +76,62 @@ const loadSokobanMap = levelMap => {
       const position = { y, x };
       switch (row[x]) {
         case " ":
-          break;
+          continue;
         case "p":
-          entities.push(new Player({ position }));
+          entities.push({
+            ...entitySchemas.player,
+            id: entities.length,
+            position
+          });
           break;
         case "t":
-          entities.push(new Target({ position }));
+          entities.unshift({
+            ...entitySchemas.target,
+            id: entities.length,
+            position
+          });
           break;
         case "b":
-          entities.push(new Box({ position }));
+          entities.push({
+            ...entitySchemas.box,
+            id: entities.length,
+            position
+          });
           break;
         case "x":
-          entities.push(new Wall({ position }));
+          entities.push({
+            ...entitySchemas.wall,
+            id: entities.length,
+            position
+          });
           break;
         case "*":
-          entities.push(new Target({ position }));
-          entities.push(new Box({ position }));
+          entities.unshift({
+            ...entitySchemas.target,
+            id: entities.length,
+            position
+          });
+          entities.push({
+            ...entitySchemas.box,
+            id: entities.length,
+            position
+          });
           break;
         case "@":
-          entities.push(new Player({ position }));
-          entities.push(new Target({ position }));
+          entities.unshift({
+            ...entitySchemas.target,
+            id: entities.length,
+            position
+          });
+          entities.push({
+            ...entitySchemas.player,
+            id: entities.length,
+            position
+          });
           break;
       }
     }
+    console.table(entities);
   });
   return new LevelStore(entities);
 };
