@@ -1,6 +1,7 @@
 import React from "react";
 import { groupTypes } from "../constants";
 import { observer } from "mobx-react";
+import { Motion, spring } from "react-motion";
 
 const LevelView = observer(({ entities = [], scale = 40 }) => (
   <div
@@ -17,15 +18,10 @@ const LevelView = observer(({ entities = [], scale = 40 }) => (
         width: scale,
         height: scale,
         background: "gray",
-        opacity: 0.8,
-        transform: (
-          `translateX(${ent.position.x * scale}px) translateY(${ent.position.y *
-            scale}px)`
-        )
+        opacity: 0.8
       };
 
       let finalStyle = baseStyle;
-
       if (ent.group === groupTypes.player) {
         finalStyle = {
           ...baseStyle,
@@ -33,25 +29,43 @@ const LevelView = observer(({ entities = [], scale = 40 }) => (
           borderRadius: "50%"
         };
       }
-
       if (ent.group === groupTypes.target) {
         finalStyle = {
           ...baseStyle,
           background: "tomato",
           borderRadius: "50%",
-          transformOrigin: "50% 50%",
-          transform: (
-            `translateX(${ent.position.x *
-              scale}px) translateY(${ent.position.y * scale}px) scale(0.5)`
-          )
+          transformOrigin: "50% 50%"
         };
       }
-
       if (ent.group === groupTypes.box) {
         finalStyle = { ...baseStyle, background: "brown" };
       }
 
-      return <div key={ent.id} style={finalStyle} />;
+      return (
+        <Motion
+          key={ent.id}
+          style={{ x: spring(ent.position.x), y: spring(ent.position.y) }}
+        >
+          {({ x, y }) => {
+            const baseTransform = `
+              translateX(${x * scale}px) translateY(${y * scale}px)
+            `;
+
+            return (
+              <div
+                style={{
+                  ...finalStyle,
+                  transform: (
+                    ent.group === groupTypes.target
+                      ? `${baseTransform} scale(0.5)`
+                      : baseTransform
+                  )
+                }}
+              />
+            );
+          }}
+        </Motion>
+      );
     })}
   </div>
 ));

@@ -1,4 +1,4 @@
-import { computed, createTransformer, observable, toJS } from "mobx";
+import { observable } from "mobx";
 import { groupTypes, physicalTypes, entitySchemas } from "./constants";
 
 export class LevelStore {
