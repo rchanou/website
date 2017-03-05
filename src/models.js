@@ -128,7 +128,7 @@ const loadSokobanMap = levelMap => {
           break;
       }
     }
-    console.table(entities);
+    //console.table(entities);
   });
   return new LevelStore(entities);
 };

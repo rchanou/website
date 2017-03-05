@@ -1,9 +1,8 @@
 import React from "react";
-import { autorun, observe, toJS } from "mobx";
-import { Observer } from "mobx-react";
+import { autorun, toJS } from "mobx";
 
+import LevelView from "./LevelView";
 import loadSokobanMap from "../models";
-import { groupTypes } from "../constants";
 
 const exampleLevelMap = [
   " xxxxxx ",
@@ -14,13 +13,6 @@ const exampleLevelMap = [
 ];
 
 const levelStore = loadSokobanMap(exampleLevelMap);
-
-const colorMap = {
-  [groupTypes.player]: "orange",
-  [groupTypes.box]: "beige",
-  [groupTypes.wall]: "gray",
-  [groupTypes.target]: "aquamarine"
-};
 
 class Controls extends React.Component {
   constructor(props) {
@@ -44,68 +36,16 @@ class Controls extends React.Component {
   }
 }
 
-const Sokoban = ({ store = levelStore, scale = 40 }) => (
+const Sokoban = ({ store = levelStore }) => (
   <div>
-    <Observer>
-      {() => (
-        <div
-          style={{
-            position: "relative",
-            height: 8 * scale,
-            width: 8 * scale,
-            background: "#eee"
-          }}
-        >
-          {store.entities.map((ent, i) => {
-            const baseStyle = {
-              position: "absolute",
-              width: scale,
-              height: scale,
-              background: "gray",
-              opacity: 0.8,
-              transform: (
-                `translateX(${ent.position.x *
-                  scale}px) translateY(${ent.position.y * scale}px)`
-              )
-            };
-
-            let finalStyle = baseStyle;
-
-            if (ent.group === groupTypes.player) {
-              finalStyle = {
-                ...baseStyle,
-                background: "orange",
-                borderRadius: "50%"
-              };
-            }
-
-            if (ent.group === groupTypes.target) {
-              finalStyle = {
-                ...baseStyle,
-                background: "tomato",
-                borderRadius: "50%",
-                transformOrigin: "50% 50%",
-                transform: (
-                  `translateX(${ent.position.x *
-                    scale}px) translateY(${ent.position.y *
-                    scale}px) scale(0.5)`
-                )
-              };
-            }
-
-            if (ent.group === groupTypes.box) {
-              finalStyle = { ...baseStyle, background: "brown" };
-            }
-
-            return <div key={ent.id} style={finalStyle} />;
-          })}
-
-        </div>
-      )}
-    </Observer>
+    <LevelView store={store.entities} />
 
     <Controls store={store} />
   </div>
 );
+
+autorun(() => console.log(levelStore.entities.map(x => x.id)));
+
+window.serializeFocusedComponentProps = () => JSON.stringify($r.props);
 
 export default Sokoban;
