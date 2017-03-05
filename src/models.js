@@ -1,4 +1,4 @@
-const { computed, createTransformer, observable, toJS } = require("mobx");
+import { computed, createTransformer, observable, toJS } from 'mobx'
 
 import { Player, Box, Wall, Target } from './classes';
 
