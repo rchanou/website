@@ -43,15 +43,15 @@ class LevelStore {
     const createDirectionCheck = (axis, dir = 1) => {
       return computed(() => {
         const moveOnY = axis === "y";
-        const nearEntity = this.positionMap
-          [playerY + (moveOnY ? dir : 0)]
-          [playerX + (moveOnY ? 0 : dir)];
+        const nearEntity = this.positionMap[playerY + (moveOnY ? dir : 0)][
+          playerX + (moveOnY ? 0 : dir)
+        ];
         if (nearEntity instanceof Wall) {
           return false;
         } else if (nearEntity instanceof Box) {
-          const nextEntityOver = this.positionMap
-            [playerY + (moveOnY ? dir * 2 : 0)]
-            [playerX + (moveOnY ? 0 : dir * 2)];
+          const nextEntityOver = this.positionMap[
+            playerY + (moveOnY ? dir * 2 : 0)
+          ][playerX + (moveOnY ? 0 : dir * 2)];
           if (nextEntityOver instanceof Wall || nextEntityOver instanceof Box) {
             return false;
           } else {
@@ -75,20 +75,33 @@ class LevelStore {
     }
   }
 
-  get positionMap() {
-    const positionMap = {};
-    for (const entity of this.entities) {
-      const entityY = entity.y;
-      if (!positionMap[entityY]) {
-        positionMap[entityY] = {};
-      }
-      positionMap[entityY][entity.x] = true;
-    }
-    //console.log(positionMap);
-    return positionMap;
-  }
+  tryMove(axis, step) {
+    const player = this.player;
+    const positionToTry = Object.assign({}, player, {
+      [axis]: player[axis] + step
+    });
 
-  get canMoveRight() {
+    const entities = this.entities;
+    const entityThere = entities.find(
+      ent => ent.x === positionToTry.x && ent.y === positionToTry.y
+    );
+    if (entityThere) {
+      if (entityThere instanceof Wall) {
+        return;
+      }
+      if (entityThere instanceof Box) {
+        const nextPositionOver = Object.assign({}, player, {
+          [axis]: player[axis] + step * 2
+        });
+        const nextEntityOver = entities.find(
+          ent => ent.x === nextPositionOver.x && ent.y === nextPositionOver.y
+        );
+        if (nextEntityOver instanceof Wall || nextEntityOver instanceof Box) {
+          return;
+        }
+      }
+    }
+    this.player[axis] += step;
   }
 }
 
@@ -129,10 +142,12 @@ const loadLevelMap = levelMap => {
 const exampleLevelMap = [
   " xxxxxx ",
   " x   px ",
-  " x b  x ",
-  " x   tx ",
+  " x b bx ",
+  " x   bx ",
   " xxxxxx "
 ];
 
 const test = loadLevelMap(exampleLevelMap);
-console.log(toJS(test.positionMap));
+console.log(toJS(test.player));
+test.tryMove("y", 1);
+console.log(toJS(test.player));
