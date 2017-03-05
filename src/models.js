@@ -1,4 +1,4 @@
-const { observable, toJS, createTransformer } = require("mobx");
+const { computed, createTransformer, observable, toJS } = require("mobx");
 
 class Entity {
   constructor({ x, y }) {
@@ -18,50 +18,77 @@ class Level {
   }
 }
 
+const createDirectionCheck = (axis, dir) => {
+  return computed(() => {
+    const playerX = this.player.x;
+    const playerY = this.player.y;
+    const rightEntity = this.positionMap[playerY][playerX + 1];
+    if (rightEntity instanceof Wall) {
+      return false;
+    } else if (rightEntity instanceof Box) {
+      const righterEntity = this.positionMap[playerY][playerX + 2];
+      if (righterEntity instanceof Wall || righterEntity instanceof Box) {
+        return false;
+      } else {
+        return true;
+      }
+    }
+  });
+};
+
 class LevelStore {
   constructor(entities) {
-    this.store = observable({
-      entities,
-      get player() {
-        for (const entity of entities) {
-          if (entity instanceof Player) {
-            return entity;
-          }
-        }
-      },
-      get positionMap() {
-        const positionMap = {};
-        for (const entity of entities) {
-          const entityY = entity.y;
-          if (!positionMap[entityY]) {
-            positionMap[entityY] = {};
-          }
-          positionMap[entityY][entity.x] = true;
-        }
-        //console.log(positionMap);
-        return positionMap;
-      },
-      get canMoveRight() {
-        const playerX = this.player.x;
-        const playerY = this.player.y;
-        const rightEntity = this.positionMap[playerY][playerX + 1];
-        if (rightEntity instanceof Wall) {
+    this.entities = observable(entities);
+
+    const createDirectionCheck = (axis, dir = 1) => {
+      return computed(() => {
+        const moveOnY = axis === "y";
+        const nearEntity = this.positionMap
+          [playerY + (moveOnY ? dir : 0)]
+          [playerX + (moveOnY ? 0 : dir)];
+        if (nearEntity instanceof Wall) {
           return false;
-        } else if (rightEntity instanceof Box) {
-          const righterEntity = this.positionMap[playerY][playerX + 2];
-          if (righterEntity instanceof Wall || righterEntity instanceof Box) {
+        } else if (nearEntity instanceof Box) {
+          const nextEntityOver = this.positionMap
+            [playerY + (moveOnY ? dir * 2 : 0)]
+            [playerX + (moveOnY ? 0 : dir * 2)];
+          if (nextEntityOver instanceof Wall || nextEntityOver instanceof Box) {
             return false;
           } else {
             return true;
           }
         }
-      }
-    });
+      });
+    };
 
     this.actions = {
       movePlayer(axis, dir) {
       }
     };
+  }
+
+  get player() {
+    for (const entity of this.entities) {
+      if (entity instanceof Player) {
+        return entity;
+      }
+    }
+  }
+
+  get positionMap() {
+    const positionMap = {};
+    for (const entity of this.entities) {
+      const entityY = entity.y;
+      if (!positionMap[entityY]) {
+        positionMap[entityY] = {};
+      }
+      positionMap[entityY][entity.x] = true;
+    }
+    //console.log(positionMap);
+    return positionMap;
+  }
+
+  get canMoveRight() {
   }
 }
 
@@ -108,4 +135,4 @@ const exampleLevelMap = [
 ];
 
 const test = loadLevelMap(exampleLevelMap);
-console.log(toJS(test.store.positionMap));
+console.log(toJS(test.positionMap));
