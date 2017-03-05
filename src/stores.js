@@ -1,43 +1,39 @@
-import { observable } from "mobx";
+import { observable, toJS, autorun } from "mobx";
 import { groupTypes, physicalTypes, entitySchemas } from "./constants";
+import ice from "icepick";
 
 export class LevelStore {
   constructor(entities) {
-    this.entities = observable(entities);
-
-    this.actions = {
-      movePlayer(axis, dir) {
-      }
-    };
+    this.entityStates = observable([entities]);
   }
 
-  get entityList() {
-    return this.entities.slice();
+  get entities() {
+    return this.entityStates[this.entityStates.length - 1];
+  }
+
+  get playerIndex() {
+    return this.entities.findIndex(ent => ent.isPlayer);
   }
 
   get player() {
-    for (const entity of this.entities) {
-      if (entity.isPlayer) {
-        return entity;
-      }
-    }
+    return this.entities[this.playerIndex];
   }
 
   tryMove(axis, step) {
-    //console.log("move", axis, step);
-    const player = this.player.position;
+    const playerPos = this.player.position;
     const positionToTry = {
-      ...player,
-      [axis]: player[axis] + step
+      ...playerPos,
+      [axis]: playerPos[axis] + step
     };
 
     const entities = this.entities;
-    const entityThere = entities.find(
+    const entityThereIndex = entities.findIndex(
       ent =>
         ent.physicalType &&
           ent.position.x === positionToTry.x &&
           ent.position.y === positionToTry.y
     );
+    const entityThere = entities[entityThereIndex];
     if (entityThere) {
       if (entityThere.physicalType === physicalTypes.obstacle) {
         return;
@@ -45,12 +41,13 @@ export class LevelStore {
 
       if (entityThere.physicalType === physicalTypes.pushable) {
         const nextPositionOver = {
-          ...player,
-          [axis]: player[axis] + step * 2
+          ...playerPos,
+          [axis]: playerPos[axis] + step * 2
         };
         const nextEntityOver = entities.find(
           ent =>
-            ent.position.x === nextPositionOver.x &&
+            ent.physicalType &&
+              ent.position.x === nextPositionOver.x &&
               ent.position.y === nextPositionOver.y
         );
 
@@ -58,9 +55,27 @@ export class LevelStore {
           return;
         }
         //console.log("st");
-        entityThere.position[axis] += step;
+        this.entityStates.push(
+          ice
+            .chain(entities.peek())
+            .setIn(
+              [entityThereIndex, "position", axis],
+              entityThere.position[axis] + step
+            )
+            .setIn([this.playerIndex, "position", axis], playerPos[axis] + step)
+            .value()
+        );
+
+        return;
       }
     }
-    this.player.position[axis] += step;
+
+    this.entityStates.push(
+      ice.setIn(
+        entities.peek(),
+        [this.playerIndex, "position", axis],
+        playerPos[axis] + step
+      )
+    );
   }
 }

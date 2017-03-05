@@ -5,7 +5,7 @@ import { observer } from "mobx-react";
 const baseEntityStyle = {
   position: "absolute",
   opacity: 0.8,
-  transition: '0.2s',
+  transition: "0.2s",
   background: "gray"
 };
 
