@@ -1,11 +1,10 @@
-import { observable, toJS } from "mobx";
+import { observable, toJS, autorun } from "mobx";
 import { groupTypes, physicalTypes, entitySchemas } from "./constants";
 import ice from "icepick";
 
 export class LevelStore {
   constructor(entities) {
     this.entityStates = observable([entities]);
-    window.t = o=> console.table(toJS(this.entityStates))
   }
 
   get entities() {
@@ -18,17 +17,10 @@ export class LevelStore {
 
   get player() {
     return this.entities[this.playerIndex];
-
-    for (const entity of this.entities) {
-      if (entity.isPlayer) {
-        return entity;
-      }
-    }
   }
 
   tryMove(axis, step) {
     const playerPos = this.player.position;
-    console.log(playerPos.x, playerPos.y);
     const positionToTry = {
       ...playerPos,
       [axis]: playerPos[axis] + step
@@ -54,7 +46,8 @@ export class LevelStore {
         };
         const nextEntityOver = entities.find(
           ent =>
-            ent.position.x === nextPositionOver.x &&
+            ent.physicalType &&
+              ent.position.x === nextPositionOver.x &&
               ent.position.y === nextPositionOver.y
         );
 
@@ -72,22 +65,17 @@ export class LevelStore {
             .setIn([this.playerIndex, "position", axis], playerPos[axis] + step)
             .value()
         );
-        //entityThere.position[axis] += step;
 
         return;
       }
     }
 
     this.entityStates.push(
-      (
-        ice.setIn(
-          entities.peek(),
-          [this.playerIndex, "position", axis],
-          playerPos[axis] + step
-        ) 
+      ice.setIn(
+        entities.peek(),
+        [this.playerIndex, "position", axis],
+        playerPos[axis] + step
       )
     );
-    console.log("after", this.player.position.x, this.player.position.y);
-    //this.player.position[axis] += step;
   }
 }
