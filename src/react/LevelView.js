@@ -1,7 +1,13 @@
 import React from "react";
 import { groupTypes } from "../constants";
 import { observer } from "mobx-react";
-import { Motion, spring } from "react-motion";
+
+const baseEntityStyle = {
+  position: "absolute",
+  opacity: 0.8,
+  transition: '0.2s',
+  background: "gray"
+};
 
 const LevelView = observer(({ entities = [], scale = 40 }) => (
   <div
@@ -13,58 +19,49 @@ const LevelView = observer(({ entities = [], scale = 40 }) => (
     }}
   >
     {entities.map(ent => {
-      const baseStyle = {
-        position: "absolute",
+      const startStyle = {
+        ...baseEntityStyle,
         width: scale,
-        height: scale,
-        background: "gray",
-        opacity: 0.8
+        height: scale
       };
 
-      let finalStyle = baseStyle;
+      let finalStyle = startStyle;
       if (ent.group === groupTypes.player) {
         finalStyle = {
-          ...baseStyle,
+          ...startStyle,
           background: "orange",
           borderRadius: "50%"
         };
       }
       if (ent.group === groupTypes.target) {
         finalStyle = {
-          ...baseStyle,
+          ...startStyle,
           background: "tomato",
           borderRadius: "50%",
           transformOrigin: "50% 50%"
         };
       }
       if (ent.group === groupTypes.box) {
-        finalStyle = { ...baseStyle, background: "brown" };
+        finalStyle = { ...startStyle, background: "brown" };
       }
 
-      return (
-        <Motion
-          key={ent.id}
-          style={{ x: spring(ent.position.x), y: spring(ent.position.y) }}
-        >
-          {({ x, y }) => {
-            const baseTransform = `
-              translateX(${x * scale}px) translateY(${y * scale}px)
-            `;
+      const baseTransform = `
+        translateX(${ent.position.x * scale}px) 
+        translateY(${ent.position.y * scale}px)
+      `;
 
-            return (
-              <div
-                style={{
-                  ...finalStyle,
-                  transform: (
-                    ent.group === groupTypes.target
-                      ? `${baseTransform} scale(0.5)`
-                      : baseTransform
-                  )
-                }}
-              />
-            );
+      return (
+        <div
+          key={ent.id}
+          style={{
+            ...finalStyle,
+            transform: (
+              ent.group === groupTypes.target
+                ? `${baseTransform} scale(0.5)`
+                : baseTransform
+            )
           }}
-        </Motion>
+        />
       );
     })}
   </div>
