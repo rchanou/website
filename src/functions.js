@@ -66,6 +66,6 @@ export const loadSokobanMap = levelMap => {
     }
     //console.table(entities);
   });
-  return createLevelStore(entities);
+  return createLevelStore({ initialLevelState: entities, moves: [] });
   //return new LevelStore(entities);
 };

@@ -1,14 +1,43 @@
 import { observable, toJS, autorun } from "mobx";
 import { groupTypes, physicalTypes, entitySchemas } from "./constants";
 import ice from "icepick";
+import update from "immutability-helper";
 
-export const createLevelStore = (initialEntities = []) => {
+export const createLevelStore = ({ initialLevelState = [], moves = [] }) => {
   const state = observable({
-    entityStates: [initialEntities],
+    levelStates: [initialLevelState],
+
+    moves,
 
     get entities() {
-      const { entityStates } = state;
-      return entityStates[entityStates.length - 1];
+      const result = state.moves.reduce(
+        (runningState, nextMove) => {
+          return Object.entries(nextMove).reduce(
+            (runningState, [id, position]) => {
+              const indexToMove = runningState.findIndex(ent => ent.id == id);
+
+              if (indexToMove === -1) {
+                return runningState;
+              }
+
+              const newPos = {
+                ...runningState[indexToMove].position,
+                ...nextMove[id]
+              };
+
+              return update(runningState, {
+                [indexToMove]: {
+                  position: { $set: newPos }
+                }
+              });
+            },
+            runningState
+          );
+        },
+        initialLevelState
+      );
+      //console.log(result[11].position);
+      return result;
     },
 
     get playerIndex() {
@@ -20,7 +49,7 @@ export const createLevelStore = (initialEntities = []) => {
     },
 
     get moveCount() {
-      return state.entityStates.length - 1;
+      return state.moves.length;
     }
   });
 
@@ -64,31 +93,26 @@ export const createLevelStore = (initialEntities = []) => {
         if (nextEntityOver && nextEntityOver.physicalType) {
           return;
         }
-        //console.log("st");
-        state.entityStates.push(
-          ice
-            .chain(entities.peek())
-            .setIn(
-              [entityThereIndex, "position", axis],
-              entityThere.position[axis] + step
-            )
-            .setIn(
-              [state.playerIndex, "position", axis],
-              playerPos[axis] + step
-            )
-            .value()
-        );
-
+        
+        state.moves.push({
+          [entityThere.id]: {
+            ...entityThere.position,
+            [axis]: entityThere.position[axis] + step
+          },
+          [state.player.id]: {
+            ...playerPos,
+            [axis]: playerPos[axis] + step
+          }
+        });
         return;
       }
     }
-    state.entityStates.push(
-      ice.setIn(
-        entities.peek(),
-        [state.playerIndex, "position", axis],
-        playerPos[axis] + step
-      )
-    );
+    state.moves.push({
+      [state.player.id]: {
+        ...playerPos,
+        [axis]: playerPos[axis] + step
+      }
+    });
     //console.log(state.player.position.x);
   };
 
@@ -100,13 +124,12 @@ export const createLevelStore = (initialEntities = []) => {
     tryMoveUp: () => tryMove("y", -1),
     tryMoveRight: () => tryMove("x", +1),
     undo() {
-      const { entityStates } = state;
-      if (entityStates.length > 1) {
-        state.entityStates.pop();
+      if (state.moves.length) {
+        state.moves.pop();
       }
     },
     reset() {
-      state.entityStates = [state.entityStates[0]];
+      state.moves = [];
     }
   };
 };
