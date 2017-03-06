@@ -3,35 +3,32 @@ import { groupTypes, physicalTypes, entitySchemas } from "./constants";
 import ice from "icepick";
 
 export const createLevelStore = initialEntities => {
-  let entityStateBox = observable.box([initialEntities]);
+  const state = observable({
+    entityStates: [initialEntities],
 
-  const derived = {
-    get entityStates() {
-      return entityStateBox.get();
-    },
     get entities() {
-      const { entityStates } = derived;
+      const { entityStates } = state;
       return entityStates[entityStates.length - 1];
     },
 
     get playerIndex() {
-      return derived.entities.findIndex(ent => ent.isPlayer);
+      return state.entities.findIndex(ent => ent.isPlayer);
     },
 
     get player() {
-      return derived.entities[derived.playerIndex];
+      return state.entities[state.playerIndex];
     }
-  };
+  });
 
   const tryMove = (axis, step) => {
-    const playerPos = derived.player.position;
-    console.log(axis, step, playerPos.x, playerPos);
+    const playerPos = state.player.position;
+    //console.log(axis, step, playerPos.x, playerPos);
     const positionToTry = {
       ...playerPos,
       [axis]: playerPos[axis] + step
     };
 
-    const { entities } = derived;
+    const { entities } = state;
     const entityThereIndex = entities.findIndex(
       ent =>
         ent.physicalType &&
@@ -60,8 +57,7 @@ export const createLevelStore = initialEntities => {
           return;
         }
         //console.log("st");
-        entityStateBox.set([
-          ...derived.entityStates,
+        state.entityStates.push(
           ice
             .chain(entities.peek())
             .setIn(
@@ -69,41 +65,40 @@ export const createLevelStore = initialEntities => {
               entityThere.position[axis] + step
             )
             .setIn(
-              [derived.playerIndex, "position", axis],
+              [state.playerIndex, "position", axis],
               playerPos[axis] + step
             )
             .value()
-        ]);
+        );
 
         return;
       }
     }
-    entityStateBox.set([
-      ...derived.entityStates,
+    state.entityStates.push(
       ice.setIn(
         entities.peek(),
-        [derived.playerIndex, "position", axis],
+        [state.playerIndex, "position", axis],
         playerPos[axis] + step
       )
-    ]);
-    console.log(derived.player.position.x);
+    );
+    //console.log(state.player.position.x);
   };
 
   return {
-    ...derived,
+    state,
 
     tryMoveLeft: () => tryMove("x", -1),
     tryMoveDown: () => tryMove("y", +1),
     tryMoveUp: () => tryMove("y", -1),
     tryMoveRight: () => tryMove("x", +1),
     undo() {
-      const { entityStates } = derived;
+      const { entityStates } = state;
       if (entityStates.length > 1) {
-        entityStateBox.set(entityStates.slice(0, -1));
+        state.entityStates.pop();
       }
     },
     reset() {
-      entityStates = observable([entityStates[0].peek()]);
+      state.entityStates = [state.entityStates[0]];
     }
   };
 };
