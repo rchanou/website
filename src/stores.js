@@ -2,7 +2,6 @@ import { observable, toJS, autorun } from "mobx";
 import { groupTypes, physicalTypes, entitySchemas } from "./constants";
 import ice from "icepick";
 
-@observable
 export class LevelStore {
   constructor(entities) {
     this.entityStates = observable([entities]);
@@ -87,7 +86,8 @@ export class LevelStore {
 
   undo = () => this.entityStates.length > 1 && this.entityStates.pop();
   reset = () => {
-    console.log(toJS(this.entityStates[0]));
-    this.entityStates = observable([this.entityStates[0].peek()]);
+    while (this.entityStates.length > 1) {
+      this.entityStates.pop();
+    }
   };
 }
