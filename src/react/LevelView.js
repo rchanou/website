@@ -1,5 +1,6 @@
 import React from "react";
 import { groupTypes } from "../constants";
+import { createTransformer } from "mobx";
 import { observer } from "mobx-react";
 
 const baseEntityStyle = {
@@ -9,12 +10,20 @@ const baseEntityStyle = {
   background: "gray"
 };
 
+const maxX = createTransformer(
+  entities => Math.max.apply(null, entities.map(ent => ent.position.x)) + 1
+);
+
+const maxY = createTransformer(
+  entities => Math.max.apply(null, entities.map(ent => ent.position.y)) + 1
+);
+
 const LevelView = observer(({ entities = [], scale = 40 }) => (
   <div
     style={{
       position: "relative",
-      height: 8 * scale,
-      width: 8 * scale,
+      height: maxY(entities) * scale,
+      width: maxX(entities) * scale,
       background: "#eee"
     }}
   >

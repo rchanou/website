@@ -42,9 +42,7 @@ const Sokoban = observer(({ store = defaultStore }) => {
         }}
       />
 
-      <Observer>
-        {o => <LevelView entities={store.state.entities} />}
-      </Observer>
+      <LevelView entities={store.state.entities} />
 
       <Controls store={store} />
 

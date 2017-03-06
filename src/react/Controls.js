@@ -1,7 +1,7 @@
 import React from "react";
-import { LevelStore } from "../stores";
+import { createLevelStore } from "../stores";
 
-const Controls = ({ store = new LevelStore() }) => (
+const Controls = ({ store = createLevelStore() }) => (
   <div>
     <button onClick={store.tryMoveLeft}>Left</button>
     <button onClick={store.tryMoveDown}>Down</button>

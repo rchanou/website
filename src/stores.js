@@ -2,7 +2,7 @@ import { observable, toJS, autorun } from "mobx";
 import { groupTypes, physicalTypes, entitySchemas } from "./constants";
 import ice from "icepick";
 
-export const createLevelStore = initialEntities => {
+export const createLevelStore = (initialEntities = []) => {
   const state = observable({
     entityStates: [initialEntities],
 
@@ -10,13 +10,20 @@ export const createLevelStore = initialEntities => {
       const { entityStates } = state;
       return entityStates[entityStates.length - 1];
     },
-    
+
     get playerIndex() {
       return state.entities.findIndex(ent => ent.isPlayer);
     },
-                           
+
     get moveCount() {
       return state.entityStates.length - 1;
+    },
+
+    get maxX() {
+      return Math.max.apply(
+        null,
+        state.entityStates[0].map(ent => ent.position.x)
+      );
     },
 
     get player() {
@@ -25,6 +32,10 @@ export const createLevelStore = initialEntities => {
   });
 
   const tryMove = (axis, step) => {
+    if (!state.player){
+      return;
+    }
+
     const playerPos = state.player.position;
     //console.log(axis, step, playerPos.x, playerPos);
     const positionToTry = {
