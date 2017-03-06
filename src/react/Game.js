@@ -48,6 +48,8 @@ const Sokoban = observer(({ store = defaultStore }) => {
   );
 });
 
+autorun(o=>console.log(defaultStore.entities))
+
 window.serializeFocusedComponentProps = () => JSON.stringify($r.props);
 
 export default Sokoban;
