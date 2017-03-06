@@ -15,24 +15,17 @@ export const createLevelStore = (initialEntities = []) => {
       return state.entities.findIndex(ent => ent.isPlayer);
     },
 
-    get moveCount() {
-      return state.entityStates.length - 1;
-    },
-
-    get maxX() {
-      return Math.max.apply(
-        null,
-        state.entityStates[0].map(ent => ent.position.x)
-      );
-    },
-
     get player() {
       return state.entities[state.playerIndex];
+    },
+
+    get moveCount() {
+      return state.entityStates.length - 1;
     }
   });
 
   const tryMove = (axis, step) => {
-    if (!state.player){
+    if (!state.player) {
       return;
     }
 
@@ -115,5 +108,22 @@ export const createLevelStore = (initialEntities = []) => {
     reset() {
       state.entityStates = [state.entityStates[0]];
     }
+  };
+};
+
+export const createMenuStore = ({ levels, selectedLevelId = null }) => {
+  const state = observable({
+    levels,
+    selectedLevelId
+  });
+
+  return { state };
+};
+
+export const createGameStore = ({ menuState }) => {
+  const state = {
+    menu: createMenuStore(menuState),
+    level: createLevelStore(levelState),
+    currentPage: "menu"
   };
 };

@@ -22,39 +22,38 @@ const defaultLevelMap = [
 
 const defaultStore = loadSokobanMap(defaultLevelMap);
 
-const Sokoban = observer(({ store = defaultStore }) => {
-  return (
-    <div>
-      <KeyMap
-        default={console.log}
-        keyMap={{
-          ArrowLeft: store.tryMoveLeft,
-          ArrowDown: store.tryMoveDown,
-          ArrowUp: store.tryMoveUp,
-          ArrowRight: store.tryMoveRight,
-          e: store.tryMoveUp,
-          s: store.tryMoveLeft,
-          d: store.tryMoveDown,
-          f: store.tryMoveRight,
-          u: store.undo,
-          " ": store.undo,
-          Escape: store.reset
-        }}
-      />
+const Game = observer(({ store = defaultStore }) => (
+  <div>
+    <KeyMap
+      default={console.log}
+      keyMap={{
+        ArrowLeft: store.tryMoveLeft,
+        ArrowDown: store.tryMoveDown,
+        ArrowUp: store.tryMoveUp,
+        ArrowRight: store.tryMoveRight,
+        e: store.tryMoveUp,
+        s: store.tryMoveLeft,
+        d: store.tryMoveDown,
+        f: store.tryMoveRight,
+        u: store.undo,
+        " ": store.undo,
+        Escape: store.reset
+      }}
+    />
+    <LevelView entities={store.state.entities} />
 
-      <LevelView entities={store.state.entities} />
+    <Controls store={store} />
 
-      <Controls store={store} />
+    <div>{store.state.moveCount}</div>
+    <button onClick={store.undo}>Undo</button>
+    <button onClick={store.reset}>Reset</button>
+  </div>
+));
 
-      <div>{store.state.moveCount}</div>
-      <button onClick={store.undo}>Undo</button>
-      <button onClick={store.reset}>Reset</button>
-    </div>
-  );
-});
+Game.displayName = "Game";
 
-autorun(o => console.log(defaultStore.entities));
+//autorun(o => console.log(defaultStore.entities));
 
 window.serializeFocusedComponentProps = () => JSON.stringify($r.props);
 
-export default Sokoban;
+export default Game;

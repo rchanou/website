@@ -18,13 +18,29 @@ const maxY = createTransformer(
   entities => Math.max.apply(null, entities.map(ent => ent.position.y)) + 1
 );
 
+const hasWon = createTransformer(entities => {
+  const targets = entities.filter(ent => ent.group === groupTypes.target);
+  const boxes = entities.filter(ent => ent.group === groupTypes.box);
+  for (const target of targets) {
+    const targetPos = target.position;
+    if (
+      !boxes.find(
+        box => box.position.x === targetPos.x && box.position.y === targetPos.y
+      )
+    ) {
+      return false;
+    }
+  }
+  return true;
+});
+
 const LevelView = observer(({ entities = [], scale = 40 }) => (
   <div
     style={{
       position: "relative",
       height: maxY(entities) * scale,
       width: maxX(entities) * scale,
-      background: "#eee"
+      background: hasWon(entities)? "aquamarine": "#eee"
     }}
   >
     {entities.map(ent => {
