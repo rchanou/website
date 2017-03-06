@@ -10,9 +10,13 @@ export const createLevelStore = initialEntities => {
       const { entityStates } = state;
       return entityStates[entityStates.length - 1];
     },
-
+    
     get playerIndex() {
       return state.entities.findIndex(ent => ent.isPlayer);
+    },
+                           
+    get moveCount() {
+      return state.entityStates.length - 1;
     },
 
     get player() {
