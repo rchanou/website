@@ -48,7 +48,7 @@ const Sokoban = observer(({ store = defaultStore }) => {
 
       <Controls store={store} />
 
-      <div>{store.moveCount}</div>
+      <div>{store.state.moveCount}</div>
       <button onClick={store.undo}>Undo</button>
       <button onClick={store.reset}>Reset</button>
     </div>
