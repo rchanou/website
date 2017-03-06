@@ -3,12 +3,16 @@ import { groupTypes, physicalTypes, entitySchemas } from "./constants";
 import ice from "icepick";
 
 export class LevelStore {
-  constructor(entities) {
+  constructor(entities = []) {
     this.entityStates = observable([entities]);
   }
 
   get entities() {
     return this.entityStates[this.entityStates.length - 1];
+  }
+
+  get moveCount() {
+    return this.entityStates.length - 1;
   }
 
   get playerIndex() {
@@ -20,6 +24,10 @@ export class LevelStore {
   }
 
   tryMove(axis, step) {
+    if (!this.player){
+      return;
+    }
+
     const playerPos = this.player.position;
     const positionToTry = {
       ...playerPos,

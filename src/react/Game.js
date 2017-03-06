@@ -9,11 +9,15 @@ import KeyMap from "./KeyMap";
 import { loadSokobanMap } from "../functions";
 
 const defaultLevelMap = [
-  " xxxxxx ",
-  " x   px ",
-  " x * bx ",
-  " x   tx ",
-  " xxxxxx "
+  " xxxxxxxx   ",
+  " x p x  x   ",
+  " x      x   ",
+  " x      x   ",
+  " xxxxxb x   ",
+  "     x  xxx ",
+  "     xb ttx ",
+  "     x  xxx ",
+  "     xxxx   "
 ];
 
 const defaultStore = loadSokobanMap(defaultLevelMap);
@@ -42,6 +46,7 @@ const Sokoban = observer(({ store = defaultStore }) => {
 
       <Controls store={store} />
 
+      <div>{store.moveCount}</div>
       <button onClick={store.undo}>Undo</button>
       <button onClick={store.reset}>Reset</button>
     </div>
