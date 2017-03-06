@@ -2,39 +2,37 @@ import { observable, toJS, autorun } from "mobx";
 import { groupTypes, physicalTypes, entitySchemas } from "./constants";
 import ice from "icepick";
 
-export class LevelStore {
-  constructor(entities = []) {
-    this.entityStates = observable([entities]);
-  }
+export const createLevelStore = initialEntities => {
+  const state = observable({
+    entityStates: [initialEntities],
 
-  get entities() {
-    return this.entityStates[this.entityStates.length - 1];
-  }
+    get entities() {
+      const { entityStates } = state;
+      return entityStates[entityStates.length - 1];
+    },
+    
+    get playerIndex() {
+      return state.entities.findIndex(ent => ent.isPlayer);
+    },
+                           
+    get moveCount() {
+      return state.entityStates.length - 1;
+    },
 
-  get moveCount() {
-    return this.entityStates.length - 1;
-  }
-
-  get playerIndex() {
-    return this.entities.findIndex(ent => ent.isPlayer);
-  }
-
-  get player() {
-    return this.entities[this.playerIndex];
-  }
-
-  tryMove(axis, step) {
-    if (!this.player){
-      return;
+    get player() {
+      return state.entities[state.playerIndex];
     }
+  });
 
-    const playerPos = this.player.position;
+  const tryMove = (axis, step) => {
+    const playerPos = state.player.position;
+    //console.log(axis, step, playerPos.x, playerPos);
     const positionToTry = {
       ...playerPos,
       [axis]: playerPos[axis] + step
     };
 
-    const entities = this.entities;
+    const { entities } = state;
     const entityThereIndex = entities.findIndex(
       ent =>
         ent.physicalType &&
@@ -63,39 +61,48 @@ export class LevelStore {
           return;
         }
         //console.log("st");
-        this.entityStates.push(
+        state.entityStates.push(
           ice
             .chain(entities.peek())
             .setIn(
               [entityThereIndex, "position", axis],
               entityThere.position[axis] + step
             )
-            .setIn([this.playerIndex, "position", axis], playerPos[axis] + step)
+            .setIn(
+              [state.playerIndex, "position", axis],
+              playerPos[axis] + step
+            )
             .value()
         );
 
         return;
       }
     }
-
-    this.entityStates.push(
+    state.entityStates.push(
       ice.setIn(
         entities.peek(),
-        [this.playerIndex, "position", axis],
+        [state.playerIndex, "position", axis],
         playerPos[axis] + step
       )
     );
-  }
+    //console.log(state.player.position.x);
+  };
 
-  tryMoveLeft = () => this.tryMove("x", -1);
-  tryMoveDown = () => this.tryMove("y", +1);
-  tryMoveUp = () => this.tryMove("y", -1);
-  tryMoveRight = () => this.tryMove("x", +1);
+  return {
+    state,
 
-  undo = () => this.entityStates.length > 1 && this.entityStates.pop();
-  reset = () => {
-    while (this.entityStates.length > 1) {
-      this.entityStates.pop();
+    tryMoveLeft: () => tryMove("x", -1),
+    tryMoveDown: () => tryMove("y", +1),
+    tryMoveUp: () => tryMove("y", -1),
+    tryMoveRight: () => tryMove("x", +1),
+    undo() {
+      const { entityStates } = state;
+      if (entityStates.length > 1) {
+        state.entityStates.pop();
+      }
+    },
+    reset() {
+      state.entityStates = [state.entityStates[0]];
     }
   };
-}
+};

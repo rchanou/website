@@ -1,6 +1,6 @@
 import React from "react";
 import { autorun } from "mobx";
-import { observer } from "mobx-react";
+import { observer, Observer } from "mobx-react";
 
 import LevelView from "./LevelView";
 import Controls from "./Controls";
@@ -42,7 +42,9 @@ const Sokoban = observer(({ store = defaultStore }) => {
         }}
       />
 
-      <LevelView entities={store.entities} />
+      <Observer>
+        {o => <LevelView entities={store.state.entities} />}
+      </Observer>
 
       <Controls store={store} />
 
@@ -52,6 +54,8 @@ const Sokoban = observer(({ store = defaultStore }) => {
     </div>
   );
 });
+
+autorun(o => console.log(defaultStore.entities));
 
 window.serializeFocusedComponentProps = () => JSON.stringify($r.props);
 
