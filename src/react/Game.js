@@ -7,21 +7,6 @@ import Controls from "./Controls";
 import KeyMap from "./KeyMap";
 
 import { groupTypes } from "../constants";
-import { loadSokobanMap } from "../functions";
-
-const defaultLevelMap = [
-  " xxxxxxxx   ",
-  " x p x  x   ",
-  " x      x   ",
-  " x      x   ",
-  " xxxxxb x   ",
-  "     x  xxx ",
-  "     xb ttx ",
-  "     x  xxx ",
-  "     xxxx   "
-];
-
-const defaultStore = loadSokobanMap(defaultLevelMap);
 
 const maxX = createTransformer(
   entities => Math.max.apply(null, entities.map(ent => ent.position.x)) + 1
@@ -47,7 +32,7 @@ const hasWon = createTransformer(entities => {
   return true;
 });
 
-const Game = observer(({ store = defaultStore, scale = 40 }) => (
+const Game = observer(({ store, scale = 40 }) => (
   <div>
     <KeyMap
       default={console.log}
