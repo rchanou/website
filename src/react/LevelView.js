@@ -45,8 +45,8 @@ const LevelView = observer(({ entities = [] }) => {
     <div
       style={{
         position: "relative",
-        height: "100%",
         width: "100%",
+        paddingTop: "100%",
         background: hasWon(entities) ? "aquamarine" : "#eee"
       }}
     >
