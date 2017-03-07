@@ -1,5 +1,5 @@
 import React from "react";
-import { autorun } from "mobx";
+import { autorun, createTransformer } from "mobx";
 import { observer, Observer } from "mobx-react";
 
 import LevelView from "./LevelView";
@@ -7,6 +7,7 @@ import Controls from "./Controls";
 import KeyMap from "./KeyMap";
 
 import { loadSokobanMap } from "../functions";
+import { groupTypes } from "../constants";
 
 const defaultLevelMap = [
   " xxxxxxxx   ",
@@ -22,7 +23,7 @@ const defaultLevelMap = [
 
 const defaultStore = loadSokobanMap(defaultLevelMap);
 
-const Game = observer(({ store = defaultStore }) => (
+const Game = observer(({ store = defaultStore, scale = 40 }) => (
   <div>
     <KeyMap
       default={console.log}
@@ -40,7 +41,11 @@ const Game = observer(({ store = defaultStore }) => (
         Escape: store.reset
       }}
     />
-    <LevelView entities={store.state.entities} />
+
+    <div style={{ width: 400, height: 400 }}
+    >
+      <LevelView entities={store.state.entities} scale={scale} />
+    </div>
 
     <Controls store={store} />
 

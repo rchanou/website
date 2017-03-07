@@ -18,6 +18,10 @@ const maxY = createTransformer(
   entities => Math.max.apply(null, entities.map(ent => ent.position.y)) + 1
 );
 
+const getUnit = createTransformer(
+  entities => 100 / Math.max(maxX(entities), maxY(entities))
+);
+
 const hasWon = createTransformer(entities => {
   const targets = entities.filter(ent => ent.group === groupTypes.target);
   const boxes = entities.filter(ent => ent.group === groupTypes.box);
@@ -34,63 +38,53 @@ const hasWon = createTransformer(entities => {
   return true;
 });
 
-const LevelView = observer(({ entities = [], scale = 40 }) => (
-  <div
-    style={{
-      position: "relative",
-      height: maxY(entities) * scale,
-      width: maxX(entities) * scale,
-      background: hasWon(entities)? "aquamarine": "#eee"
-    }}
-  >
-    {entities.map(ent => {
-      const startStyle = {
-        ...baseEntityStyle,
-        width: scale,
-        height: scale
-      };
+const LevelView = observer(({ entities = [] }) => {
+  const unit = getUnit(entities);
 
-      let finalStyle = startStyle;
-      if (ent.group === groupTypes.player) {
-        finalStyle = {
-          ...startStyle,
-          background: "orange",
-          borderRadius: "50%"
+  return (
+    <div
+      style={{
+        position: "relative",
+        height: "100%",
+        width: "100%",
+        background: hasWon(entities) ? "aquamarine" : "#eee"
+      }}
+    >
+      {entities.map(ent => {
+        const startStyle = {
+          ...baseEntityStyle,
+          width: `${unit}%`,
+          height: `${unit}%`,
+          top: `${ent.position.y * unit}%`,
+          left: `${ent.position.x * unit}%`
         };
-      }
-      if (ent.group === groupTypes.target) {
-        finalStyle = {
-          ...startStyle,
-          background: "tomato",
-          borderRadius: "50%",
-          transformOrigin: "50% 50%"
-        };
-      }
-      if (ent.group === groupTypes.box) {
-        finalStyle = { ...startStyle, background: "brown" };
-      }
 
-      const baseTransform = `
-        translateX(${ent.position.x * scale}px) 
-        translateY(${ent.position.y * scale}px)
-      `;
+        let finalStyle = startStyle;
+        if (ent.group === groupTypes.player) {
+          finalStyle = {
+            ...startStyle,
+            background: "orange",
+            borderRadius: "50%"
+          };
+        }
+        if (ent.group === groupTypes.target) {
+          finalStyle = {
+            ...startStyle,
+            background: "tomato",
+            borderRadius: "50%",
+            transformOrigin: "50% 50%",
+            transform: "scale(0.5)"
+          };
+        }
+        if (ent.group === groupTypes.box) {
+          finalStyle = { ...startStyle, background: "brown" };
+        }
 
-      return (
-        <div
-          key={ent.id}
-          style={{
-            ...finalStyle,
-            transform: (
-              ent.group === groupTypes.target
-                ? `${baseTransform} scale(0.5)`
-                : baseTransform
-            )
-          }}
-        />
-      );
-    })}
-  </div>
-));
+        return <div key={ent.id} style={finalStyle} />;
+      })}
+    </div>
+  );
+});
 
 LevelView.displayName = "LevelView";
 
