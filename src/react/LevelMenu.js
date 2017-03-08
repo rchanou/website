@@ -93,54 +93,77 @@ const LevelMenu = (
       me.handleResize = ps => me.setState({ positions: ps });
     }}
   >
-    {me => (
-      <div>
-        Menu {levelRecords.length}
+    {me => {
+      const bindDirectionMove = (axis, dir) => {
+        const crossAxis = axis == "x" ? "y" : "x";
+        return () => {
+          if (highlightedLevelId === -1) {
+            bindSelect(levelRecords[0].id)();
+          } else {
+            const { positions } = me.state;
+            const currentPos = positions.find(p => p.key == highlightedLevelId);
+            let newPos = positions.find(
+              p =>
+                p[crossAxis] === currentPos[crossAxis] &&
+                p[axis] === currentPos[axis] + dir
+            );
+            if (!newPos) {
+              const axisMax = Math.max.apply(0, positions.map(p => p[axis]));
+              const crossAxisLength = Math.max.apply(
+                0,
+                positions.map(p => p[crossAxis])
+              ) + 1;
+              const wrapPos = {
+                [axis]: dir > 0 ? 0 : axisMax,
+                [crossAxis]: (currentPos[crossAxis] + dir) % crossAxisLength
+              };
+              newPos = positions.find(
+                p =>
+                  p[axis] === wrapPos[axis] &&
+                  p[crossAxis] === wrapPos[crossAxis]
+              );
+            }
+            bindSelect(newPos.key)();
+          }
+        };
+      };
 
-        <KeyMap
-          keyMap={{
-            ArrowLeft: console.log,
-            ArrowDown: console.log,
-            ArrowUp: console.log,
-            ArrowRight() {
-              if (highlightedLevelId === -1) {
-                bindSelect(levelRecords[0].id)();
-              } else {
-                const { positions } = me.state;
-                const highlightedPos = positions.find(
-                  p => p.key == highlightedLevelId
-                );
-                const rightPos = positions.find(
-                  p => p.y === highlightedPos.y && p.x === highlightedPos.x + 1
-                );
-                bindSelect(rightPos.key)();
-              }
-            },
-            e: console.log,
-            s: console.log,
-            d: console.log,
-            f: console.log,
-            u: console.log,
-            " ": console.log,
-            Escape: console.log
-          }}
-        />
+      return (
+        <div>
+          Menu {levelRecords.length}
 
-        <DirectionMapper
-          style={{ display: "flex", flexWrap: "wrap" }}
-          onResize={me.handleResize}
-        >
-          {levelRecords.map(rec => (
-            <LevelMenuItem
-              key={rec.id}
-              level={rec.level}
-              highlighted={rec.id == highlightedLevelId}
-              onSelect={bindSelect(rec.id)}
-            />
-          ))}
-        </DirectionMapper>
-      </div>
-    )}
+          <KeyMap
+            keyMap={{
+              ArrowLeft: bindDirectionMove("x", -1),
+              ArrowDown: bindDirectionMove("y", +1),
+              ArrowUp: bindDirectionMove("y", -1),
+              ArrowRight: bindDirectionMove("x", +1),
+              e: console.log,
+              s: console.log,
+              d: console.log,
+              f: console.log,
+              u: console.log,
+              " ": console.log,
+              Escape: console.log
+            }}
+          />
+
+          <DirectionMapper
+            style={{ display: "flex", flexWrap: "wrap" }}
+            onResize={me.handleResize}
+          >
+            {levelRecords.map(rec => (
+              <LevelMenuItem
+                key={rec.id}
+                level={rec.level}
+                highlighted={rec.id == highlightedLevelId}
+                onSelect={bindSelect(rec.id)}
+              />
+            ))}
+          </DirectionMapper>
+        </div>
+      );
+    }}
   </State>
 );
 
