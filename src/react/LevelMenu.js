@@ -108,7 +108,7 @@ const LevelMenu = (
               } else {
                 const { positions } = me.state;
                 const highlightedPos = positions.find(
-                  p => console.log(p.key) || p.key == highlightedLevelId
+                  p => p.key == highlightedLevelId
                 );
                 const rightPos = positions.find(
                   p => p.y === highlightedPos.y && p.x === highlightedPos.x + 1
