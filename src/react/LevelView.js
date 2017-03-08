@@ -42,46 +42,48 @@ const LevelView = observer(({ entities = [] }) => {
   const unit = getUnit(entities);
 
   return (
-    <div
-      style={{
-        position: "relative",
-        width: "100%",
-        paddingTop: "100%",
-        background: hasWon(entities) ? "aquamarine" : "#eee"
-      }}
-    >
-      {entities.map(ent => {
-        const startStyle = {
-          ...baseEntityStyle,
-          width: `${unit}%`,
-          height: `${unit}%`,
-          top: `${ent.position.y * unit}%`,
-          left: `${ent.position.x * unit}%`
-        };
-
-        let finalStyle = startStyle;
-        if (ent.group === groupTypes.player) {
-          finalStyle = {
-            ...startStyle,
-            background: "orange",
-            borderRadius: "50%"
+    <div style={{ maxWidth: 888 }}>
+      <div
+        style={{
+          position: "relative",
+          width: "100%",
+          paddingTop: "100%",
+          background: hasWon(entities) ? "aquamarine" : "#eee"
+        }}
+      >
+        {entities.map(ent => {
+          const startStyle = {
+            ...baseEntityStyle,
+            width: `${unit}%`,
+            height: `${unit}%`,
+            top: `${ent.position.y * unit}%`,
+            left: `${ent.position.x * unit}%`
           };
-        }
-        if (ent.group === groupTypes.target) {
-          finalStyle = {
-            ...startStyle,
-            background: "tomato",
-            borderRadius: "50%",
-            transformOrigin: "50% 50%",
-            transform: "scale(0.5)"
-          };
-        }
-        if (ent.group === groupTypes.box) {
-          finalStyle = { ...startStyle, background: "brown" };
-        }
 
-        return <div key={ent.id} style={finalStyle} />;
-      })}
+          let finalStyle = startStyle;
+          if (ent.group === groupTypes.player) {
+            finalStyle = {
+              ...startStyle,
+              background: "orange",
+              borderRadius: "50%"
+            };
+          }
+          if (ent.group === groupTypes.target) {
+            finalStyle = {
+              ...startStyle,
+              background: "tomato",
+              borderRadius: "50%",
+              transformOrigin: "50% 50%",
+              transform: "scale(0.5)"
+            };
+          }
+          if (ent.group === groupTypes.box) {
+            finalStyle = { ...startStyle, background: "brown" };
+          }
+
+          return <div key={ent.id} style={finalStyle} />;
+        })}
+      </div>{" "}
     </div>
   );
 });
