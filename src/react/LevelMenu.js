@@ -77,7 +77,8 @@ const LevelMenuItem = ({ level = [], highlighted, onSelect = o => o }) => (
     style={{
       width: 200,
       height: 200,
-      background: highlighted && "pink"
+      background: highlighted && "pink",
+      padding: 10
     }}
   >
     <LevelView entities={level} scale={20} />
@@ -336,10 +337,12 @@ const defaultState = {
   highlightedLevelId: -1,
   levelRecords: [
     { id: 0, level: baseLevel },
-    ...[1, 2, 3, 4, 5, 6].map(x => ({
+    ...[1, 2, 3, 4, 5, 6, 7].map(x => ({
       id: x,
       level: baseLevel.filter(o => Math.random() < 0.5)
-    }))
+    })),
+    { id: 8, level: baseLevel.filter(ent => ent.position.x < 3) },
+    { id: 9, level: baseLevel.filter(ent => ent.position.y < 3) }
   ]
 };
 
