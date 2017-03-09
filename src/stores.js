@@ -3,7 +3,9 @@ import { groupTypes, physicalTypes, entitySchemas } from "./constants";
 import ice from "icepick";
 import update from "immutability-helper";
 
-export const createLevelStore = ({ initialLevelState = [], moves = [] }) => {
+export const createLevelStore = (initial = {}) => {
+  const { initialLevelState = [], moves = [] } = initial;
+
   const state = observable({
     levelStates: [initialLevelState],
 

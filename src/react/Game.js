@@ -5,16 +5,9 @@ import { observer, Observer } from "mobx-react";
 import LevelView from "./LevelView";
 import Controls from "./Controls";
 import KeyMap from "./KeyMap";
+import { GameButton, ButtonContainer } from "./Style";
 
 import { groupTypes } from "../constants";
-
-const maxX = createTransformer(
-  entities => Math.max.apply(null, entities.map(ent => ent.position.x)) + 1
-);
-
-const maxY = createTransformer(
-  entities => Math.max.apply(null, entities.map(ent => ent.position.y)) + 1
-);
 
 const hasWon = createTransformer(entities => {
   const targets = entities.filter(ent => ent.group === groupTypes.target);
@@ -54,17 +47,20 @@ const Game = observer(({ store, scale = 40 }) => (
     <div
       style={{
         background: hasWon(store.state.entities) ? "aquamarine" : "#eee",
-        height: maxY(store.state.entities) * scale,
-        width: maxX(store.state.entities) * scale
+        height: 555,
+        width: 555,
+        padding: 22
       }}
     >
-      <LevelView entities={store.state.entities} scale={scale} />
+      <LevelView entities={store.state.entities} />
     </div>
 
-    <Controls store={store} />
     <div>{store.state.moveCount}</div>
-    <button onClick={store.undo}>Undo</button>
-    <button onClick={store.reset}>Reset</button>
+    <Controls store={store} />
+    <ButtonContainer>
+      <GameButton onClick={store.undo}>Undo</GameButton>
+      <GameButton onClick={store.reset}>Reset</GameButton>
+    </ButtonContainer>
   </div>
 ));
 

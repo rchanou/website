@@ -27,9 +27,7 @@ class DirectionMapper extends React.Component {
       const yUnit = firstKid.offsetHeight;
       const xOrigin = firstKid.offsetLeft;
       const yOrigin = firstKid.offsetTop;
-
       //console.log(this.props.children);
-
       let positions = [];
       const kids = this.me.children;
       for (let i in kids) {
@@ -47,7 +45,7 @@ class DirectionMapper extends React.Component {
         });
       }
       this.props.onResize(positions);
-      console.log(JSON.stringify(positions));
+      //console.log(JSON.stringify(positions));
       this.calculating = false;
     });
   };
