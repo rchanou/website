@@ -48,7 +48,7 @@ const LevelView = observer(({ entities = [] }) => {
           position: "relative",
           width: "100%",
           paddingTop: "100%",
-          background: hasWon(entities) ? "aquamarine" : "#eee"
+          //background: hasWon(entities) ? "aquamarine" : "#eee"
         }}
       >
         {entities.map(ent => {

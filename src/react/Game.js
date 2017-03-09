@@ -6,24 +6,33 @@ import LevelView from "./LevelView";
 import Controls from "./Controls";
 import KeyMap from "./KeyMap";
 
-import { loadSokobanMap } from "../functions";
 import { groupTypes } from "../constants";
 
-const defaultLevelMap = [
-  " xxxxxxxx   ",
-  " x p x  x   ",
-  " x      x   ",
-  " x      x   ",
-  " xxxxxb x   ",
-  "     x  xxx ",
-  "     xb ttx ",
-  "     x  xxx ",
-  "     xxxx   "
-];
+const maxX = createTransformer(
+  entities => Math.max.apply(null, entities.map(ent => ent.position.x)) + 1
+);
 
-const defaultStore = loadSokobanMap(defaultLevelMap);
+const maxY = createTransformer(
+  entities => Math.max.apply(null, entities.map(ent => ent.position.y)) + 1
+);
 
-const Game = observer(({ store = defaultStore, scale = 40 }) => (
+const hasWon = createTransformer(entities => {
+  const targets = entities.filter(ent => ent.group === groupTypes.target);
+  const boxes = entities.filter(ent => ent.group === groupTypes.box);
+  for (const target of targets) {
+    const targetPos = target.position;
+    if (
+      !boxes.find(
+        box => box.position.x === targetPos.x && box.position.y === targetPos.y
+      )
+    ) {
+      return false;
+    }
+  }
+  return true;
+});
+
+const Game = observer(({ store, scale = 40 }) => (
   <div>
     <KeyMap
       default={console.log}
@@ -42,13 +51,17 @@ const Game = observer(({ store = defaultStore, scale = 40 }) => (
       }}
     />
 
-    <div style={{ width: 400, height: 400 }}
+    <div
+      style={{
+        background: hasWon(store.state.entities) ? "aquamarine" : "#eee",
+        height: maxY(store.state.entities) * scale,
+        width: maxX(store.state.entities) * scale
+      }}
     >
       <LevelView entities={store.state.entities} scale={scale} />
     </div>
 
     <Controls store={store} />
-
     <div>{store.state.moveCount}</div>
     <button onClick={store.undo}>Undo</button>
     <button onClick={store.reset}>Reset</button>
