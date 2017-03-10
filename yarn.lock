@@ -3036,9 +3036,19 @@ postcss@^5.0.10, postcss@^5.0.11, postcss@^5.0.12, postcss@^5.0.13, postcss@^5.0
     source-map "^0.5.6"
     supports-color "^3.2.3"
 
+postscribe@^2.0.8:
+  version "2.0.8"
+  resolved "https://registry.yarnpkg.com/postscribe/-/postscribe-2.0.8.tgz#5b7a53aad4b690b6c2f75818fcefe74490f410d5"
+  dependencies:
+    prescribe ">=1.1.2"
+
 prepend-http@^1.0.0:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/prepend-http/-/prepend-http-1.0.4.tgz#d4f4562b0ce3696e41ac52d0e002e57a635dc6dc"
+
+prescribe@>=1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/prescribe/-/prescribe-1.1.2.tgz#da4e84a9e04be8c414e75698bf5736c8ad6f82f5"
 
 preserve@^0.2.0:
   version "0.2.0"
