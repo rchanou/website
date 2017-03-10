@@ -1,6 +1,8 @@
 import React from "react";
 import { autorun, observable, createTransformer, extendObservable } from "mobx";
 import { Observer } from "mobx-react";
+import { sortBy } from "lodash";
+
 import KeyMap from "./KeyMap";
 import State from "./State";
 import LevelView from "./LevelView";
@@ -83,6 +85,21 @@ const LevelMenuItem = ({ level = [], highlighted, onSelect = o => o }) => (
   </div>
 );
 
+const getNextKeyInDir = (positions, currentPosKey, axis, dir) => {
+  const crossAxis = axis == "x" ? "y" : "x";
+  const sortedPositions = sortBy(positions, [crossAxis, axis]);
+  const currentPosIndex = sortedPositions.findIndex(
+    p => p.key == currentPosKey
+  );
+  let nextPosIndex = currentPosIndex + dir;
+  if (nextPosIndex < 0) {
+    nextPosIndex = positions.length - 1;
+  } else if (nextPosIndex > positions.length - 1) {
+    nextPosIndex = 0;
+  }
+  return sortedPositions[nextPosIndex].key;
+};
+
 const LevelMenu = (
   { levelRecords = [], highlightedLevelId, bindSelect = o => o }
 ) => (
@@ -100,29 +117,13 @@ const LevelMenu = (
             bindSelect(levelRecords[0].id)();
           } else {
             const { positions } = me.state;
-            const currentPos = positions.find(p => p.key == highlightedLevelId);
-            let newPos = positions.find(
-              p =>
-                p[crossAxis] === currentPos[crossAxis] &&
-                p[axis] === currentPos[axis] + dir
+            const nextKey = getNextKeyInDir(
+              positions,
+              highlightedLevelId,
+              axis,
+              dir
             );
-            if (!newPos) {
-              const axisMax = Math.max.apply(0, positions.map(p => p[axis]));
-              const crossAxisLength = Math.max.apply(
-                0,
-                positions.map(p => p[crossAxis])
-              ) + 1;
-              const wrapPos = {
-                [axis]: dir > 0 ? 0 : axisMax,
-                [crossAxis]: (currentPos[crossAxis] + dir) % crossAxisLength
-              };
-              newPos = positions.find(
-                p =>
-                  p[axis] === wrapPos[axis] &&
-                  p[crossAxis] === wrapPos[crossAxis]
-              );
-            }
-            bindSelect(newPos.key)();
+            bindSelect(nextKey)();
           }
         };
       };
