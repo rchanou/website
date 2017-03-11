@@ -1,11 +1,26 @@
 import React from "react";
 import postscribe from "postscribe";
 
-//const submitUrl = "https://qlrvsjbsr3.execute-api.us-west-2.amazonaws.com/prod/checkHumanBeforeCaptchaUpdate";
-const submitUrl = "https://ron.chanou.info/notyet";
+const submitUrl = "https://qlrvsjbsr3.execute-api.us-west-2.amazonaws.com/prod/checkHumanBeforeCaptchaUpdate";
+//const submitUrl = "https://ron.chanou.info/notyet";
 
 export default class Scripter extends React.Component {
   saveMe = c => this.me = c;
+
+  handleSubmit = e => {
+    e.preventDefault();
+    e.persist();
+    const body = new FormData(e);
+    console.log(body);
+    //return;
+    fetch(submitUrl, {
+      method: "POST",
+      body: JSON.stringify({ what: "up" }),
+      headers: new Headers({ "Content-Type": "application/json" })
+    })
+      .then(res => res.json())
+      .then(console.log);
+  };
 
   componentDidMount() {
     postscribe(
@@ -19,7 +34,12 @@ export default class Scripter extends React.Component {
       <div>
         <div ref={this.saveMe} />
 
-        <form action={submitUrl} method="post">
+        <form
+          action={submitUrl}
+          method="post"
+          encType="application/json"
+          onSubmit={this.handleSubmit}
+        >
           <input name="test" />
           <div
             className="g-recaptcha"
