@@ -1,0 +1,11 @@
+{
+  "name": "check-captcha",
+  "version": "0.0.1",
+  "description": "checks captcha before sending update",
+  "main": "app.js",
+  "author": "Ron ChanOu",
+  "license": "MIT",
+  "dependencies": {
+    "request": "^2.81.0"
+  }
+}
