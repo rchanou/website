@@ -11,7 +11,9 @@ export default class Scripter extends React.Component {
   handleSubmit = e => {
     e.preventDefault();
     const formData = serialize(e.target, { hash: true });
+    formData.doc = { id: 'stupid', level: [] };
     const body = JSON.stringify(formData);
+    //console.log('form', formData, body); return;
     fetch(submitUrl, {
       method: "POST",
       body,
@@ -34,7 +36,6 @@ export default class Scripter extends React.Component {
         <div ref={this.saveMe} />
 
         <form onSubmit={this.handleSubmit}>
-          <input name="test" />
           <div
             className="g-recaptcha"
             data-sitekey="6LfMbBgUAAAAAB2yCO4u_bdhy2RjeRLOHX4cPnys"

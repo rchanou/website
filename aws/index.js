@@ -9,7 +9,8 @@ const event = {
 };
 
 //const appFolder = "check-captcha";
-const appFolder = "sns-publish-test";
+//const appFolder = "sns-publish-test";
+const appFolder = "verify-human-and-update-level";
 
 lambdaLocal.execute({
   event,
