@@ -1,5 +1,6 @@
 import React from "react";
 import postscribe from "postscribe";
+import serialize from "form-serialize";
 
 const submitUrl = "https://qlrvsjbsr3.execute-api.us-west-2.amazonaws.com/prod/checkHumanBeforeCaptchaUpdate";
 //const submitUrl = "https://ron.chanou.info/notyet";
@@ -10,9 +11,11 @@ export default class Scripter extends React.Component {
   handleSubmit = e => {
     e.preventDefault();
     e.persist();
-    const body = new FormData(e);
-    console.log(body);
+    //const body = new FormData(e);
+    //console.log(body);
     //return;
+    const body = serialize(e, { hash: true });
+    console.log(body);
     fetch(submitUrl, {
       method: "POST",
       body: JSON.stringify({ what: "up" }),
