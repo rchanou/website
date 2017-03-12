@@ -10,15 +10,11 @@ export default class Scripter extends React.Component {
 
   handleSubmit = e => {
     e.preventDefault();
-    e.persist();
-    //const body = new FormData(e);
-    //console.log(body);
-    //return;
-    const body = serialize(e, { hash: true });
-    console.log(body);
+    const formData = serialize(e.target, { hash: true });
+    const body = JSON.stringify(formData);
     fetch(submitUrl, {
       method: "POST",
-      body: JSON.stringify({ what: "up" }),
+      body,
       headers: new Headers({ "Content-Type": "application/json" })
     })
       .then(res => res.json())
@@ -37,12 +33,7 @@ export default class Scripter extends React.Component {
       <div>
         <div ref={this.saveMe} />
 
-        <form
-          action={submitUrl}
-          method="post"
-          encType="application/json"
-          onSubmit={this.handleSubmit}
-        >
+        <form onSubmit={this.handleSubmit}>
           <input name="test" />
           <div
             className="g-recaptcha"
