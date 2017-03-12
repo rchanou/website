@@ -10,7 +10,7 @@ const event = {
 
 lambdaLocal.execute({
   event,
-  lambdaPath: path.join(__dirname, "check-captcha", "app.js"),
+  lambdaPath: path.join(__dirname, "check-captcha", "index.js"),
   callback: function(err, data) {
     if (err) {
       console.log(err);

@@ -2,7 +2,7 @@
   "name": "check-captcha",
   "version": "0.0.1",
   "description": "checks captcha before sending update",
-  "main": "app.js",
+  "main": "index.js",
   "author": "Ron ChanOu",
   "license": "MIT",
   "dependencies": {

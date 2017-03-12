@@ -9,7 +9,7 @@ const headers = {
 exports.handler = (event, context, callback) => {
   const handleResponse = (err, res, body) => {
     const bodyData = JSON.parse(body);
-    mmconsole.log('body', bodyData);
+    console.log('body', bodyData);
     if (err || !bodyData.success) {
       callback(null, {
         statusCode: "401",
