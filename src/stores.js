@@ -352,16 +352,20 @@ export const getEditorStore = (initial = {}) => {
   const state = observable({
     level: [],
     submitting: false,
-    bound: 20,// { x: 20, y: 20 },
+    bound: 20,
     editingPos: { x: 9, y: 9 },
     ...initialState
   });
 
-  const bindMove = (axis, dir) => o => {
+  const bindMove = (axis, dir) => e => {
+    if (e && typeof e === 'object' && typeof e.preventDefault === 'function'){
+      e.preventDefault();
+    }
+
     const nextAxisPos = state.editingPos[axis] + dir;
-    state.editingPos[axis] = nextAxisPos > state.bound
+    state.editingPos[axis] = nextAxisPos > state.bound - 1
       ? 0
-      : nextAxisPos < 0 ? state.bound : nextAxisPos;
+      : nextAxisPos < 0 ? state.bound - 1 : nextAxisPos;
   };
   return {
     state,

@@ -23,7 +23,8 @@ const editorStyle = {
 const baseAxisLineStyle = {};
 
 const LevelEditor = observer(({ store = getEditorStore() }) => {
-  const { level, bound } = store.state;
+  const { level, bound, editingPos } = store.state;
+  const unit = 100 / bound;
 
   const markers = Array.from(Array(bound));
   const xLines = markers.map((__, i) => (
@@ -32,7 +33,7 @@ const LevelEditor = observer(({ store = getEditorStore() }) => {
       style={{
         position: "absolute",
         width: "100%",
-        top: `${100 / bound * i}%`,
+        top: `${unit * i}%`,
         borderBottom: "thin solid #ccc"
       }}
     />
@@ -44,11 +45,22 @@ const LevelEditor = observer(({ store = getEditorStore() }) => {
         position: "absolute",
         height: "100%",
         top: 0,
-        left: `${100 / bound * i}%`,
+        left: `${unit * i}%`,
         borderRight: "thin solid #ccc"
       }}
     />
   ));
+
+  const editSquare = <div 
+    style={{ 
+      background: 'aquamarine',
+      position: 'absolute',
+      width: `${unit}%`,
+      height: `${unit}%`, 
+      left: `${editingPos.x * unit}%`, 
+      top: `${editingPos.y * unit}%`
+    }}
+  />;
 
   return (
     <div>
@@ -71,7 +83,11 @@ const LevelEditor = observer(({ store = getEditorStore() }) => {
 
       <div style={{ maxWidth: 888 }}>
         <div style={editorStyle}>
-          {xLines}{yLines}
+          {editSquare}
+
+          {xLines}
+          {yLines}
+
 
           {level.map(getEntityRenderer(level, bound))}
         </div>
