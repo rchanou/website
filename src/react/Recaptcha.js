@@ -4,15 +4,17 @@ import serialize from "form-serialize";
 import { GameButton } from "./Style";
 
 const submitUrl = "https://qlrvsjbsr3.execute-api.us-west-2.amazonaws.com/prod/checkHumanBeforeCaptchaUpdate";
-//const submitUrl = "https://ron.chanou.info/notyet";
 
 export default class Scripter extends React.Component {
+  static defaultProps = { onSubmit() {} };
+
   saveMe = c => this.me = c;
 
   handleSubmit = e => {
     e.preventDefault();
     const formData = serialize(e.target, { hash: true });
-    formData.doc = { id: "1", level: [] };
+    this.props.onSubmit(formData);
+    /*formData.doc = { id: "1", level: [] };
     const body = JSON.stringify(formData);
     //console.log('form', formData, body); return;
     fetch(submitUrl, {
@@ -21,7 +23,7 @@ export default class Scripter extends React.Component {
       headers: new Headers({ "Content-Type": "application/json" })
     })
       .then(res => res.json())
-      .then(console.log);
+      .then(console.log);*/
   };
 
   componentDidMount() {
@@ -40,7 +42,6 @@ export default class Scripter extends React.Component {
           <div
             className="g-recaptcha"
             data-sitekey="6LfMbBgUAAAAAB2yCO4u_bdhy2RjeRLOHX4cPnys"
-            onClick={console.log}
           />
           <GameButton>Create</GameButton>
         </form>

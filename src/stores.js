@@ -135,8 +135,11 @@ const baseLevel = [
   }
 ];
 
-export const getLevelPlayStore = (initialState = {}) => {
-  const { levelStart = baseLevel || [], moves = [] } = initialState;
+export const getLevelPlayStore = (initialState = {}, goBack = () => {}) => {
+  const {
+    levelStart = baseLevel || [],
+    moves = []
+  } = initialState;
 
   const state = observable({
     levelStart,
@@ -168,7 +171,7 @@ export const getLevelPlayStore = (initialState = {}) => {
             levelAtMove
           );
         },
-        levelStart
+        state.levelStart
       );
       //console.log(result[11].position);
       return result;
@@ -264,30 +267,10 @@ export const getLevelPlayStore = (initialState = {}) => {
     },
     reset() {
       state.moves = [];
-    }
+    },
+    goBack
   };
 };
-
-export const getMenuStore = (initial = {}) => {
-  const {
-    initialState = {},
-    levelRecordStore = getLevelRecordStore()
-  } = initial;
-
-  const state = observable({
-    ...initialState,
-    highlightedLevelId: -1
-  });
-
-  return {
-    state,
-    levelRecordStore,
-    selectLevel(id) {
-      state.highlightedLevelId = id == state.highlightedLevelId ? -1 : id;
-    }
-  };
-};
-
 export const getLevelRecordStore = (initialState = {}) => {
   const {
     records = [
@@ -300,26 +283,89 @@ export const getLevelRecordStore = (initialState = {}) => {
       { id: 9, level: baseLevel.filter(ent => ent.position.y < 3) }
     ]
   } = initialState;
-  
+
   const state = observable({
     records
   });
+
+  const createLevel = e => {
+    e.preventDefault();
+    const formData = serialize(e.target, { hash: true });
+    formData.doc = { id: "stupid", level: [] };
+    const body = JSON.stringify(formData);
+    fetch(submitUrl, {
+      method: "POST",
+      body,
+      headers: new Headers({ "Content-Type": "application/json" })
+    })
+      .then(res => res.json())
+      .then(console.log);
+  };
+
   // TODO: db logic
   return { state };
 };
 
-export const getGameStore = (initial = {}) => {
-  const { levelRecordStore = getLevelRecordStore() } = initial;
+export const getMenuStore = (initial = {}) => {
   const {
-    menuStore = getMenuStore(levelRecordStore),
-    levelPlayStore = getLevelPlayStore()
+    initialState = {},
+    levelRecordStore = getLevelRecordStore(),
+    goBack = () => {}
   } = initial;
 
-  const state = observable(
-    initial.state || {
-      currentPage: "menu"
-    }
-  );
+  const state = observable({
+    ...initialState,
+    highlightedLevelId: -1
+  });
 
-  return { state, menuStore, levelRecordStore, levelPlayStore };
+  const selectLevel = id => {
+    state.highlightedLevelId = id == state.highlightedLevelId ? -1 : id;
+  };
+
+  return {
+    state,
+    levelRecordStore,
+    selectLevel
+  };
+};
+
+export const getGameStore = (initial = {}) => {
+  const gotoView = viewType => state.currentView = viewType;
+
+  const {
+    initialState,
+    levelRecordStore = getLevelRecordStore(),
+    menuStore = getMenuStore({ levelRecordStore }),
+    levelPlayStore = getLevelPlayStore(undefined, () => gotoView("MENU"))
+  } = initial;
+
+  const state = observable({
+    ...initialState,
+    currentView: "MENU"
+  });
+
+  const loadLevel = id => {
+    id = id === null ? menuStore.state.highlightedLevelId : id;
+    const recordToLoad = levelRecordStore.state.records.find(r => r.id == id);
+
+    if (!recordToLoad) {
+      console.warn("Level not found!");
+      return;
+    }
+    console.log(id, toJS(recordToLoad));
+
+    levelPlayStore.state.moves = [];
+    levelPlayStore.state.levelStart = recordToLoad.level;
+    state.currentView = "PLAY";
+  };
+
+  menuStore.loadLevel = loadLevel;
+
+  return {
+    state,
+    menuStore,
+    levelRecordStore,
+    levelPlayStore,
+    gotoView
+  };
 };

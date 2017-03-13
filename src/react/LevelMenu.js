@@ -77,9 +77,11 @@ class DirectionMapper extends React.Component {
   }
 }
 
-const LevelMenuItem = ({ level = [], highlighted, onSelect = o => o }) => (
+const LevelMenuItem = (
+  { level = [], highlighted, onSelect = o => o, onClick = o => o }
+) => (
   <div
-    onClick={onSelect}
+    onClick={onClick}
     style={{
       width: 200,
       height: 200,
@@ -87,7 +89,7 @@ const LevelMenuItem = ({ level = [], highlighted, onSelect = o => o }) => (
       padding: 10
     }}
   >
-    <LevelView entities={level} scale={20} />
+    <LevelView entities={level} />
   </div>
 );
 
@@ -107,7 +109,13 @@ const getNextKeyInDir = (positions, currentPosKey, axis, dir) => {
 };
 
 const LevelMenu = (
-  { levelRecords = [], highlightedLevelId, bindSelect = o => o }
+  {
+    levelRecords = [],
+    highlightedLevelId,
+    bindClick = o => o,
+    bindSelect = o => o,
+    loadLevel = o => o
+  }
 ) => (
   <State
     init={me => {
@@ -136,7 +144,7 @@ const LevelMenu = (
 
       return (
         <div>
-          Menu {levelRecords.length}
+          Menu
 
           <KeyMap
             keyMap={{
@@ -144,6 +152,7 @@ const LevelMenu = (
               ArrowDown: bindDirectionMove("y", +1),
               ArrowUp: bindDirectionMove("y", -1),
               ArrowRight: bindDirectionMove("x", +1),
+              Enter: () => loadLevel(highlightedLevelId),
               e: console.log,
               s: console.log,
               d: console.log,
@@ -163,6 +172,7 @@ const LevelMenu = (
                 key={rec.id}
                 level={rec.level}
                 highlighted={rec.id == highlightedLevelId}
+                onClick={bindClick(rec.id)}
                 onSelect={bindSelect(rec.id)}
               />
             ))}
@@ -173,13 +183,17 @@ const LevelMenu = (
   </State>
 );
 
+const getLoadLevelAction = menuStore => id => {};
+
 const ObservedLevelMenu = ({ store = getMenuStore() }) => (
   <Observer>
     {o => (
       <LevelMenu
         levelRecords={store.levelRecordStore.state.records}
         highlightedLevelId={store.state.highlightedLevelId}
+        bindClick={id => o => store.loadLevel(id)}
         bindSelect={id => o => store.selectLevel(id)}
+        loadLevel={store.loadLevel}
       />
     )}
   </Observer>
