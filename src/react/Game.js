@@ -3,6 +3,7 @@ import { observer } from "mobx-react";
 
 import LevelPlay from "./LevelPlay";
 import LevelMenu from "./LevelMenu";
+import LevelEditor from "./LevelEditor";
 
 import { getGameStore } from "../stores";
 
@@ -19,6 +20,13 @@ const Game = observer(({ store = defaultStore }) => {
       ViewToRender = LevelPlay;
       storeToUse = store.levelPlayStore;
       break;
+    case "PLAY":
+      ViewToRender = LevelPlay;
+      storeToUse = store.levelPlayStore;
+      break;
+    default:
+      ViewToRender = LevelEditor;
+      storeToUse = store.editorStore;
   }
 
   return <div><ViewToRender store={storeToUse} /></div>;

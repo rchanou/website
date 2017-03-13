@@ -135,7 +135,10 @@ const baseLevel = [
   }
 ];
 
-export const getLevelPlayStore = (initialState = {}, goBack = () => {}) => {
+export const getLevelPlayStore = (
+  initialState = {} //goBack = o => o,
+) => //gotoEditor = o => o
+{
   const {
     levelStart = baseLevel || [],
     moves = []
@@ -267,8 +270,9 @@ export const getLevelPlayStore = (initialState = {}, goBack = () => {}) => {
     },
     reset() {
       state.moves = [];
-    },
-    goBack
+    }
+    //goBack,
+    //gotoEditor
   };
 };
 export const getLevelRecordStore = (initialState = {}) => {
@@ -284,7 +288,7 @@ export const getLevelRecordStore = (initialState = {}) => {
     ]
   } = initialState;
 
-  const state = observable({ 
+  const state = observable({
     records
   });
 
@@ -321,12 +325,12 @@ export const getMenuStore = (initial = {}) => {
   const {
     initialState = {},
     levelRecordStore = getLevelRecordStore(),
-    goBack = () => {}
+    goBack = o => o
   } = initial;
 
   const state = observable({
-    ...initialState,
-    highlightedLevelId: -1
+    highlightedLevelId: -1,
+    ...initialState
   });
 
   const selectLevel = id => {
@@ -340,22 +344,34 @@ export const getMenuStore = (initial = {}) => {
   };
 };
 
-export const getGameStore = (initial = {}) => {
-  const gotoView = viewType => state.currentView = viewType;
+export const getEditorStore = (initial = {}) => {
+  const {
+    initialState = {},
+    goBack = o => o
+  } = initial;
 
+  const state = observable({ level: [], submitting: false, ...initialState });
+
+  return {
+    state
+  };
+};
+
+export const getGameStore = (initial = {}) => {
   const {
     initialState,
     levelRecordStore = getLevelRecordStore(),
     menuStore = getMenuStore({ levelRecordStore }),
-    levelPlayStore = getLevelPlayStore(undefined, () => gotoView("MENU"))
+    levelPlayStore = getLevelPlayStore(),
+    editorStore = getEditorStore()
   } = initial;
 
   const state = observable({
-    ...initialState,
-    currentView: "MENU"
+    currentView: "MENU",
+    ...initialState
   });
 
-  const loadLevel = id => {
+  menuStore.loadLevel = id => {
     id = id === null ? menuStore.state.highlightedLevelId : id;
     const recordToLoad = levelRecordStore.state.records.find(r => r.id == id);
 
@@ -363,20 +379,32 @@ export const getGameStore = (initial = {}) => {
       console.warn("Level not found!");
       return;
     }
-    console.log(id, toJS(recordToLoad));
 
     levelPlayStore.state.moves = [];
     levelPlayStore.state.levelStart = recordToLoad.level;
     state.currentView = "PLAY";
+    menuStore.state.highlightedLevelId = id;
   };
 
-  menuStore.loadLevel = loadLevel;
+  levelPlayStore.goBack = o => {
+    state.currentView = "MENU";
+  };
+
+  levelPlayStore.gotoEditor = () => {
+    editorStore.state.id = menuStore.state.highlightedLevelId; // normalize?
+    editorStore.state.level = levelPlayStore.state.levelStart;
+    state.currentView = "EDITOR";
+  };
+
+  editorStore.goBack = () => {
+    state.currentView = "PLAY";
+  };
 
   return {
     state,
     menuStore,
     levelRecordStore,
     levelPlayStore,
-    gotoView
+    editorStore
   };
 };

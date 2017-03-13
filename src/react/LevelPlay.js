@@ -63,6 +63,7 @@ const LevelPlay = observer(({ store = defaultStore }) => {
       <ButtonContainer>
         <GameButton onClick={store.undo}>Undo</GameButton>
         <GameButton onClick={store.reset}>Reset</GameButton>
+        <GameButton onClick={store.gotoEditor}>Edit</GameButton>
         <GameButton onClick={store.goBack}>Menu</GameButton>
       </ButtonContainer>
     </div>
