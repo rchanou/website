@@ -6,6 +6,7 @@ import KeyMap from "./KeyMap";
 import State from "./State";
 import LevelView from "./LevelView";
 import DirectionMapper from "./DirectionMapper";
+import { GameButton } from "./Style";
 
 import { getMenuStore } from "../stores";
 import { getNextKeyInDir } from "../functions";
@@ -32,7 +33,8 @@ const LevelMenu = (
     highlightedLevelId,
     bindClick = o => o,
     bindSelect = o => o,
-    loadLevel = o => o
+    loadLevel = o => o,
+    onCreateClick = o => o
   }
 ) => (
   <State
@@ -95,6 +97,8 @@ const LevelMenu = (
               />
             ))}
           </DirectionMapper>
+
+          <GameButton onClick={onCreateClick}>Create</GameButton>
         </div>
       );
     }}
@@ -112,6 +116,7 @@ const ObservedLevelMenu = ({ store = getMenuStore() }) => (
         bindClick={id => o => store.loadLevel(id)}
         bindSelect={id => o => store.selectLevel(id)}
         loadLevel={store.loadLevel}
+        onCreateClick={store.gotoCreateLevel}
       />
     )}
   </Observer>

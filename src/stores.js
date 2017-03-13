@@ -1,5 +1,5 @@
 import { observable, toJS, autorun } from "mobx";
-import { find, filter } from "lodash";
+import { cloneDeep, find, filter } from "lodash";
 import update from "immutability-helper";
 import shortid from 'shortid';
 
@@ -422,6 +422,7 @@ export const getEditorStore = (initial = {}) => {
     state,
     changeFromClick,
     submit,
+    reload,
     moveLeft: bindMove("x", -1),
     moveDown: bindMove("y", +1),
     moveUp: bindMove("y", -1),
@@ -483,10 +484,15 @@ export const getGameStore = (initial = {}) => {
     }
 
     levelPlayStore.state.moves = [];
-    levelPlayStore.state.levelStart = recordToLoad.level;
+    levelPlayStore.state.levelStart = cloneDeep(recordToLoad.level.slice());
     state.currentView = "PLAY";
     menuStore.state.highlightedLevelId = id;
   };
+
+  menuStore.gotoCreateLevel = o=>{
+    editorStore.state.level = [];
+    state.currentView = "EDITOR";
+  }
 
   levelPlayStore.goBack = o => {
     state.currentView = "MENU";
@@ -494,7 +500,7 @@ export const getGameStore = (initial = {}) => {
 
   levelPlayStore.gotoEditor = () => {
     editorStore.state.id = menuStore.state.highlightedLevelId; // normalize?
-    editorStore.state.level = levelPlayStore.state.levelStart;
+    editorStore.state.level = cloneDeep(levelPlayStore.state.levelStart.slice());
     state.currentView = "EDITOR";
   };
 
