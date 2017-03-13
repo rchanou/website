@@ -1,4 +1,5 @@
 import { loadSokobanMap } from "../../../functions";
+import { getGameStore } from "../../../stores";
 
 const defaultLevelMap = [
   "xxxxxxxx  ",
@@ -12,4 +13,7 @@ const defaultLevelMap = [
   "    xxxx  "
 ];
 
-export default { store: loadSokobanMap(defaultLevelMap) };
+export default {
+  store: getGameStore()
+  //loadSokobanMap(defaultLevelMap)
+};

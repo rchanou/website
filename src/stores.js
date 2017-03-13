@@ -3,40 +3,172 @@ import { groupTypes, physicalTypes, entitySchemas } from "./constants";
 import ice from "icepick";
 import update from "immutability-helper";
 
-export const getLevelStore = (initial = {}) => {
-  const { initialLevelState = [], moves = [] } = initial;
+const baseLevel = [
+  { group: "TARGET", id: 15, position: { y: 3, x: 5 } },
+  { group: "TARGET", id: 10, position: { y: 2, x: 3 } },
+  {
+    group: "WALL",
+    physicalType: "OBSTACLE",
+    id: 0,
+    position: { y: 0, x: 1 }
+  },
+  {
+    group: "WALL",
+    physicalType: "OBSTACLE",
+    id: 1,
+    position: { y: 0, x: 2 }
+  },
+  {
+    group: "WALL",
+    physicalType: "OBSTACLE",
+    id: 2,
+    position: { y: 0, x: 3 }
+  },
+  {
+    group: "WALL",
+    physicalType: "OBSTACLE",
+    id: 3,
+    position: { y: 0, x: 4 }
+  },
+  {
+    group: "WALL",
+    physicalType: "OBSTACLE",
+    id: 4,
+    position: { y: 0, x: 5 }
+  },
+  {
+    group: "WALL",
+    physicalType: "OBSTACLE",
+    id: 5,
+    position: { y: 0, x: 6 }
+  },
+  {
+    group: "WALL",
+    physicalType: "OBSTACLE",
+    id: 6,
+    position: { y: 1, x: 1 }
+  },
+  {
+    isPlayer: true,
+    group: "PLAYER",
+    physicalType: "OBSTACLE",
+    id: 7,
+    position: { y: 1, x: 2 }
+  },
+  {
+    group: "WALL",
+    physicalType: "OBSTACLE",
+    id: 8,
+    position: { y: 1, x: 6 }
+  },
+  {
+    group: "WALL",
+    physicalType: "OBSTACLE",
+    id: 9,
+    position: { y: 2, x: 1 }
+  },
+  {
+    group: "BOX",
+    physicalType: "PUSHABLE",
+    id: 11,
+    position: { y: 2, x: 3 }
+  },
+  {
+    group: "BOX",
+    physicalType: "PUSHABLE",
+    id: 12,
+    position: { y: 2, x: 5 }
+  },
+  {
+    group: "WALL",
+    physicalType: "OBSTACLE",
+    id: 13,
+    position: { y: 2, x: 6 }
+  },
+  {
+    group: "WALL",
+    physicalType: "OBSTACLE",
+    id: 14,
+    position: { y: 3, x: 1 }
+  },
+  {
+    group: "WALL",
+    physicalType: "OBSTACLE",
+    id: 16,
+    position: { y: 3, x: 6 }
+  },
+  {
+    group: "WALL",
+    physicalType: "OBSTACLE",
+    id: 17,
+    position: { y: 4, x: 1 }
+  },
+  {
+    group: "WALL",
+    physicalType: "OBSTACLE",
+    id: 18,
+    position: { y: 4, x: 2 }
+  },
+  {
+    group: "WALL",
+    physicalType: "OBSTACLE",
+    id: 19,
+    position: { y: 4, x: 3 }
+  },
+  {
+    group: "WALL",
+    physicalType: "OBSTACLE",
+    id: 20,
+    position: { y: 4, x: 4 }
+  },
+  {
+    group: "WALL",
+    physicalType: "OBSTACLE",
+    id: 21,
+    position: { y: 4, x: 5 }
+  },
+  {
+    group: "WALL",
+    physicalType: "OBSTACLE",
+    id: 22,
+    position: { y: 4, x: 6 }
+  }
+];
+
+export const getLevelPlayStore = (initialState = {}) => {
+  const { levelStart = baseLevel || [], moves = [] } = initialState;
 
   const state = observable({
-    levelStates: [initialLevelState],
+    levelStart,
 
     moves,
 
     get entities() {
       const result = state.moves.reduce(
-        (runningState, nextMove) => {
+        (levelAtMove, nextMove) => {
           return Object.entries(nextMove).reduce(
-            (runningState, [id, position]) => {
-              const indexToMove = runningState.findIndex(ent => ent.id == id);
+            (levelAtSubMove, [id, position]) => {
+              const indexToMove = levelAtSubMove.findIndex(ent => ent.id == id);
 
               if (indexToMove === -1) {
-                return runningState;
+                return levelAtSubMove;
               }
 
               const newPos = {
-                ...runningState[indexToMove].position,
+                ...levelAtSubMove[indexToMove].position,
                 ...nextMove[id]
               };
 
-              return update(runningState, {
+              return update(levelAtSubMove, {
                 [indexToMove]: {
                   position: { $set: newPos }
                 }
               });
             },
-            runningState
+            levelAtMove
           );
         },
-        initialLevelState
+        levelStart
       );
       //console.log(result[11].position);
       return result;
@@ -136,21 +268,58 @@ export const getLevelStore = (initial = {}) => {
   };
 };
 
-export const getMenuStore = ({ levels, selectedLevelId = null }) => {
+export const getMenuStore = (initial = {}) => {
+  const {
+    initialState = {},
+    levelRecordStore = getLevelRecordStore()
+  } = initial;
+
   const state = observable({
-    levels,
-    selectedLevelId
+    ...initialState,
+    highlightedLevelId: -1
   });
 
+  return {
+    state,
+    levelRecordStore,
+    selectLevel(id) {
+      state.highlightedLevelId = id == state.highlightedLevelId ? -1 : id;
+    }
+  };
+};
+
+export const getLevelRecordStore = (initialState = {}) => {
+  const {
+    records = [
+      { id: 0, level: baseLevel },
+      ...[1, 2, 3, 4, 5, 6, 7].map(x => ({
+        id: x,
+        level: baseLevel.filter(o => Math.random() < 0.5)
+      })),
+      { id: 8, level: baseLevel.filter(ent => ent.position.x < 3) },
+      { id: 9, level: baseLevel.filter(ent => ent.position.y < 3) }
+    ]
+  } = initialState;
+  
+  const state = observable({
+    records
+  });
+  // TODO: db logic
   return { state };
 };
 
-export const getGameStore = ({ menuState }) => {
-  const state = {
-    menu: getMenuStore(menuState),
-    level: getLevelStore(levelState),
-    currentPage: "menu"
-  };
+export const getGameStore = (initial = {}) => {
+  const { levelRecordStore = getLevelRecordStore() } = initial;
+  const {
+    menuStore = getMenuStore(levelRecordStore),
+    levelPlayStore = getLevelPlayStore()
+  } = initial;
 
-  return { state };
+  const state = observable(
+    initial.state || {
+      currentPage: "menu"
+    }
+  );
+
+  return { state, menuStore, levelRecordStore, levelPlayStore };
 };

@@ -3,7 +3,7 @@ import { autorun, createTransformer } from "mobx";
 import { observer, Observer } from "mobx-react";
 
 import LevelView from "./LevelView";
-import Controls from "./Controls";
+import LevelControls from "./Controls";
 import KeyMap from "./KeyMap";
 import { GameButton, ButtonContainer } from "./Style";
 
@@ -25,44 +25,47 @@ const hasWon = createTransformer(entities => {
   return true;
 });
 
-const Game = observer(({ store, scale = 40 }) => (
-  <div>
-    <KeyMap
-      default={console.log}
-      keyMap={{
-        ArrowLeft: store.tryMoveLeft,
-        ArrowDown: store.tryMoveDown,
-        ArrowUp: store.tryMoveUp,
-        ArrowRight: store.tryMoveRight,
-        e: store.tryMoveUp,
-        s: store.tryMoveLeft,
-        d: store.tryMoveDown,
-        f: store.tryMoveRight,
-        u: store.undo,
-        " ": store.undo,
-        Escape: store.reset
-      }}
-    />
+const Game = observer(({ store }) => {
+  const { levelPlayStore, menuStore } = store;
+  return (
+    <div>
+      <KeyMap
+        default={console.log}
+        keyMap={{
+          ArrowLeft: levelPlayStore.tryMoveLeft,
+          ArrowDown: levelPlayStore.tryMoveDown,
+          ArrowUp: levelPlayStore.tryMoveUp,
+          ArrowRight: levelPlayStore.tryMoveRight,
+          e: levelPlayStore.tryMoveUp,
+          s: levelPlayStore.tryMoveLeft,
+          d: levelPlayStore.tryMoveDown,
+          f: levelPlayStore.tryMoveRight,
+          u: levelPlayStore.undo,
+          " ": levelPlayStore.undo,
+          Escape: levelPlayStore.reset
+        }}
+      />
 
-    <div
-      style={{
-        background: hasWon(store.state.entities) ? "aquamarine" : "#eee",
-        height: 555,
-        width: 555,
-        padding: 22
-      }}
-    >
-      <LevelView entities={store.state.entities} />
+      <div
+        style={{
+          background: hasWon(levelPlayStore.state.entities) ? "aquamarine" : "#eee",
+          height: 555,
+          width: 555,
+          padding: 22
+        }}
+      >
+        <LevelView entities={levelPlayStore.state.entities} />
+      </div>
+
+      <div>{levelPlayStore.state.moveCount}</div>
+      <LevelControls store={levelPlayStore} />
+      <ButtonContainer>
+        <GameButton onClick={levelPlayStore.undo}>Undo</GameButton>
+        <GameButton onClick={levelPlayStore.reset}>Reset</GameButton>
+      </ButtonContainer>
     </div>
-
-    <div>{store.state.moveCount}</div>
-    <Controls store={store} />
-    <ButtonContainer>
-      <GameButton onClick={store.undo}>Undo</GameButton>
-      <GameButton onClick={store.reset}>Reset</GameButton>
-    </ButtonContainer>
-  </div>
-));
+  );
+});
 
 Game.displayName = "Game";
 

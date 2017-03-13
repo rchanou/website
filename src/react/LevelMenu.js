@@ -17,6 +17,12 @@ class DirectionMapper extends React.Component {
   saveMe = c => this.me = c;
 
   calculateMap = () => {
+    const { children } = this.props;
+
+    if (!children || !children.length) {
+      return;
+    }
+
     if (this.calculating) {
       return;
     }
@@ -24,14 +30,14 @@ class DirectionMapper extends React.Component {
     this.calculating = true;
 
     requestAnimationFrame(() => {
-      const firstKid = this.me.children[0];
+      const kids = this.me.children;
+      const firstKid = kids[0];
       const xUnit = firstKid.offsetWidth;
       const yUnit = firstKid.offsetHeight;
       const xOrigin = firstKid.offsetLeft;
       const yOrigin = firstKid.offsetTop;
       //console.log(this.props.children);
       let positions = [];
-      const kids = this.me.children;
       for (let i in kids) {
         i = Number(i);
         const kid = kids[i];
@@ -43,7 +49,7 @@ class DirectionMapper extends React.Component {
         positions.push({
           x: (kid.offsetLeft - xOrigin) / xUnit,
           y: (kid.offsetTop - yOrigin) / yUnit,
-          key: this.props.children[i].key
+          key: children[i].key
         });
       }
       this.props.onResize(positions);
@@ -167,193 +173,11 @@ const LevelMenu = (
   </State>
 );
 
-//console.log(LevelMenuItem, <LevelMenuItem key="poop" />);
-
-const getLevelMenuStore = initialState => {
-  const state = observable(initialState);
-
-  return {
-    state,
-
-    selectLevel(id) {
-      state.highlightedLevelId = id == state.highlightedLevelId ? -1 : id;
-    }
-  };
-};
-
-const baseLevel = [
-  { group: "TARGET", id: 15, position: { y: 3, x: 5 } },
-  { group: "TARGET", id: 10, position: { y: 2, x: 3 } },
-  {
-    group: "WALL",
-    physicalType: "OBSTACLE",
-    id: 0,
-    position: { y: 0, x: 1 }
-  },
-  {
-    group: "WALL",
-    physicalType: "OBSTACLE",
-    id: 1,
-    position: { y: 0, x: 2 }
-  },
-  {
-    group: "WALL",
-    physicalType: "OBSTACLE",
-    id: 2,
-    position: { y: 0, x: 3 }
-  },
-  {
-    group: "WALL",
-    physicalType: "OBSTACLE",
-    id: 3,
-    position: { y: 0, x: 4 }
-  },
-  {
-    group: "WALL",
-    physicalType: "OBSTACLE",
-    id: 4,
-    position: { y: 0, x: 5 }
-  },
-  {
-    group: "WALL",
-    physicalType: "OBSTACLE",
-    id: 5,
-    position: { y: 0, x: 6 }
-  },
-  {
-    group: "WALL",
-    physicalType: "OBSTACLE",
-    id: 6,
-    position: { y: 1, x: 1 }
-  },
-  {
-    isPlayer: true,
-    group: "PLAYER",
-    physicalType: "OBSTACLE",
-    id: 7,
-    position: { y: 1, x: 2 }
-  },
-  {
-    group: "WALL",
-    physicalType: "OBSTACLE",
-    id: 8,
-    position: { y: 1, x: 6 }
-  },
-  {
-    group: "WALL",
-    physicalType: "OBSTACLE",
-    id: 9,
-    position: { y: 2, x: 1 }
-  },
-  {
-    group: "BOX",
-    physicalType: "PUSHABLE",
-    id: 11,
-    position: { y: 2, x: 3 }
-  },
-  {
-    group: "BOX",
-    physicalType: "PUSHABLE",
-    id: 12,
-    position: { y: 2, x: 5 }
-  },
-  {
-    group: "WALL",
-    physicalType: "OBSTACLE",
-    id: 13,
-    position: { y: 2, x: 6 }
-  },
-  {
-    group: "WALL",
-    physicalType: "OBSTACLE",
-    id: 14,
-    position: { y: 3, x: 1 }
-  },
-  {
-    group: "WALL",
-    physicalType: "OBSTACLE",
-    id: 16,
-    position: { y: 3, x: 6 }
-  },
-  {
-    group: "WALL",
-    physicalType: "OBSTACLE",
-    id: 17,
-    position: { y: 4, x: 1 }
-  },
-  {
-    group: "WALL",
-    physicalType: "OBSTACLE",
-    id: 18,
-    position: { y: 4, x: 2 }
-  },
-  {
-    group: "WALL",
-    physicalType: "OBSTACLE",
-    id: 19,
-    position: { y: 4, x: 3 }
-  },
-  {
-    group: "WALL",
-    physicalType: "OBSTACLE",
-    id: 20,
-    position: { y: 4, x: 4 }
-  },
-  {
-    group: "WALL",
-    physicalType: "OBSTACLE",
-    id: 21,
-    position: { y: 4, x: 5 }
-  },
-  {
-    group: "WALL",
-    physicalType: "OBSTACLE",
-    id: 22,
-    position: { y: 4, x: 6 }
-  }
-];
-/* {
-    id: 2,
-    level: [
-      { group: "TARGET", id: 15, position: { y: 3, x: 5 } },
-      { group: "TARGET", id: 10, position: { y: 2, x: 3 } },
-      {
-        group: "WALL",
-        physicalType: "OBSTACLE",
-        id: 0,
-        position: { y: 0, x: 1 }
-      },
-      {
-        group: "WALL",
-        physicalType: "OBSTACLE",
-        id: 1,
-        position: { y: 0, x: 2 }
-      }
-    ]
-  };*/
-
-const defaultState = {
-  highlightedLevelId: -1,
-  levelRecords: [
-    { id: 0, level: baseLevel },
-    ...[1, 2, 3, 4, 5, 6, 7].map(x => ({
-      id: x,
-      level: baseLevel.filter(o => Math.random() < 0.5)
-    })),
-    { id: 8, level: baseLevel.filter(ent => ent.position.x < 3) },
-    { id: 9, level: baseLevel.filter(ent => ent.position.y < 3) }
-  ]
-};
-
-const defaultStore = getLevelMenuStore(defaultState);
-
-//autorun(o => console.log(defaultStore.state.highlightedLevelId));
-
-const ObservedLevelMenu = ({ store = defaultStore }) => (
+const ObservedLevelMenu = ({ store = getMenuStore() }) => (
   <Observer>
     {o => (
       <LevelMenu
-        levelRecords={store.state.levelRecords}
+        levelRecords={store.levelRecordStore.state.records}
         highlightedLevelId={store.state.highlightedLevelId}
         bindSelect={id => o => store.selectLevel(id)}
       />

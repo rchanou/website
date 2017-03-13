@@ -1,4 +1,4 @@
-import { getLevelStore } from "./stores";
+import { getLevelPlayStore } from "./stores";
 import { entitySchemas } from "./constants";
 
 export const loadSokobanMap = levelMap => {
@@ -66,6 +66,6 @@ export const loadSokobanMap = levelMap => {
     }
     //console.table(entities);
   });
-  return getLevelStore({ initialLevelState: entities, moves: [] });
+  return getLevelPlayStore({ initialLevelState: entities, moves: [] });
   //return new LevelStore(entities);
 };
