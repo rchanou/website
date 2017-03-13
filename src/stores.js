@@ -136,9 +136,8 @@ const baseLevel = [
 ];
 
 export const getLevelPlayStore = (
-  initialState = {} //goBack = o => o,
-) => //gotoEditor = o => o
-{
+  initialState = {} //goBack = o => o, //gotoEditor = o => o
+) => {
   const {
     levelStart = baseLevel || [],
     moves = []
@@ -350,10 +349,27 @@ export const getEditorStore = (initial = {}) => {
     goBack = o => o
   } = initial;
 
-  const state = observable({ level: [], submitting: false, ...initialState });
+  const state = observable({
+    level: [],
+    submitting: false,
+    bound: 20,// { x: 20, y: 20 },
+    editingPos: { x: 9, y: 9 },
+    ...initialState
+  });
 
+  const bindMove = (axis, dir) => o => {
+    const nextAxisPos = state.editingPos[axis] + dir;
+    state.editingPos[axis] = nextAxisPos > state.bound
+      ? 0
+      : nextAxisPos < 0 ? state.bound : nextAxisPos;
+  };
   return {
-    state
+    state,
+
+    moveLeft: bindMove("x", -1),
+    moveDown: bindMove("y", +1),
+    moveUp: bindMove("y", -1),
+    moveRight: bindMove("x", +1)
   };
 };
 

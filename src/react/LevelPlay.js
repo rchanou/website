@@ -26,6 +26,8 @@ const hasWon = createTransformer(entities => {
   return true;
 });
 
+const moveCountStyle = { fontFamily: "sans-serif", fontSize: '3.33em' };
+
 const defaultStore = getLevelPlayStore();
 const LevelPlay = observer(({ store = defaultStore }) => {
   return (
@@ -58,7 +60,7 @@ const LevelPlay = observer(({ store = defaultStore }) => {
         <LevelView entities={store.state.entities} />
       </div>
 
-      <div>{store.state.moveCount}</div>
+      <div style={moveCountStyle}>Moves: {store.state.moveCount}</div>
       <LevelControls store={store} />
       <ButtonContainer>
         <GameButton onClick={store.undo}>Undo</GameButton>

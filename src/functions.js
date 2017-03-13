@@ -26,7 +26,13 @@ const baseEntityStyle = {
   background: "gray"
 };
 
-export const getEntityRenderer = (unit, bindClick = o => o => o) => ent => {
+const getMax = (axis, entities) =>
+  Math.max.apply(null, entities.map(ent => ent.position[axis])) + 1;
+
+export const getEntityRenderer = (entities, units) => ent => {
+  units = units || Math.max(getMax("x", entities), getMax("y", entities));
+  const unit = 100 / units;
+
   const startStyle = {
     ...baseEntityStyle,
     width: `${unit}%`,
@@ -56,7 +62,7 @@ export const getEntityRenderer = (unit, bindClick = o => o => o) => ent => {
     finalStyle = { ...startStyle, background: "brown" };
   }
 
-  return <div key={ent.id} style={finalStyle} onClick={bindClick(ent.id)} />;
+  return <div key={ent.id} style={finalStyle} />;
 };
 
 export const loadSokobanMap = levelMap => {
