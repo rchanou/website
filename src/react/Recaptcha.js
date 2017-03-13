@@ -14,16 +14,6 @@ export default class Scripter extends React.Component {
     e.preventDefault();
     const formData = serialize(e.target, { hash: true });
     this.props.onSubmit(formData);
-    /*formData.doc = { id: "1", level: [] };
-    const body = JSON.stringify(formData);
-    //console.log('form', formData, body); return;
-    fetch(submitUrl, {
-      method: "POST",
-      body,
-      headers: new Headers({ "Content-Type": "application/json" })
-    })
-      .then(res => res.json())
-      .then(console.log);*/
   };
 
   componentDidMount() {

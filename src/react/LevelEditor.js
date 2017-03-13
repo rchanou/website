@@ -6,6 +6,7 @@ import { sortBy } from "lodash";
 import KeyMap from "./KeyMap";
 import State from "./State";
 import LevelView from "./LevelView";
+import Recaptcha from "./Recaptcha";
 import { GameButton } from "./Style";
 
 import { getEditorStore } from "../stores";
@@ -20,18 +21,17 @@ const editorStyle = {
   background: "#eee"
 };
 
-const baseAxisLineStyle = {};
-
 const LevelEditor = observer(({ store = getEditorStore() }) => {
   const { level, bound, editingPos } = store.state;
   const unit = 100 / bound;
 
   const markers = Array.from(Array(bound));
-  const xLines = markers.map((__, i) => (
+  const xLines = markers.map((_, i) => (
     <div
       key={i}
       style={{
         position: "absolute",
+        pointerEvents: "none",
         width: "100%",
         top: `${unit * i}%`,
         borderBottom: "thin solid #ccc"
@@ -43,6 +43,7 @@ const LevelEditor = observer(({ store = getEditorStore() }) => {
       key={i}
       style={{
         position: "absolute",
+        pointerEvents: "none",
         height: "100%",
         top: 0,
         left: `${unit * i}%`,
@@ -51,16 +52,19 @@ const LevelEditor = observer(({ store = getEditorStore() }) => {
     />
   ));
 
-  const editSquare = <div 
-    style={{ 
-      background: 'aquamarine',
-      position: 'absolute',
-      width: `${unit}%`,
-      height: `${unit}%`, 
-      left: `${editingPos.x * unit}%`, 
-      top: `${editingPos.y * unit}%`
-    }}
-  />;
+  const editSquare = (
+    <div
+      style={{
+        background: "aquamarine",
+        pointerEvents: "none",
+        position: "absolute",
+        width: `${unit}%`,
+        height: `${unit}%`,
+        left: `${editingPos.x * unit}%`,
+        top: `${editingPos.y * unit}%`
+      }}
+    />
+  );
 
   return (
     <div>
@@ -70,28 +74,28 @@ const LevelEditor = observer(({ store = getEditorStore() }) => {
           ArrowDown: store.moveDown,
           ArrowUp: store.moveUp,
           ArrowRight: store.moveRight,
-          " ": console.log,
-          Enter: console.log,
-          e: console.log,
-          s: console.log,
-          d: console.log,
-          f: console.log,
-          u: console.log,
-          Escape: console.log
+          " ": store.placeSpace,
+          a: store.placePlayer,
+          w: store.placeWall,
+          b: store.placeBox,
+          t: store.placeTarget,
+          g: store.placeBoxTarget,
+          z: store.placePlayerTarget,
+          Escape: store.goBack
         }}
       />
 
       <div style={{ maxWidth: 888 }}>
-        <div style={editorStyle}>
+        <div style={editorStyle} onClick={store.changeFromClick}>
           {editSquare}
 
           {xLines}
           {yLines}
 
-
           {level.map(getEntityRenderer(level, bound))}
         </div>
         <GameButton onClick={store.goBack}>Back</GameButton>
+        <Recaptcha onSubmit={store.submitLevel} />
       </div>
     </div>
   );

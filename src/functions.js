@@ -23,7 +23,8 @@ const baseEntityStyle = {
   position: "absolute",
   opacity: 0.8,
   transition: "0.2s",
-  background: "gray"
+  background: "gray",
+  pointerEvents: "none"
 };
 
 const getMax = (axis, entities) =>

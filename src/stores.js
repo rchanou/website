@@ -1,7 +1,9 @@
 import { observable, toJS, autorun } from "mobx";
-import { groupTypes, physicalTypes, entitySchemas } from "./constants";
-import ice from "icepick";
+import { find, filter } from "lodash";
 import update from "immutability-helper";
+import shortid from 'shortid';
+
+import { groupTypes, physicalTypes, entitySchemas } from "./constants";
 
 const baseLevel = [
   { group: "TARGET", id: 15, position: { y: 3, x: 5 } },
@@ -277,13 +279,13 @@ export const getLevelPlayStore = (
 export const getLevelRecordStore = (initialState = {}) => {
   const {
     records = [
-      { id: 0, level: baseLevel },
+     /* { id: 0, level: baseLevel },
       ...[1, 2, 3, 4, 5, 6, 7].map(x => ({
         id: x,
         level: baseLevel.filter(o => Math.random() < 0.5)
       })),
       { id: 8, level: baseLevel.filter(ent => ent.position.x < 3) },
-      { id: 9, level: baseLevel.filter(ent => ent.position.y < 3) }
+      { id: 9, level: baseLevel.filter(ent => ent.position.y < 3) }*/
     ]
   } = initialState;
 
@@ -357,8 +359,35 @@ export const getEditorStore = (initial = {}) => {
     ...initialState
   });
 
+  const clearAtPos = ({x,y}) => {
+    state.level = state.level.filter(ent => ent.position.x !== x || ent.position.y !== y);
+  }
+
+  const changeFromClick = e => {
+    if (e && typeof e === "object") { e.persist()
+      //console.log( e instanceof Event, e)
+      e.stopPropagation()
+      e.nativeEvent.stopImmediatePropagation();
+    }
+
+    const x = Math.floor(
+      state.bound * ((e.pageX - e.target.offsetLeft) / e.target.offsetWidth)
+    );
+    const y = Math.floor(
+      state.bound * ((e.pageY - e.target.offsetTop) / e.target.offsetHeight)
+    );
+
+    //state.editingPos = {x, y};
+    const entsAtPos = state.level.filter(ent => ent.position.x === x && ent.position.y === y);
+
+    if (find(entsAtPos, { group: groupTypes.target})){
+      if (find(entsAtPos, { group: groupTypes.box }));
+    }
+    //console.log(x, y, entsAtPos)
+  };
+
   const bindMove = (axis, dir) => e => {
-    if (e && typeof e === 'object' && typeof e.preventDefault === 'function'){
+    if (e && typeof e === "object" && typeof e.preventDefault === "function") {
       e.preventDefault();
     }
 
@@ -367,13 +396,50 @@ export const getEditorStore = (initial = {}) => {
       ? 0
       : nextAxisPos < 0 ? state.bound - 1 : nextAxisPos;
   };
+
+  const bindPlace = group => e => { 
+    e.preventDefault();
+    clearAtPos(state.editingPos); 
+    state.level.push({ id: shortid.generate(), group, position: {...state.editingPos} })
+  };
+
   return {
     state,
-
+    changeFromClick,
     moveLeft: bindMove("x", -1),
     moveDown: bindMove("y", +1),
     moveUp: bindMove("y", -1),
-    moveRight: bindMove("x", +1)
+    moveRight: bindMove("x", +1),
+    // TODO: DRY
+    placeSpace(e){ 
+      e.preventDefault();
+      clearAtPos(state.editingPos);
+    },
+    placePlayer(e){ 
+      e.preventDefault();
+      state.level = state.level.filter(ent => ent.group !== groupTypes.player);
+      state.level.push({ id: shortid.generate(), group: groupTypes.player, position: {...state.editingPos} })
+    },
+    placeWall: bindPlace(groupTypes.wall),
+    placeBox: bindPlace(groupTypes.box),
+    placeTarget(e){ 
+      e.preventDefault();
+      clearAtPos(state.editingPos); 
+      state.level.unshift({ id: shortid.generate(), group: groupTypes.target, position: {...state.editingPos} });
+    },
+    placeBoxTarget(e){ 
+      e.preventDefault();
+      clearAtPos(state.editingPos); 
+      state.level.unshift({ id: shortid.generate(), group: groupTypes.target, position: {...state.editingPos} });
+      state.level.push({ id: shortid.generate(), group: groupTypes.box, position: {...state.editingPos} });
+    },
+    placePlayerTarget(e){ 
+      e.preventDefault();
+      clearAtPos(state.editingPos); 
+      state.level = state.level.filter(ent => ent.group !== groupTypes.player);
+      state.level.unshift({ id: shortid.generate(), group: groupTypes.target, position: {...state.editingPos} });
+      state.level.push({ id: shortid.generate(), group: groupTypes.player, position: {...state.editingPos} });
+    }
   };
 };
 
