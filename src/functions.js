@@ -1,5 +1,63 @@
+import React from "react";
+import { sortBy } from "lodash";
+
 import { getLevelPlayStore } from "./stores";
-import { entitySchemas } from "./constants";
+import { entitySchemas, groupTypes } from "./constants";
+
+export const getNextKeyInDir = (positions, currentPosKey, axis, dir) => {
+  const crossAxis = axis == "x" ? "y" : "x";
+  const sortedPositions = sortBy(positions, [crossAxis, axis]);
+  const currentPosIndex = sortedPositions.findIndex(
+    p => p.key == currentPosKey
+  );
+  let nextPosIndex = currentPosIndex + dir;
+  if (nextPosIndex < 0) {
+    nextPosIndex = positions.length - 1;
+  } else if (nextPosIndex > positions.length - 1) {
+    nextPosIndex = 0;
+  }
+  return sortedPositions[nextPosIndex].key;
+};
+
+const baseEntityStyle = {
+  position: "absolute",
+  opacity: 0.8,
+  transition: "0.2s",
+  background: "gray"
+};
+
+export const getEntityRenderer = (unit, bindClick = o => o => o) => ent => {
+  const startStyle = {
+    ...baseEntityStyle,
+    width: `${unit}%`,
+    height: `${unit}%`,
+    top: `${ent.position.y * unit}%`,
+    left: `${ent.position.x * unit}%`
+  };
+
+  let finalStyle = startStyle;
+  if (ent.group === groupTypes.player) {
+    finalStyle = {
+      ...startStyle,
+      background: "orange",
+      borderRadius: "50%"
+    };
+  }
+  if (ent.group === groupTypes.target) {
+    finalStyle = {
+      ...startStyle,
+      background: "tomato",
+      borderRadius: "50%",
+      transformOrigin: "50% 50%",
+      transform: "scale(0.5)"
+    };
+  }
+  if (ent.group === groupTypes.box) {
+    finalStyle = { ...startStyle, background: "brown" };
+  }
+
+  return <div key={ent.id} style={finalStyle} onClick={bindClick(ent.id)} />;
+};
 
 export const loadSokobanMap = levelMap => {
   let entities = [];

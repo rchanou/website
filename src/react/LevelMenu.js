@@ -1,81 +1,14 @@
 import React from "react";
 import { observable } from "mobx";
 import { Observer } from "mobx-react";
-import { sortBy } from "lodash";
 
 import KeyMap from "./KeyMap";
 import State from "./State";
 import LevelView from "./LevelView";
+import DirectionMapper from "./DirectionMapper";
 
 import { getMenuStore } from "../stores";
-
-class DirectionMapper extends React.Component {
-  static defaultProps = {
-    onResize: o => o
-  };
-
-  saveMe = c => this.me = c;
-
-  calculateMap = () => {
-    const { children } = this.props;
-
-    if (!children || !children.length) {
-      return;
-    }
-
-    if (this.calculating) {
-      return;
-    }
-
-    this.calculating = true;
-
-    requestAnimationFrame(() => {
-      const kids = this.me.children;
-      const firstKid = kids[0];
-      const xUnit = firstKid.offsetWidth;
-      const yUnit = firstKid.offsetHeight;
-      const xOrigin = firstKid.offsetLeft;
-      const yOrigin = firstKid.offsetTop;
-      //console.log(this.props.children);
-      let positions = [];
-      for (let i in kids) {
-        i = Number(i);
-        const kid = kids[i];
-
-        if (!kid) {
-          continue;
-        }
-
-        positions.push({
-          x: (kid.offsetLeft - xOrigin) / xUnit,
-          y: (kid.offsetTop - yOrigin) / yUnit,
-          key: children[i].key
-        });
-      }
-      this.props.onResize(positions);
-      //console.log(JSON.stringify(positions));
-      this.calculating = false;
-    });
-  };
-
-  componentDidMount() {
-    this.calculateMap();
-    this.listener = window.addEventListener("resize", this.calculateMap);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener("resize", this.calculateMap);
-  }
-
-  render() {
-    const { children, onResize, ...other } = this.props;
-    return (
-      <div ref={this.saveMe} {...other}>
-        {children}
-      </div>
-    );
-  }
-}
+import { getNextKeyInDir } from "../functions";
 
 const LevelMenuItem = (
   { level = [], highlighted, onSelect = o => o, onClick = o => o }
@@ -92,21 +25,6 @@ const LevelMenuItem = (
     <LevelView entities={level} />
   </div>
 );
-
-const getNextKeyInDir = (positions, currentPosKey, axis, dir) => {
-  const crossAxis = axis == "x" ? "y" : "x";
-  const sortedPositions = sortBy(positions, [crossAxis, axis]);
-  const currentPosIndex = sortedPositions.findIndex(
-    p => p.key == currentPosKey
-  );
-  let nextPosIndex = currentPosIndex + dir;
-  if (nextPosIndex < 0) {
-    nextPosIndex = positions.length - 1;
-  } else if (nextPosIndex > positions.length - 1) {
-    nextPosIndex = 0;
-  }
-  return sortedPositions[nextPosIndex].key;
-};
 
 const LevelMenu = (
   {

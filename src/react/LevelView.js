@@ -1,14 +1,8 @@
 import React from "react";
-import { groupTypes } from "../constants";
 import { createTransformer } from "mobx";
 import { observer } from "mobx-react";
-
-const baseEntityStyle = {
-  position: "absolute",
-  opacity: 0.8,
-  transition: "0.2s",
-  background: "gray"
-};
+import { getEntityRenderer } from "../functions";
+import { groupTypes } from "../constants";
 
 const maxX = createTransformer(
   entities => Math.max.apply(null, entities.map(ent => ent.position.x)) + 1
@@ -47,42 +41,11 @@ const LevelView = observer(({ entities = [] }) => {
         style={{
           position: "relative",
           width: "100%",
-          paddingTop: "100%",
+          paddingTop: "100%"
           //background: hasWon(entities) ? "aquamarine" : "#eee"
         }}
       >
-        {entities.map(ent => {
-          const startStyle = {
-            ...baseEntityStyle,
-            width: `${unit}%`,
-            height: `${unit}%`,
-            top: `${ent.position.y * unit}%`,
-            left: `${ent.position.x * unit}%`
-          };
-
-          let finalStyle = startStyle;
-          if (ent.group === groupTypes.player) {
-            finalStyle = {
-              ...startStyle,
-              background: "orange",
-              borderRadius: "50%"
-            };
-          }
-          if (ent.group === groupTypes.target) {
-            finalStyle = {
-              ...startStyle,
-              background: "tomato",
-              borderRadius: "50%",
-              transformOrigin: "50% 50%",
-              transform: "scale(0.5)"
-            };
-          }
-          if (ent.group === groupTypes.box) {
-            finalStyle = { ...startStyle, background: "brown" };
-          }
-
-          return <div key={ent.id} style={finalStyle} />;
-        })}
+        {entities.map(getEntityRenderer(unit))}
       </div>{" "}
     </div>
   );
