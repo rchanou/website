@@ -1,8 +1,8 @@
 import React from "react";
 import { ButtonContainer, GameButton } from "./Style";
-import { createLevelStore } from "../stores";
+import { getLevelStore } from "../stores";
 
-const Controls = ({ store = createLevelStore() }) => (
+const Controls = ({ store = getLevelStore() }) => (
   <ButtonContainer>
     <GameButton onClick={store.tryMoveLeft}>◀</GameButton>
     <GameButton onClick={store.tryMoveDown}>▼</GameButton>

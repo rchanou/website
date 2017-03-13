@@ -7,7 +7,7 @@ import KeyMap from "./KeyMap";
 import State from "./State";
 import LevelView from "./LevelView";
 
-import { createMenuStore } from "../stores";
+import { getMenuStore } from "../stores";
 
 class DirectionMapper extends React.Component {
   static defaultProps = {
@@ -169,7 +169,7 @@ const LevelMenu = (
 
 //console.log(LevelMenuItem, <LevelMenuItem key="poop" />);
 
-const createLevelMenuStore = initialState => {
+const getLevelMenuStore = initialState => {
   const state = observable(initialState);
 
   return {
@@ -345,7 +345,7 @@ const defaultState = {
   ]
 };
 
-const defaultStore = createLevelMenuStore(defaultState);
+const defaultStore = getLevelMenuStore(defaultState);
 
 //autorun(o => console.log(defaultStore.state.highlightedLevelId));
 

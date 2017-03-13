@@ -3,7 +3,7 @@ import { groupTypes, physicalTypes, entitySchemas } from "./constants";
 import ice from "icepick";
 import update from "immutability-helper";
 
-export const createLevelStore = (initial = {}) => {
+export const getLevelStore = (initial = {}) => {
   const { initialLevelState = [], moves = [] } = initial;
 
   const state = observable({
@@ -71,8 +71,8 @@ export const createLevelStore = (initial = {}) => {
     const entityThereIndex = entities.findIndex(
       ent =>
         ent.physicalType &&
-          ent.position.x === positionToTry.x &&
-          ent.position.y === positionToTry.y
+        ent.position.x === positionToTry.x &&
+        ent.position.y === positionToTry.y
     );
     const entityThere = entities[entityThereIndex];
     if (entityThere) {
@@ -88,14 +88,14 @@ export const createLevelStore = (initial = {}) => {
         const nextEntityOver = entities.find(
           ent =>
             ent.physicalType &&
-              ent.position.x === nextPositionOver.x &&
-              ent.position.y === nextPositionOver.y
+            ent.position.x === nextPositionOver.x &&
+            ent.position.y === nextPositionOver.y
         );
 
         if (nextEntityOver && nextEntityOver.physicalType) {
           return;
         }
-        
+
         state.moves.push({
           [entityThere.id]: {
             ...entityThere.position,
@@ -136,7 +136,7 @@ export const createLevelStore = (initial = {}) => {
   };
 };
 
-export const createMenuStore = ({ levels, selectedLevelId = null }) => {
+export const getMenuStore = ({ levels, selectedLevelId = null }) => {
   const state = observable({
     levels,
     selectedLevelId
@@ -145,10 +145,12 @@ export const createMenuStore = ({ levels, selectedLevelId = null }) => {
   return { state };
 };
 
-export const createGameStore = ({ menuState }) => {
+export const getGameStore = ({ menuState }) => {
   const state = {
-    menu: createMenuStore(menuState),
-    level: createLevelStore(levelState),
+    menu: getMenuStore(menuState),
+    level: getLevelStore(levelState),
     currentPage: "menu"
   };
+
+  return { state };
 };
