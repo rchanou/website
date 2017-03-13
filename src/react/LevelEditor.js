@@ -21,8 +21,8 @@ const editorStyle = {
   background: "#eee"
 };
 
-const LevelEditor = observer(({ store = getEditorStore() }) => {
-  const { level, bound, editingPos } = store.state;
+const LevelEditor = observer(({ store /*= getEditorStore()*/ }) => {
+  const { level, bound, editingPos, submitting } = store.state;
   const unit = 100 / bound;
 
   const markers = Array.from(Array(bound));
@@ -81,6 +81,7 @@ const LevelEditor = observer(({ store = getEditorStore() }) => {
           t: store.placeTarget,
           g: store.placeBoxTarget,
           z: store.placePlayerTarget,
+          r: store.reload,
           Escape: store.goBack
         }}
       />
@@ -95,7 +96,7 @@ const LevelEditor = observer(({ store = getEditorStore() }) => {
           {level.map(getEntityRenderer(level, bound))}
         </div>
         <GameButton onClick={store.goBack}>Back</GameButton>
-        <Recaptcha onSubmit={store.submitLevel} />
+        <Recaptcha onSubmit={store.submit} disabled={submitting} />
       </div>
     </div>
   );

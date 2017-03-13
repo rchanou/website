@@ -42,7 +42,9 @@ export default class Scripter extends React.Component {
             data-sitekey="6LfMbBgUAAAAAB2yCO4u_bdhy2RjeRLOHX4cPnys"
             onClick={console.log}
           />
-          <GameButton>Create</GameButton>
+          <GameButton type="submit">
+            Create
+          </GameButton>
         </form>
       </div>
     );

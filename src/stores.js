@@ -5,6 +5,8 @@ import shortid from 'shortid';
 
 import { groupTypes, physicalTypes, entitySchemas } from "./constants";
 
+const submitUrl = "https://qlrvsjbsr3.execute-api.us-west-2.amazonaws.com/prod/checkHumanBeforeCaptchaUpdate";
+
 const baseLevel = [
   { group: "TARGET", id: 15, position: { y: 3, x: 5 } },
   { group: "TARGET", id: 10, position: { y: 2, x: 3 } },
@@ -294,6 +296,7 @@ export const getLevelRecordStore = (initialState = {}) => {
   });
 
   const pullRecords = o => {
+    console.log('loading')
     fetch(
       "https://qlrvsjbsr3.execute-api.us-west-2.amazonaws.com/prod/getSokobanLevels"
     )
@@ -319,7 +322,7 @@ export const getLevelRecordStore = (initialState = {}) => {
   };
 
   // TODO: db logic
-  return { state };
+  return { state, pullRecords };
 };
 
 export const getMenuStore = (initial = {}) => {
@@ -348,7 +351,8 @@ export const getMenuStore = (initial = {}) => {
 export const getEditorStore = (initial = {}) => {
   const {
     initialState = {},
-    goBack = o => o
+    goBack = o => o,
+    reload = o => console.log('no relaod'),
   } = initial;
 
   const state = observable({
@@ -364,12 +368,6 @@ export const getEditorStore = (initial = {}) => {
   }
 
   const changeFromClick = e => {
-    if (e && typeof e === "object") { e.persist()
-      //console.log( e instanceof Event, e)
-      e.stopPropagation()
-      e.nativeEvent.stopImmediatePropagation();
-    }
-
     const x = Math.floor(
       state.bound * ((e.pageX - e.target.offsetLeft) / e.target.offsetWidth)
     );
@@ -377,14 +375,31 @@ export const getEditorStore = (initial = {}) => {
       state.bound * ((e.pageY - e.target.offsetTop) / e.target.offsetHeight)
     );
 
-    //state.editingPos = {x, y};
-    const entsAtPos = state.level.filter(ent => ent.position.x === x && ent.position.y === y);
-
-    if (find(entsAtPos, { group: groupTypes.target})){
-      if (find(entsAtPos, { group: groupTypes.box }));
-    }
-    //console.log(x, y, entsAtPos)
+    state.editingPos = {x,y};
   };
+
+  const submit = captchaObj => {
+    //console.log('submit', captchaObj)
+
+    state.submitting = true;
+    fetch(submitUrl, {
+      method: "POST",
+      body: JSON.stringify({
+        ...captchaObj,
+        doc: { id: state.id || shortid.generate(), level: state.level }
+      }),
+      headers: new Headers({ "Content-Type": "application/json" })
+    })
+      .then(res => res.json())
+      .then((...all) => {
+        //console.log(...all); 
+        state.submitting = false; 
+        //console.log('reload', reload)
+        if (reload){
+          reload();
+        }
+      });
+  }
 
   const bindMove = (axis, dir) => e => {
     if (e && typeof e === "object" && typeof e.preventDefault === "function") {
@@ -406,6 +421,7 @@ export const getEditorStore = (initial = {}) => {
   return {
     state,
     changeFromClick,
+    submit,
     moveLeft: bindMove("x", -1),
     moveDown: bindMove("y", +1),
     moveUp: bindMove("y", -1),
@@ -484,6 +500,10 @@ export const getGameStore = (initial = {}) => {
 
   editorStore.goBack = () => {
     state.currentView = "PLAY";
+  };
+
+  editorStore.reload = () => {
+    levelRecordStore.pullRecords() 
   };
 
   return {

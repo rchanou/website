@@ -3,10 +3,10 @@ import postscribe from "postscribe";
 import serialize from "form-serialize";
 import { GameButton } from "./Style";
 
-const submitUrl = "https://qlrvsjbsr3.execute-api.us-west-2.amazonaws.com/prod/checkHumanBeforeCaptchaUpdate";
+//const submitUrl = "https://qlrvsjbsr3.execute-api.us-west-2.amazonaws.com/prod/checkHumanBeforeCaptchaUpdate";
 
-export default class Scripter extends React.Component {
-  static defaultProps = { onSubmit() {} };
+export default class Recaptcha extends React.Component {
+  static defaultProps = { disabled: false, onSubmit() {} };
 
   saveMe = c => this.me = c;
 
@@ -33,7 +33,9 @@ export default class Scripter extends React.Component {
             className="g-recaptcha"
             data-sitekey="6LfMbBgUAAAAAB2yCO4u_bdhy2RjeRLOHX4cPnys"
           />
-          <GameButton>Create</GameButton>
+          <GameButton type="submit" disabled={this.props.disabled}>
+            Submit
+          </GameButton>
         </form>
       </div>
     );
