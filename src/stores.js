@@ -284,9 +284,20 @@ export const getLevelRecordStore = (initialState = {}) => {
     ]
   } = initialState;
 
-  const state = observable({
+  const state = observable({ 
     records
   });
+
+  const pullRecords = o => {
+    fetch(
+      "https://qlrvsjbsr3.execute-api.us-west-2.amazonaws.com/prod/getSokobanLevels"
+    )
+      .then(res => res.json())
+      .then(records => {
+        state.records = records;
+      });
+  };
+  pullRecords();
 
   const createLevel = e => {
     e.preventDefault();
