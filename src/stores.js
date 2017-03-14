@@ -1,7 +1,7 @@
 import { observable, toJS, autorun } from "mobx";
 import { cloneDeep, find, filter } from "lodash";
 import update from "immutability-helper";
-import shortid from 'shortid';
+import shortid from "shortid";
 
 import { groupTypes, physicalTypes, entitySchemas } from "./constants";
 
@@ -280,15 +280,7 @@ export const getLevelPlayStore = (
 };
 export const getLevelRecordStore = (initialState = {}) => {
   const {
-    records = [
-     /* { id: 0, level: baseLevel },
-      ...[1, 2, 3, 4, 5, 6, 7].map(x => ({
-        id: x,
-        level: baseLevel.filter(o => Math.random() < 0.5)
-      })),
-      { id: 8, level: baseLevel.filter(ent => ent.position.x < 3) },
-      { id: 9, level: baseLevel.filter(ent => ent.position.y < 3) }*/
-    ]
+    records = []
   } = initialState;
 
   const state = observable({
@@ -296,7 +288,6 @@ export const getLevelRecordStore = (initialState = {}) => {
   });
 
   const pullRecords = o => {
-    console.log('loading')
     fetch(
       "https://qlrvsjbsr3.execute-api.us-west-2.amazonaws.com/prod/getSokobanLevels"
     )
@@ -352,7 +343,7 @@ export const getEditorStore = (initial = {}) => {
   const {
     initialState = {},
     goBack = o => o,
-    reload = o => console.log('no relaod'),
+    reload = o => console.log("no relaod")
   } = initial;
 
   const state = observable({
@@ -363,9 +354,11 @@ export const getEditorStore = (initial = {}) => {
     ...initialState
   });
 
-  const clearAtPos = ({x,y}) => {
-    state.level = state.level.filter(ent => ent.position.x !== x || ent.position.y !== y);
-  }
+  const clearAtPos = ({ x, y }) => {
+    state.level = state.level.filter(
+      ent => ent.position.x !== x || ent.position.y !== y
+    );
+  };
 
   const changeFromClick = e => {
     const x = Math.floor(
@@ -375,7 +368,7 @@ export const getEditorStore = (initial = {}) => {
       state.bound * ((e.pageY - e.target.offsetTop) / e.target.offsetHeight)
     );
 
-    state.editingPos = {x,y};
+    state.editingPos = { x, y };
   };
 
   const submit = captchaObj => {
@@ -392,14 +385,14 @@ export const getEditorStore = (initial = {}) => {
     })
       .then(res => res.json())
       .then((...all) => {
-        //console.log(...all); 
-        state.submitting = false; 
+        //console.log(...all);
+        state.submitting = false;
         //console.log('reload', reload)
-        if (reload){
+        if (reload) {
           reload();
         }
       });
-  }
+  };
 
   const bindMove = (axis, dir) => e => {
     if (e && typeof e === "object" && typeof e.preventDefault === "function") {
@@ -412,10 +405,14 @@ export const getEditorStore = (initial = {}) => {
       : nextAxisPos < 0 ? state.bound - 1 : nextAxisPos;
   };
 
-  const bindPlace = group => e => { 
+  const bindPlace = group => e => {
     e.preventDefault();
-    clearAtPos(state.editingPos); 
-    state.level.push({ id: shortid.generate(), group, position: {...state.editingPos} })
+    clearAtPos(state.editingPos);
+    state.level.push({
+      id: shortid.generate(),
+      ...entitySchemas[group],
+      position: { ...state.editingPos }
+    });
   };
 
   return {
@@ -428,34 +425,58 @@ export const getEditorStore = (initial = {}) => {
     moveUp: bindMove("y", -1),
     moveRight: bindMove("x", +1),
     // TODO: DRY
-    placeSpace(e){ 
+    placeSpace(e) {
       e.preventDefault();
       clearAtPos(state.editingPos);
     },
-    placePlayer(e){ 
+    placePlayer(e) {
       e.preventDefault();
       state.level = state.level.filter(ent => ent.group !== groupTypes.player);
-      state.level.push({ id: shortid.generate(), group: groupTypes.player, position: {...state.editingPos} })
+      state.level.push({
+        id: shortid.generate(),
+        ...entitySchemas.player,
+        position: { ...state.editingPos }
+      });
     },
-    placeWall: bindPlace(groupTypes.wall),
-    placeBox: bindPlace(groupTypes.box),
-    placeTarget(e){ 
+    placeWall: bindPlace('wall'),
+    placeBox: bindPlace('box'),
+    placeTarget(e) {
       e.preventDefault();
-      clearAtPos(state.editingPos); 
-      state.level.unshift({ id: shortid.generate(), group: groupTypes.target, position: {...state.editingPos} });
+      clearAtPos(state.editingPos);
+      state.level.unshift({
+        id: shortid.generate(),
+        ...entitySchemas.target,
+        position: { ...state.editingPos }
+      });
     },
-    placeBoxTarget(e){ 
+    placeBoxTarget(e) {
       e.preventDefault();
-      clearAtPos(state.editingPos); 
-      state.level.unshift({ id: shortid.generate(), group: groupTypes.target, position: {...state.editingPos} });
-      state.level.push({ id: shortid.generate(), group: groupTypes.box, position: {...state.editingPos} });
+      clearAtPos(state.editingPos);
+      state.level.unshift({
+        id: shortid.generate(),
+        ...entitySchemas.target,
+        position: { ...state.editingPos }
+      });
+      state.level.push({
+        id: shortid.generate(),
+        ...entitySchemas.box,
+        position: { ...state.editingPos }
+      });
     },
-    placePlayerTarget(e){ 
+    placePlayerTarget(e) {
       e.preventDefault();
-      clearAtPos(state.editingPos); 
+      clearAtPos(state.editingPos);
       state.level = state.level.filter(ent => ent.group !== groupTypes.player);
-      state.level.unshift({ id: shortid.generate(), group: groupTypes.target, position: {...state.editingPos} });
-      state.level.push({ id: shortid.generate(), group: groupTypes.player, position: {...state.editingPos} });
+      state.level.unshift({
+        id: shortid.generate(),
+        ...entitySchemas.target,
+        position: { ...state.editingPos }
+      });
+      state.level.push({
+        id: shortid.generate(),
+        ...entitySchemas.player,
+        position: { ...state.editingPos }
+      });
     }
   };
 };
@@ -475,7 +496,7 @@ export const getGameStore = (initial = {}) => {
   });
 
   menuStore.loadLevel = id => {
-    id = id === null ? menuStore.state.highlightedLevelId : id;
+    id = id == null ? menuStore.state.highlightedLevelId : id;
     const recordToLoad = levelRecordStore.state.records.find(r => r.id == id);
 
     if (!recordToLoad) {
@@ -489,10 +510,10 @@ export const getGameStore = (initial = {}) => {
     menuStore.state.highlightedLevelId = id;
   };
 
-  menuStore.gotoCreateLevel = o=>{
+  menuStore.gotoCreateLevel = o => {
     editorStore.state.level = [];
     state.currentView = "EDITOR";
-  }
+  };
 
   levelPlayStore.goBack = o => {
     state.currentView = "MENU";
@@ -500,7 +521,9 @@ export const getGameStore = (initial = {}) => {
 
   levelPlayStore.gotoEditor = () => {
     editorStore.state.id = menuStore.state.highlightedLevelId; // normalize?
-    editorStore.state.level = cloneDeep(levelPlayStore.state.levelStart.slice());
+    editorStore.state.level = cloneDeep(
+      levelPlayStore.state.levelStart.slice()
+    );
     state.currentView = "EDITOR";
   };
 
@@ -509,7 +532,7 @@ export const getGameStore = (initial = {}) => {
   };
 
   editorStore.reload = () => {
-    levelRecordStore.pullRecords() 
+    levelRecordStore.pullRecords();
   };
 
   return {

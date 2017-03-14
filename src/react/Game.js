@@ -1,5 +1,6 @@
 import React from "react";
 import { observer } from "mobx-react";
+import DevTools from "mobx-react-devtools";
 
 import LevelPlay from "./LevelPlay";
 import LevelMenu from "./LevelMenu";
@@ -8,7 +9,7 @@ import LevelEditor from "./LevelEditor";
 import { getGameStore } from "../stores";
 
 const defaultStore = getGameStore();
-
+window.g = defaultStore;
 const Game = observer(({ store = defaultStore }) => {
   let ViewToRender, storeToUse;
   switch (store.state.currentView) {
@@ -29,7 +30,12 @@ const Game = observer(({ store = defaultStore }) => {
       storeToUse = store.editorStore;
   }
 
-  return <div><ViewToRender store={storeToUse} /></div>;
+  return (
+    <div>
+      <ViewToRender store={storeToUse} />
+      <DevTools />
+    </div>
+  );
 });
 
 export default Game;
