@@ -1,0 +1,11 @@
+{
+  "name": "aws",
+  "version": "0.0.1",
+  "description": "aws functions",
+  "main": "index.js",
+  "author": "Ron ChanOu",
+  "license": "MIT",
+  "devDependencies": {
+    "lambda-local": "^1.4.2"
+  }
+}
