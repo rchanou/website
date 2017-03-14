@@ -8,6 +8,8 @@ import LevelEditor from "./LevelEditor";
 
 import { getGameStore } from "../stores";
 
+const creditSiteLink = "http://www.onlinespiele-sammlung.de/sokoban/sokobangames/skinner";
+
 const defaultStore = getGameStore();
 window.g = defaultStore;
 const Game = observer(({ store = defaultStore }) => {
@@ -31,9 +33,13 @@ const Game = observer(({ store = defaultStore }) => {
   }
 
   return (
-    <div>
+    <div style={{ fontFamily: "sans-serif" }}>
       <ViewToRender store={storeToUse} />
       <DevTools />
+
+      <a href={creditSiteLink} rel="noopener noreferrer" target="_blank">
+        Featuring Levels Designed by David W. Skinner
+      </a>
     </div>
   );
 });

@@ -286,32 +286,18 @@ export const getLevelRecordStore = (initialState = {}) => {
     records
   });
 
-  const pullRecords = o => {
-    fetch(
+  const pullRecords = async o => {
+    const task = fetch(
       "https://qlrvsjbsr3.execute-api.us-west-2.amazonaws.com/prod/getSokobanLevels"
     )
       .then(res => res.json())
       .then(records => {
         state.records = records;
       });
+    return task;
   };
   pullRecords();
 
-  const createLevel = e => {
-    e.preventDefault();
-    const formData = serialize(e.target, { hash: true });
-    formData.doc = { id: "stupid", level: [] };
-    const body = JSON.stringify(formData);
-    fetch(submitUrl, {
-      method: "POST",
-      body,
-      headers: new Headers({ "Content-Type": "application/json" })
-    })
-      .then(res => res.json())
-      .then(console.log);
-  };
-
-  // TODO: db logic
   return { state, pullRecords };
 };
 
@@ -387,9 +373,8 @@ export const getEditorStore = (initial = {}) => {
         //console.log(...all);
         state.submitting = false;
         //console.log('reload', reload)
-        if (reload) {
-          reload();
-        }
+        reload();
+        goBack();
       });
   };
 
@@ -486,7 +471,15 @@ export const getGameStore = (initial = {}) => {
     levelRecordStore = getLevelRecordStore(),
     menuStore = getMenuStore({ levelRecordStore }),
     levelPlayStore = getLevelPlayStore(),
-    editorStore = getEditorStore()
+    editorStore = getEditorStore({
+      goBack() {
+        state.currentView = "PLAY";
+      },
+      reload: async o => {
+        await levelRecordStore.pullRecords();
+        menuStore.loadLevel();
+      }
+    })
   } = initial;
 
   const state = observable({
@@ -511,6 +504,7 @@ export const getGameStore = (initial = {}) => {
 
   menuStore.gotoCreateLevel = o => {
     editorStore.state.level = [];
+    menuStore.state.highlightedLevelId = null;
     state.currentView = "EDITOR";
   };
 
@@ -522,14 +516,6 @@ export const getGameStore = (initial = {}) => {
     editorStore.state.id = menuStore.state.highlightedLevelId; // normalize?
     editorStore.state.level = levelPlayStore.state.levelStart;
     state.currentView = "EDITOR";
-  };
-
-  editorStore.goBack = () => {
-    state.currentView = "PLAY";
-  };
-
-  editorStore.reload = () => {
-    levelRecordStore.pullRecords();
   };
 
   return {
