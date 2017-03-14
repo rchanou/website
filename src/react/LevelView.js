@@ -7,6 +7,7 @@ import { groupTypes } from "../constants";
 //const cachedGetEntityRenderer = createTransformer(getEntityRenderer);
 
 const LevelView = observer(({ entities = [] }) => {
+  const renderEntities = getEntityRenderer(entities);
   return (
     <div style={{ maxWidth: 888 }}>
       <div
@@ -16,7 +17,7 @@ const LevelView = observer(({ entities = [] }) => {
           paddingTop: "100%"
         }}
       >
-        {entities.map(getEntityRenderer(entities))}
+        {entities.map(renderEntities)}
       </div>
     </div>
   );
