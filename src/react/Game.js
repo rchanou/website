@@ -40,6 +40,9 @@ const Game = observer(({ store = defaultStore }) => {
       <a href={creditSiteLink} rel="noopener noreferrer" target="_blank">
         Featuring Levels Designed by David W. Skinner
       </a>
+
+      <div>By Ron ChanOu</div>
+      <div>Full website coming soon!</div>
     </div>
   );
 });
