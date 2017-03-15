@@ -106,7 +106,7 @@ const LevelEditor = observer(({ store /*= getEditorStore()*/ }) => {
         </div>
         <div>
           <GameButton onClick={store.placeSpace}>Clear Space (spacebar)</GameButton>
-          <GameButton onClick={store.placePlayer}>Player (p)</GameButton>
+          <GameButton onClick={store.placePlayer}>Player (a)</GameButton>
           <GameButton onClick={store.placeWall}>Wall (w)</GameButton>
           <GameButton onClick={store.placeBox}>Box (b)</GameButton>
           <GameButton onClick={store.placeTarget}>Target (t)</GameButton>
