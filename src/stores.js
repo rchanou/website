@@ -360,11 +360,12 @@ export const getEditorStore = (initial = {}) => {
     //console.log('submit', captchaObj)
 
     state.submitting = true;
+    const id = state.id || shortid.generate();
     fetch(submitUrl, {
       method: "POST",
       body: JSON.stringify({
         ...captchaObj,
-        doc: { id: state.id || shortid.generate(), level: state.level }
+        doc: { id, level: state.level }
       }),
       headers: new Headers({ "Content-Type": "application/json" })
     })
@@ -373,7 +374,7 @@ export const getEditorStore = (initial = {}) => {
         //console.log(...all);
         state.submitting = false;
         //console.log('reload', reload)
-        reload();
+        reload(id);
         goBack();
       });
   };
@@ -472,12 +473,9 @@ export const getGameStore = (initial = {}) => {
     menuStore = getMenuStore({ levelRecordStore }),
     levelPlayStore = getLevelPlayStore(),
     editorStore = getEditorStore({
-      goBack() {
-        state.currentView = "PLAY";
-      },
-      reload: async o => {
+      reload: async id => {
         await levelRecordStore.pullRecords();
-        menuStore.loadLevel();
+        menuStore.loadLevel(id);
       }
     })
   } = initial;
@@ -486,6 +484,10 @@ export const getGameStore = (initial = {}) => {
     currentView: "MENU",
     ...initialState
   });
+
+  editorStore.goBack = o => {
+    state.currentView = "PLAY";
+  };
 
   menuStore.loadLevel = id => {
     id = id == null ? menuStore.state.highlightedLevelId : id;

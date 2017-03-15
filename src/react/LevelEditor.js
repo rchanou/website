@@ -66,6 +66,13 @@ const LevelEditor = observer(({ store /*= getEditorStore()*/ }) => {
     />
   );
 
+  const confirmAndGoBack = o => {
+    const confirmed = confirm("Leave without saving?");
+    if (confirmed) {
+      store.goBack();
+    }
+  };
+
   return (
     <div>
       <KeyMap
@@ -81,7 +88,6 @@ const LevelEditor = observer(({ store /*= getEditorStore()*/ }) => {
           t: store.placeTarget,
           g: store.placeBoxTarget,
           z: store.placePlayerTarget,
-          r: store.reload,
           Escape: store.goBack
         }}
       />
@@ -95,7 +101,27 @@ const LevelEditor = observer(({ store /*= getEditorStore()*/ }) => {
 
           {level.map(getEntityRenderer(level, bound))}
         </div>
-        <GameButton onClick={store.goBack}>Back</GameButton>
+        <div>
+          Set cursor position with mouse or arrow keys. Place items with buttons below or keys.
+        </div>
+        <div>
+          <GameButton onClick={store.placePlayer}>Player (p)</GameButton>
+          <GameButton onClick={store.placeWall}>Wall (w)</GameButton>
+          <GameButton onClick={store.placeBox}>Box (b)</GameButton>
+          <GameButton onClick={store.placeTarget}>Target (t)</GameButton>
+          <GameButton onClick={store.placePlayerTarget}>
+            Player & Target (z)
+          </GameButton>
+          <GameButton onClick={store.placeBoxTarget}>
+            Box & Target (g)
+          </GameButton>
+          <GameButton
+            style={{ background: "tomato" }}
+            onClick={confirmAndGoBack}
+          >
+            Back
+          </GameButton>
+        </div>
         <Recaptcha onSubmit={store.submit} disabled={submitting} />
       </div>
     </div>

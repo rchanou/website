@@ -14,13 +14,15 @@ export const GameButton = styled.button`
   border-radius: 11.1px;
   border: none;
   color: white;
-  font-size: 2.22em;
+  font-size: 1.69em;
   flex-grow: 1;
   padding: 0.4em;
   margin: 5px;
 
   &:disabled {
     background: gray;
+    cursor: not-allowed;
+    pointer-events: none;
   }
 `;
 

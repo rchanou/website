@@ -9,7 +9,7 @@ import { groupTypes } from "../constants";
 const LevelView = observer(({ entities = [] }) => {
   const renderEntities = getEntityRenderer(entities);
   return (
-    <div style={{ maxWidth: 888 }}>
+    <div style={{ width: "100%", maxWidth: 888 }}>
       <div
         style={{
           position: "relative",

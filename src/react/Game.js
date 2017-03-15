@@ -42,7 +42,11 @@ const Game = observer(({ store = defaultStore }) => {
       </a>
 
       <div>By Ron ChanOu</div>
-      <div>Full website coming soon!</div>
+      <div>
+        Full website coming soon! Source viewable
+        {" "}
+        <a href="https://www.github.com/rchanou/website">here</a>.
+      </div>
     </div>
   );
 });
