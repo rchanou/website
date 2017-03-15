@@ -2,7 +2,7 @@
 
 The source code for my site at [ron.chanou.info](http://ron.chanou.info)
 
-Right now it only contains a WIP Sokoban game, which uses AWS services for the backend. 
+Right now it only contains a WIP Sokoban game.
 
 It experiments with mobx for state management and some interesting React component patterns such as for:
 - Declaring key-press/action maps
