@@ -105,6 +105,7 @@ const LevelEditor = observer(({ store /*= getEditorStore()*/ }) => {
           Set cursor position with mouse or arrow keys. Place items with buttons below or keys.
         </div>
         <div>
+          <GameButton onClick={store.placeSpace}>Clear Space (spacebar)</GameButton>
           <GameButton onClick={store.placePlayer}>Player (p)</GameButton>
           <GameButton onClick={store.placeWall}>Wall (w)</GameButton>
           <GameButton onClick={store.placeBox}>Box (b)</GameButton>

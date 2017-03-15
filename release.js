@@ -15,12 +15,12 @@ const config = {
   plugins: [
     new webpack.NoErrorsPlugin(),
     // builds production version of React for performance
-    /*new webpack.DefinePlugin({
+    new webpack.DefinePlugin({
       "process.env": {
         NODE_ENV: JSON.stringify("production")
       }
-    }),*/
-    /*new webpack.optimize.UglifyJsPlugin({
+    }),
+    new webpack.optimize.UglifyJsPlugin({
       mangle: true,
       compress: {
         sequences: true,
@@ -53,7 +53,7 @@ const config = {
           }
         }
       }
-    })*/
+    })
   ],
 
   resolve: {
