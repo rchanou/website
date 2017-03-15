@@ -64,8 +64,6 @@ const LevelMenu = (
 
       return (
         <div>
-          Menu
-
           <KeyMap
             keyMap={{
               ArrowLeft: bindDirectionMove("x", -1),

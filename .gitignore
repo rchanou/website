@@ -18,3 +18,5 @@ yarn-error.log*
 
 jsconfig.json
 .vscode
+
+app.min.js

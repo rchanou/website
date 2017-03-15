@@ -1,6 +1,5 @@
 import React from "react";
 import { observer } from "mobx-react";
-import DevTools from "mobx-react-devtools";
 
 import LevelPlay from "./LevelPlay";
 import LevelMenu from "./LevelMenu";
@@ -34,8 +33,9 @@ const Game = observer(({ store = defaultStore }) => {
 
   return (
     <div style={{ fontFamily: "sans-serif" }}>
+      <h2>Sokoban</h2>
+
       <ViewToRender store={storeToUse} />
-      <DevTools />
 
       <a href={creditSiteLink} rel="noopener noreferrer" target="_blank">
         Featuring Levels Designed by David W. Skinner
