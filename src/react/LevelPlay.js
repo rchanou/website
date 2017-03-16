@@ -26,12 +26,20 @@ const hasWon = createTransformer(entities => {
   return true;
 });
 
-const moveCountStyle = { fontFamily: "sans-serif", fontSize: '3.33em' };
+const moveCountStyle = { fontFamily: "sans-serif", fontSize: "3.33em" };
 
 const defaultStore = getLevelPlayStore();
 const LevelPlay = observer(({ store = defaultStore }) => {
   return (
-    <div>
+    <div
+      style={{
+        maxWidth: "100vw",
+        width: 555,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center"
+      }}
+    >
       <KeyMap
         default={console.log}
         keyMap={{
@@ -49,7 +57,7 @@ const LevelPlay = observer(({ store = defaultStore }) => {
           f: store.tryMoveRight,
           u: store.undo,
           " ": store.undo,
-          "Spacebar": store.undo,
+          Spacebar: store.undo,
           Escape: store.reset,
           Esc: store.reset
         }}
@@ -58,8 +66,7 @@ const LevelPlay = observer(({ store = defaultStore }) => {
       <div
         style={{
           background: hasWon(store.state.entities) ? "aquamarine" : "#eee",
-          height: 555,
-          width: 555,
+          width: "100%",
           padding: 22
         }}
       >
@@ -67,13 +74,17 @@ const LevelPlay = observer(({ store = defaultStore }) => {
       </div>
 
       <div style={moveCountStyle}>Moves: {store.state.moveCount}</div>
-      <LevelControls store={store} />
-      <ButtonContainer>
-        <GameButton onClick={store.undo}>Undo</GameButton>
-        <GameButton onClick={store.reset}>Reset</GameButton>
-        <GameButton onClick={store.gotoEditor}>Edit</GameButton>
-        <GameButton onClick={store.goBack}>Menu</GameButton>
-      </ButtonContainer>
+
+      <div>
+        <LevelControls store={store} />
+
+        <ButtonContainer>
+          <GameButton onClick={store.undo}>Undo</GameButton>
+          <GameButton onClick={store.reset}>Reset</GameButton>
+          <GameButton onClick={store.gotoEditor}>Edit</GameButton>
+          <GameButton onClick={store.goBack}>Menu</GameButton>
+        </ButtonContainer>
+      </div>
     </div>
   );
 });

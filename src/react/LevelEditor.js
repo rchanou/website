@@ -107,9 +107,11 @@ const LevelEditor = observer(({ store /*= getEditorStore()*/ }) => {
 
           {level.map(getEntityRenderer(level, bound))}
         </div>
+
         <div>
           Set cursor position with mouse or arrow keys. Place items with buttons below or keys.
         </div>
+
         <div>
           <GameButton onClick={store.placeSpace}>Clear Space (spacebar)</GameButton>
           <GameButton onClick={store.placePlayer}>Player (a)</GameButton>
@@ -119,9 +121,11 @@ const LevelEditor = observer(({ store /*= getEditorStore()*/ }) => {
           <GameButton onClick={store.placePlayerTarget}>
             Player & Target (z)
           </GameButton>
+
           <GameButton onClick={store.placeBoxTarget}>
             Box & Target (g)
           </GameButton>
+
           <GameButton
             style={{ background: "tomato" }}
             onClick={confirmAndGoBack}
@@ -129,6 +133,7 @@ const LevelEditor = observer(({ store /*= getEditorStore()*/ }) => {
             Back
           </GameButton>
         </div>
+        
         <Recaptcha onSubmit={store.submit} disabled={submitting} />
       </div>
     </div>

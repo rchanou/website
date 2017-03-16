@@ -74,14 +74,7 @@ const LevelMenu = (
               Down: bindDirectionMove("y", +1),
               Up: bindDirectionMove("y", -1),
               Right: bindDirectionMove("x", +1),
-              Enter: () => loadLevel(highlightedLevelId),
-              e: console.log,
-              s: console.log,
-              d: console.log,
-              f: console.log,
-              u: console.log,
-              " ": console.log,
-              Escape: console.log
+              Enter: () => loadLevel(highlightedLevelId)
             }}
           />
 

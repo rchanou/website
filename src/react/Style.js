@@ -5,8 +5,7 @@ export const ButtonContainer = styled.div`
   align-items: stretch;
   justify-content: space-between;
   flex-wrap: wrap;
-  width: 610px;
-  margin: -5px;
+  width: 100%;
 `;
 
 export const GameButton = styled.button`
