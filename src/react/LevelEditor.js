@@ -81,14 +81,20 @@ const LevelEditor = observer(({ store /*= getEditorStore()*/ }) => {
           ArrowDown: store.moveDown,
           ArrowUp: store.moveUp,
           ArrowRight: store.moveRight,
+          Left: store.moveLeft,
+          Down: store.moveDown,
+          Up: store.moveUp,
+          Right: store.moveRight,
           " ": store.placeSpace,
+          "Spacebar": store.placeSpace,
           a: store.placePlayer,
           w: store.placeWall,
           b: store.placeBox,
           t: store.placeTarget,
           g: store.placeBoxTarget,
           z: store.placePlayerTarget,
-          Escape: store.goBack
+          Escape: confirmAndGoBack,
+          Esc: confirmAndGoBack
         }}
       />
 

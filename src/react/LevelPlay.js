@@ -39,13 +39,19 @@ const LevelPlay = observer(({ store = defaultStore }) => {
           ArrowDown: store.tryMoveDown,
           ArrowUp: store.tryMoveUp,
           ArrowRight: store.tryMoveRight,
+          Left: store.tryMoveLeft,
+          Down: store.tryMoveDown,
+          Up: store.tryMoveUp,
+          Right: store.tryMoveRight,
           e: store.tryMoveUp,
           s: store.tryMoveLeft,
           d: store.tryMoveDown,
           f: store.tryMoveRight,
           u: store.undo,
           " ": store.undo,
-          Escape: store.reset
+          "Spacebar": store.undo,
+          Escape: store.reset,
+          Esc: store.reset
         }}
       />
 
