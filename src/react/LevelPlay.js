@@ -41,7 +41,6 @@ const LevelPlay = observer(({ store = defaultStore }) => {
       }}
     >
       <KeyMap
-        default={console.log}
         keyMap={{
           ArrowLeft: store.tryMoveLeft,
           ArrowDown: store.tryMoveDown,

@@ -7,10 +7,9 @@ class KeyMap extends React.Component {
   };
 
   handleKeyDown = e => {
-    e.preventDefault();
-
     const handler = this.props.keyMap[e.key];
     if (handler) {
+      e.preventDefault();
       handler(e);
     } else if (this.props.default) {
       this.props.default(e);
