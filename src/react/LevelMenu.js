@@ -1,6 +1,7 @@
 import React from "react";
 import { observable } from "mobx";
 import { Observer } from "mobx-react";
+import Loading from "react-loading";
 
 import KeyMap from "./KeyMap";
 import State from "./State";
@@ -104,16 +105,17 @@ const getLoadLevelAction = menuStore => id => {};
 
 const ObservedLevelMenu = ({ store = getMenuStore() }) => (
   <Observer>
-    {o => (
-      <LevelMenu
-        levelRecords={store.levelRecordStore.state.records}
-        highlightedLevelId={store.state.highlightedLevelId}
-        bindClick={id => o => store.loadLevel(id)}
-        bindSelect={id => o => store.selectLevel(id)}
-        loadLevel={store.loadLevel}
-        onCreateClick={store.gotoCreateLevel}
-      />
-    )}
+    {() =>
+      !store.levelRecordStore.state.firstLoadDone
+        ? <div><Loading type="spin" color="gray" /></div>
+        : <LevelMenu
+            levelRecords={store.levelRecordStore.state.records}
+            highlightedLevelId={store.state.highlightedLevelId}
+            bindClick={id => o => store.loadLevel(id)}
+            bindSelect={id => o => store.selectLevel(id)}
+            loadLevel={store.loadLevel}
+            onCreateClick={store.gotoCreateLevel}
+          />}
   </Observer>
 );
 

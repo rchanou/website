@@ -3284,6 +3284,10 @@ react-dom@^15.4.2:
     loose-envify "^1.1.0"
     object-assign "^4.1.0"
 
+react-loading@^0.0.9:
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/react-loading/-/react-loading-0.0.9.tgz#e9fba6948915ba7742a508193828b6c73eb04956"
+
 react-querystring-router@^2.0.0-beta.6:
   version "2.0.0-beta.6"
   resolved "https://registry.yarnpkg.com/react-querystring-router/-/react-querystring-router-2.0.0-beta.6.tgz#1d5047edf2ae03a4981ad7e09bf44ad6200ae90c"

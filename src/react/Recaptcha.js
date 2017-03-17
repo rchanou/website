@@ -1,6 +1,7 @@
 import React from "react";
 import postscribe from "postscribe";
 import serialize from "form-serialize";
+
 import { GameButton } from "./Style";
 
 //const submitUrl = "https://qlrvsjbsr3.execute-api.us-west-2.amazonaws.com/prod/checkHumanBeforeCaptchaUpdate";
@@ -24,6 +25,7 @@ export default class Recaptcha extends React.Component {
   }
 
   render() {
+    const { disabled } = this.props;
     return (
       <div>
         <div ref={this.saveMe} />
@@ -33,8 +35,8 @@ export default class Recaptcha extends React.Component {
             className="g-recaptcha"
             data-sitekey="6LfMbBgUAAAAAB2yCO4u_bdhy2RjeRLOHX4cPnys"
           />
-          <GameButton type="submit" disabled={this.props.disabled}>
-            Submit
+          <GameButton type="submit" disabled={disabled}>
+            {disabled ? "Saving..." : "Save"}
           </GameButton>
         </form>
       </div>

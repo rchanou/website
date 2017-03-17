@@ -6,143 +6,9 @@ import { groupTypes, physicalTypes, entitySchemas } from "./constants";
 
 const submitUrl = "https://qlrvsjbsr3.execute-api.us-west-2.amazonaws.com/prod/checkHumanBeforeCaptchaUpdate";
 
-const baseLevel = [
-  { group: "TARGET", id: 15, position: { y: 3, x: 5 } },
-  { group: "TARGET", id: 10, position: { y: 2, x: 3 } },
-  {
-    group: "WALL",
-    physicalType: "OBSTACLE",
-    id: 0,
-    position: { y: 0, x: 1 }
-  },
-  {
-    group: "WALL",
-    physicalType: "OBSTACLE",
-    id: 1,
-    position: { y: 0, x: 2 }
-  },
-  {
-    group: "WALL",
-    physicalType: "OBSTACLE",
-    id: 2,
-    position: { y: 0, x: 3 }
-  },
-  {
-    group: "WALL",
-    physicalType: "OBSTACLE",
-    id: 3,
-    position: { y: 0, x: 4 }
-  },
-  {
-    group: "WALL",
-    physicalType: "OBSTACLE",
-    id: 4,
-    position: { y: 0, x: 5 }
-  },
-  {
-    group: "WALL",
-    physicalType: "OBSTACLE",
-    id: 5,
-    position: { y: 0, x: 6 }
-  },
-  {
-    group: "WALL",
-    physicalType: "OBSTACLE",
-    id: 6,
-    position: { y: 1, x: 1 }
-  },
-  {
-    isPlayer: true,
-    group: "PLAYER",
-    physicalType: "OBSTACLE",
-    id: 7,
-    position: { y: 1, x: 2 }
-  },
-  {
-    group: "WALL",
-    physicalType: "OBSTACLE",
-    id: 8,
-    position: { y: 1, x: 6 }
-  },
-  {
-    group: "WALL",
-    physicalType: "OBSTACLE",
-    id: 9,
-    position: { y: 2, x: 1 }
-  },
-  {
-    group: "BOX",
-    physicalType: "PUSHABLE",
-    id: 11,
-    position: { y: 2, x: 3 }
-  },
-  {
-    group: "BOX",
-    physicalType: "PUSHABLE",
-    id: 12,
-    position: { y: 2, x: 5 }
-  },
-  {
-    group: "WALL",
-    physicalType: "OBSTACLE",
-    id: 13,
-    position: { y: 2, x: 6 }
-  },
-  {
-    group: "WALL",
-    physicalType: "OBSTACLE",
-    id: 14,
-    position: { y: 3, x: 1 }
-  },
-  {
-    group: "WALL",
-    physicalType: "OBSTACLE",
-    id: 16,
-    position: { y: 3, x: 6 }
-  },
-  {
-    group: "WALL",
-    physicalType: "OBSTACLE",
-    id: 17,
-    position: { y: 4, x: 1 }
-  },
-  {
-    group: "WALL",
-    physicalType: "OBSTACLE",
-    id: 18,
-    position: { y: 4, x: 2 }
-  },
-  {
-    group: "WALL",
-    physicalType: "OBSTACLE",
-    id: 19,
-    position: { y: 4, x: 3 }
-  },
-  {
-    group: "WALL",
-    physicalType: "OBSTACLE",
-    id: 20,
-    position: { y: 4, x: 4 }
-  },
-  {
-    group: "WALL",
-    physicalType: "OBSTACLE",
-    id: 21,
-    position: { y: 4, x: 5 }
-  },
-  {
-    group: "WALL",
-    physicalType: "OBSTACLE",
-    id: 22,
-    position: { y: 4, x: 6 }
-  }
-];
-
-export const getLevelPlayStore = (
-  initialState = {} //goBack = o => o, //gotoEditor = o => o
-) => {
+export const getLevelPlayStore = (initialState = {}) => {
   const {
-    levelStart = baseLevel || [],
+    levelStart = [],
     moves = []
   } = initialState;
 
@@ -178,7 +44,6 @@ export const getLevelPlayStore = (
         },
         state.levelStart
       );
-      //console.log(result[11].position);
       return result;
     },
 
@@ -279,20 +144,30 @@ export const getLevelPlayStore = (
 };
 export const getLevelRecordStore = (initialState = {}) => {
   const {
+    firstLoadDone = false,
     records = []
   } = initialState;
 
   const state = observable({
+    firstLoadDone,
     records
   });
 
-  const pullRecords = async o => {
+  const pullRecords = () => {
     const task = fetch(
       "https://qlrvsjbsr3.execute-api.us-west-2.amazonaws.com/prod/getSokobanLevels"
     )
       .then(res => res.json())
       .then(records => {
+        state.firstLoadDone = true;
         state.records = records;
+      })
+      .catch(e => {
+        alert(
+          "An error occurred loading the levels. Refresh the page to try again"
+        );
+        state.firstLoadDone = true;
+        console.error(e);
       });
     return task;
   };
@@ -356,27 +231,45 @@ export const getEditorStore = (initial = {}) => {
     state.editingPos = { x, y };
   };
 
-  const submit = captchaObj => {
+  const submit = async captchaObj => {
     //console.log('submit', captchaObj)
 
     state.submitting = true;
     const id = state.id || shortid.generate();
-    fetch(submitUrl, {
+    const task = fetch(submitUrl, {
       method: "POST",
       body: JSON.stringify({
         ...captchaObj,
         doc: { id, level: state.level }
       }),
       headers: new Headers({ "Content-Type": "application/json" })
-    })
-      .then(res => res.json())
-      .then((...all) => {
-        //console.log(...all);
-        state.submitting = false;
-        //console.log('reload', reload)
+    }).catch(e => {
+      alert("An error occurred.");
+      console.error(e);
+    });
+
+    const response = await task;
+
+    if (
+      response &&
+      typeof response === "object" &&
+      typeof response.json === "function"
+    ) {
+      const responseBody = await response.json();
+      if (response.status === 200) {
+        alert("Level successfully saved!");
         reload(id);
         goBack();
-      });
+      } else {
+        if (responseBody.message) {
+          alert(responseBody.message);
+        } else {
+          alert("An error occurred.");
+          console.error(responseBody);
+        }
+      }
+    }
+    state.submitting = false;
   };
 
   const bindMove = (axis, dir) => e => {
