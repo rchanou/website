@@ -1,5 +1,7 @@
 # My Website (WIP)
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/rchanou/website.svg)](https://greenkeeper.io/)
+
 The source code for my site at [ron.chanou.info](http://ron.chanou.info)
 
 Right now it only contains a WIP Sokoban game.
