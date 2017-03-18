@@ -331,7 +331,6 @@ export const getGameStore = (initial = {}) => {
     levelRecordStore = getLevelRecordStore(),
     menuStore = getMenuStore({ levelRecordStore }),
     levelPlayStore = getLevelPlayStore(),
-    //await levelRecordStore.pullRecords();
     editorStore = getEditorStore({
       reload: id => {
         levelRecordStore.state.attemptingLoad = true;

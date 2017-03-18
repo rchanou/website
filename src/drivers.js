@@ -1,6 +1,8 @@
 import { autorun, toJS } from "mobx";
 
 const submitUrl = "https://qlrvsjbsr3.execute-api.us-west-2.amazonaws.com/prod/checkHumanBeforeCaptchaUpdate";
+const genericLevelLoadError = "An error occurred loading the levels. Refresh the page to try again.";
+const genericLevelSaveError = "An error occurred trying to save the level.";
 
 export const runLevelRecordStore = store => {
   autorun(async () => {
@@ -22,15 +24,13 @@ export const runLevelRecordStore = store => {
             if (responseBody.message) {
               alert(responseBody.message);
             } else {
-              alert("An error occurred.");
+              alert(genericLevelLoadError);
               console.error(responseBody);
             }
           }
         }
       } catch (ex) {
-        alert(
-          "An error occurred loading the levels. Refresh the page to try again"
-        );
+        alert(genericLevelLoadError);
         console.error(ex);
       }
 
@@ -64,14 +64,14 @@ export const runLevelEditorStore = store => {
             if (responseBody.message) {
               alert(responseBody.message);
             } else {
-              alert("An error occurred.");
+              alert(genericLevelSaveError);
               console.error(responseBody);
             }
           }
         }
       } catch (ex) {
         ex => {
-          alert("An error occurred.");
+          alert(genericLevelSaveError);
           console.error(ex);
         };
       }
