@@ -1,6 +1,7 @@
 import React from "react";
 import { autorun, createTransformer } from "mobx";
 import { observer, Observer } from "mobx-react";
+import Swipeable from "react-swipeable";
 
 import LevelView from "./LevelView";
 import LevelControls from "./Controls";
@@ -62,15 +63,20 @@ const LevelPlay = observer(({ store = defaultStore }) => {
         }}
       />
 
-      <div
+      <Swipeable
+        onSwipedLeft={store.tryMoveLeft}
+        onSwipedDown={store.tryMoveDown}
+        onSwipedUp={store.tryMoveUp}
+        onSwipedRight={store.tryMoveRight}
         style={{
           background: hasWon(store.state.entities) ? "aquamarine" : "#eee",
+          touchAction: "none",
           width: "100%",
           padding: 22
         }}
       >
         <LevelView entities={store.state.entities} />
-      </div>
+      </Swipeable>
 
       <div style={moveCountStyle}>Moves: {store.state.moveCount}</div>
 
@@ -89,8 +95,6 @@ const LevelPlay = observer(({ store = defaultStore }) => {
 });
 
 LevelPlay.displayName = "LevelPlay";
-
-//autorun(o => console.log(defaultStore.entities));
 
 window.serializeFocusedComponentProps = () => JSON.stringify($r.props);
 
