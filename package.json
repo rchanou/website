@@ -29,7 +29,8 @@
     "react-loading": "^0.0.9",
     "react-swipeable": "^3.9.2",
     "shortid": "^2.2.8",
-    "styled-components": "^1.4.4"
+    "styled-components": "^1.4.4",
+    "zen-observable": "^0.5.1"
   },
   "scripts": {
     "cosmos": "cosmos",

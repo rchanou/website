@@ -4,8 +4,6 @@ import shortid from "shortid";
 
 import { groupTypes, physicalTypes, entitySchemas } from "./constants";
 
-const submitUrl = "https://qlrvsjbsr3.execute-api.us-west-2.amazonaws.com/prod/checkHumanBeforeCaptchaUpdate";
-
 export const getLevelPlayStore = (initialState = {}) => {
   const {
     levelStart = [],
@@ -14,7 +12,6 @@ export const getLevelPlayStore = (initialState = {}) => {
 
   const state = observable({
     levelStart,
-
     moves,
 
     get entities() {
@@ -66,7 +63,6 @@ export const getLevelPlayStore = (initialState = {}) => {
     }
 
     const playerPos = state.player.position;
-    //console.log(axis, step, playerPos.x, playerPos);
     const positionToTry = {
       ...playerPos,
       [axis]: playerPos[axis] + step
@@ -80,6 +76,7 @@ export const getLevelPlayStore = (initialState = {}) => {
         ent.position.y === positionToTry.y
     );
     const entityThere = entities[entityThereIndex];
+
     if (entityThere) {
       if (entityThere.physicalType === physicalTypes.obstacle) {
         return;
@@ -114,13 +111,13 @@ export const getLevelPlayStore = (initialState = {}) => {
         return;
       }
     }
+
     state.moves.push({
       [state.player.id]: {
         ...playerPos,
         [axis]: playerPos[axis] + step
       }
     });
-    //console.log(state.player.position.x);
   };
 
   return {
@@ -130,56 +127,47 @@ export const getLevelPlayStore = (initialState = {}) => {
     tryMoveDown: () => tryMove("y", +1),
     tryMoveUp: () => tryMove("y", -1),
     tryMoveRight: () => tryMove("x", +1),
+
     undo() {
       if (state.moves.length) {
         state.moves.pop();
       }
     },
+
     reset() {
       state.moves = [];
     }
-    //goBack,
-    //gotoEditor
   };
 };
+
 export const getLevelRecordStore = (initialState = {}) => {
   const {
-    firstLoadDone = false,
+    attemptingLoad = true,
     records = []
   } = initialState;
 
   const state = observable({
-    firstLoadDone,
+    attemptingLoad,
     records
   });
 
-  const pullRecords = () => {
-    const task = fetch(
-      "https://qlrvsjbsr3.execute-api.us-west-2.amazonaws.com/prod/getSokobanLevels"
-    )
-      .then(res => res.json())
-      .then(records => {
-        state.firstLoadDone = true;
-        state.records = records;
-      })
-      .catch(e => {
-        alert(
-          "An error occurred loading the levels. Refresh the page to try again"
-        );
-        state.firstLoadDone = true;
-        console.error(e);
-      });
-    return task;
+  const loadRecords = recordsToLoad => {
+    console.log(recordsToLoad, "to load");
+    state.records = recordsToLoad;
+    state.attemptingLoad = false;
   };
-  pullRecords();
 
-  return { state, pullRecords };
+  const finishLoad = () => {
+    state.attemptingLoad = false;
+  };
+
+  return { state, loadRecords, finishLoad };
 };
 
 export const getMenuStore = (initial = {}) => {
   const {
     initialState = {},
-    levelRecordStore = getLevelRecordStore(),
+    levelRecordStore, // = getLevelRecordStore(),
     goBack = o => o
   } = initial;
 
@@ -192,23 +180,20 @@ export const getMenuStore = (initial = {}) => {
     state.highlightedLevelId = id == state.highlightedLevelId ? -1 : id;
   };
 
-  return {
-    state,
-    levelRecordStore,
-    selectLevel
-  };
+  return { state, levelRecordStore, selectLevel };
 };
 
 export const getEditorStore = (initial = {}) => {
   const {
     initialState = {},
     goBack = o => o,
-    reload = o => console.log("no relaod")
+    reload = o => console.log("no reload"),
+    loadLevelRecord = o => o
   } = initial;
 
   const state = observable({
     level: [],
-    submitting: false,
+    submission: false,
     bound: 20,
     editingPos: { x: 9, y: 9 },
     ...initialState
@@ -231,73 +216,54 @@ export const getEditorStore = (initial = {}) => {
     state.editingPos = { x, y };
   };
 
-  const submit = async captchaObj => {
-    //console.log('submit', captchaObj)
-
-    state.submitting = true;
-    const id = state.id || shortid.generate();
-    const task = fetch(submitUrl, {
-      method: "POST",
-      body: JSON.stringify({
-        ...captchaObj,
-        doc: { id, level: state.level }
-      }),
-      headers: new Headers({ "Content-Type": "application/json" })
-    }).catch(e => {
-      alert("An error occurred.");
-      console.error(e);
-    });
-
-    const response = await task;
-
-    if (
-      response &&
-      typeof response === "object" &&
-      typeof response.json === "function"
-    ) {
-      const responseBody = await response.json();
-      if (response.status === 200) {
-        alert("Level successfully saved!");
-        reload(id);
-        goBack();
-      } else {
-        if (responseBody.message) {
-          alert(responseBody.message);
-        } else {
-          alert("An error occurred.");
-          console.error(responseBody);
-        }
+  const submit = captchaObj => {
+    state.submission = {
+      ...captchaObj,
+      doc: {
+        id: state.id || shortid.generate(),
+        level: state.level
       }
-    }
-    state.submitting = false;
+    };
   };
 
-  const bindMove = (axis, dir) => e => {
-    if (e && typeof e === "object" && typeof e.preventDefault === "function") {
+  const closeSubmit = () => {
+    state.submission = false;
+  };
+
+  const bindMove = (axis, dir) =>
+    e => {
+      if (
+        e && typeof e === "object" && typeof e.preventDefault === "function"
+      ) {
+        e.preventDefault();
+      }
+
+      const nextAxisPos = state.editingPos[axis] + dir;
+      state.editingPos[axis] = nextAxisPos > state.bound - 1
+        ? 0
+        : nextAxisPos < 0 ? state.bound - 1 : nextAxisPos;
+    };
+
+  const bindPlace = group =>
+    e => {
       e.preventDefault();
-    }
-
-    const nextAxisPos = state.editingPos[axis] + dir;
-    state.editingPos[axis] = nextAxisPos > state.bound - 1
-      ? 0
-      : nextAxisPos < 0 ? state.bound - 1 : nextAxisPos;
-  };
-
-  const bindPlace = group => e => {
-    e.preventDefault();
-    clearAtPos(state.editingPos);
-    state.level.push({
-      id: shortid.generate(),
-      ...entitySchemas[group],
-      position: { ...state.editingPos }
-    });
-  };
+      clearAtPos(state.editingPos);
+      state.level.push({
+        id: shortid.generate(),
+        ...entitySchemas[group],
+        position: { ...state.editingPos }
+      });
+    };
 
   return {
     state,
+
     changeFromClick,
     submit,
+    closeSubmit,
     reload,
+    loadLevelRecord,
+
     moveLeft: bindMove("x", -1),
     moveDown: bindMove("y", +1),
     moveUp: bindMove("y", -1),
@@ -365,10 +331,21 @@ export const getGameStore = (initial = {}) => {
     levelRecordStore = getLevelRecordStore(),
     menuStore = getMenuStore({ levelRecordStore }),
     levelPlayStore = getLevelPlayStore(),
+    //await levelRecordStore.pullRecords();
     editorStore = getEditorStore({
-      reload: async id => {
-        await levelRecordStore.pullRecords();
+      reload: id => {
+        levelRecordStore.state.attemptingLoad = true;
         menuStore.loadLevel(id);
+      },
+      loadLevelRecord(record) {
+        const { records } = levelRecordStore.state;
+        const levelIndex = records.findIndex(rec => rec.id === record.id);
+        if (levelIndex === -1) {
+          records.push(record);
+        } else {
+          records[levelIndex] = record;
+        }
+        menuStore.loadLevel(record.id);
       }
     })
   } = initial;

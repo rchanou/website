@@ -21,8 +21,8 @@ const editorStyle = {
   background: "#eee"
 };
 
-const LevelEditor = observer(({ store /*= getEditorStore()*/ }) => {
-  const { level, bound, editingPos, submitting } = store.state;
+const LevelEditor = observer(({ store = getEditorStore() }) => {
+  const { level, bound, editingPos, submission } = store.state;
   const unit = 100 / bound;
 
   const markers = Array.from(Array(bound));
@@ -86,7 +86,7 @@ const LevelEditor = observer(({ store /*= getEditorStore()*/ }) => {
           Up: store.moveUp,
           Right: store.moveRight,
           " ": store.placeSpace,
-          "Spacebar": store.placeSpace,
+          Spacebar: store.placeSpace,
           a: store.placePlayer,
           w: store.placeWall,
           b: store.placeBox,
@@ -113,7 +113,9 @@ const LevelEditor = observer(({ store /*= getEditorStore()*/ }) => {
         </div>
 
         <div>
-          <GameButton onClick={store.placeSpace}>Clear Space (spacebar)</GameButton>
+          <GameButton onClick={store.placeSpace}>
+            Clear Space (spacebar)
+          </GameButton>
           <GameButton onClick={store.placePlayer}>Player (a)</GameButton>
           <GameButton onClick={store.placeWall}>Wall (w)</GameButton>
           <GameButton onClick={store.placeBox}>Box (b)</GameButton>
@@ -133,8 +135,8 @@ const LevelEditor = observer(({ store /*= getEditorStore()*/ }) => {
             Back
           </GameButton>
         </div>
-        
-        <Recaptcha onSubmit={store.submit} disabled={submitting} />
+
+        <Recaptcha onSubmit={store.submit} disabled={submission} />
       </div>
     </div>
   );

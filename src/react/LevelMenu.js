@@ -101,12 +101,10 @@ const LevelMenu = (
   </State>
 );
 
-const getLoadLevelAction = menuStore => id => {};
-
 const ObservedLevelMenu = ({ store = getMenuStore() }) => (
   <Observer>
     {() =>
-      !store.levelRecordStore.state.firstLoadDone
+      store.levelRecordStore.state.attemptingLoad
         ? <div><Loading type="spin" color="gray" /></div>
         : <LevelMenu
             levelRecords={store.levelRecordStore.state.records}

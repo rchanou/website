@@ -10,7 +10,7 @@ import { getGameStore } from "../stores";
 const creditSiteLink = "http://www.onlinespiele-sammlung.de/sokoban/sokobangames/skinner";
 
 const defaultStore = getGameStore();
-window.g = defaultStore;
+
 const Game = observer(({ store = defaultStore }) => {
   let ViewToRender, storeToUse;
   switch (store.state.currentView) {
@@ -22,13 +22,13 @@ const Game = observer(({ store = defaultStore }) => {
       ViewToRender = LevelPlay;
       storeToUse = store.levelPlayStore;
       break;
-    case "PLAY":
-      ViewToRender = LevelPlay;
-      storeToUse = store.levelPlayStore;
-      break;
-    default:
+    case "EDITOR":
       ViewToRender = LevelEditor;
       storeToUse = store.editorStore;
+      break;
+    default:
+      ViewToRender = LevelPlay;
+      storeToUse = store.levelPlayStore;
   }
 
   return (
