@@ -1,3 +1,5 @@
+// @flow
+
 import { observable, toJS } from "mobx";
 import update from "immutability-helper";
 import shortid from "shortid";

@@ -9,6 +9,7 @@
     "babel-preset-env": "^1.2.0",
     "babel-preset-react": "^6.23.0",
     "babel-preset-stage-0": "^6.22.0",
+    "flow-bin": "^0.42.0",
     "json-loader": "^0.5.4",
     "react-cosmos-webpack": "^2.0.0-beta.8",
     "webpack": "^2.2.1"
@@ -33,6 +34,7 @@
   },
   "scripts": {
     "cosmos": "cosmos",
-    "build": "node build"
+    "build": "node build",
+    "flow": "flow; test $? -eq 0 -o $? -eq 2"
   }
 }
