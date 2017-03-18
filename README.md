@@ -13,4 +13,4 @@ You can play with the components using `yarn add` and `yarn run cosmos` to run t
 
 It uses serverless AWS services for the back end. Some of the AWS code is in the `aws` folder for reference. 
 
-Much more to come soon!
+I'm constantly working on this. Check every so often for new changes!
