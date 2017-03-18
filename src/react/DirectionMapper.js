@@ -2,8 +2,12 @@ import React from "react";
 
 export default class DirectionMapper extends React.Component {
   static defaultProps = {
-    onResize: o => o
+    onResize(){}
   };
+
+  static propTypes = {
+    onResize: React.PropTypes.func
+  }
 
   saveMe = c => this.me = c;
 
@@ -27,7 +31,6 @@ export default class DirectionMapper extends React.Component {
       const yUnit = firstKid.offsetHeight;
       const xOrigin = firstKid.offsetLeft;
       const yOrigin = firstKid.offsetTop;
-      //console.log(this.props.children);
       let positions = [];
       for (let i in kids) {
         i = Number(i);
@@ -44,7 +47,6 @@ export default class DirectionMapper extends React.Component {
         });
       }
       this.props.onResize(positions);
-      //console.log(JSON.stringify(positions));
       this.calculating = false;
     });
   };
