@@ -8,8 +8,6 @@ import { MainDiv } from "./Style";
 
 import { getGameStore } from "../stores";
 
-const creditSiteLink = "http://www.onlinespiele-sammlung.de/sokoban/sokobangames/skinner";
-
 const defaultStore = getGameStore();
 
 const Game = observer(({ store = defaultStore }) => {
@@ -34,20 +32,7 @@ const Game = observer(({ store = defaultStore }) => {
 
   return (
     <MainDiv>
-      <h2>Sokoban</h2>
-
       <ViewToRender store={storeToUse} />
-
-      <a href={creditSiteLink} rel="noopener noreferrer" target="_blank">
-        Featuring Levels Designed by David W. Skinner
-      </a>
-
-      <div>By Ron ChanOu</div>
-      <div>
-        Full website coming soon! Source viewable
-        {" "}
-        <a href="https://www.github.com/rchanou/website">here</a>.
-      </div>
     </MainDiv>
   );
 });

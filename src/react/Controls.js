@@ -11,11 +11,11 @@ const ScaleableSquare = styled.div`
   position: relative;
 
   @media screen and (orientation:portrait) {
-    width: 100%;
-    margin: 6%;
+    width: 50%;
+    margin: 9%;
   }
 
-  @media screen and (orientation:landscape){    
+  @media screen and (orientation:landscape){
     margin: ${squareMargin / 2}%;
   }
 
@@ -23,8 +23,8 @@ const ScaleableSquare = styled.div`
     content: '';
     margin-top: 100%;
     display: flex;
-    justify-content: center;
-    align-items: center;
+    --justify-content: center;
+    --align-items: center;
   }
 
   & > * {
@@ -53,15 +53,20 @@ const Arrows = styled.div`
       font-size: 2.11em;  
     }
   }
+
+  & > button > div {
+    transform-origin: 50% 50%;
+    transform: rotate(-45deg);
+  }
 `;
 
 const Controls = ({ store = getLevelPlayStore() }) => (
   <ScaleableSquare>
     <Arrows>
-      <GameButton onClick={store.tryMoveUp}>⬉</GameButton>
-      <GameButton onClick={store.tryMoveRight}>⬈</GameButton>
-      <GameButton onClick={store.tryMoveLeft}>⬋</GameButton>
-      <GameButton onClick={store.tryMoveDown}>⬊</GameButton>
+      <GameButton onClick={store.tryMoveUp}><div>▲</div></GameButton>
+      <GameButton onClick={store.tryMoveRight}><div>▶</div></GameButton>
+      <GameButton onClick={store.tryMoveLeft}><div>◀</div></GameButton>
+      <GameButton onClick={store.tryMoveDown}><div>▼</div></GameButton>
     </Arrows>
   </ScaleableSquare>
 );

@@ -25,11 +25,13 @@
     "mobx-react-devtools": "^4.2.11",
     "postscribe": "^2.0.8",
     "react": "^15.4.2",
+    "react-container-query": "^0.9.0",
+    "react-document-meta": "^2.1.1",
     "react-dom": "^15.4.2",
     "react-loading": "^0.0.9",
     "react-swipeable": "^3.9.2",
     "shortid": "^2.2.8",
-    "styled-components": "^1.4.4",
+    "styled-components": "next",
     "zen-observable": "^0.5.1"
   },
   "scripts": {

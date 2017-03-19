@@ -1,7 +1,7 @@
+import React from "react";
 import styled from "styled-components";
 
 export const MainDiv = styled.div`
-  font-family: sans-serif;
   & * {
     box-sizing: border-box;
     margin: 0;
@@ -9,17 +9,25 @@ export const MainDiv = styled.div`
   }
 `;
 
+export const FullDiv = styled.div`
+  width: 100%;
+`;
+
 export const ButtonContainer = styled.div`
   display: flex;
   align-items: stretch;
   justify-content: space-between;
   flex-wrap: wrap;
-  width: 100%;
+
+  & > button {
+    width: calc(50% - 11.10px);
+    margin: 5.55px;
+  }
 `;
 
 export const GameButton = styled.button`
   background: steelblue;
-  border-radius: 11.1px;
+  --border-radius: 11.1px;
   border: none;
   color: white;
   font-size: 1.69em;

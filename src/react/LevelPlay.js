@@ -3,11 +3,13 @@ import { autorun, createTransformer } from "mobx";
 import { observer, Observer } from "mobx-react";
 import Swipeable from "react-swipeable";
 import styled from "styled-components";
+import Meta from "react-document-meta";
+import { applyContainerQuery } from "react-container-query";
 
 import LevelView from "./LevelView";
 import LevelControls from "./Controls";
 import KeyMap from "./KeyMap";
-import { GameButton, ButtonContainer } from "./Style";
+import { FullDiv, GameButton, ButtonContainer } from "./Style";
 
 import { getLevelPlayStore } from "../stores";
 import { groupTypes } from "../constants";
@@ -28,17 +30,33 @@ const hasWon = createTransformer(entities => {
   return true;
 });
 
-const LevelPlayContainer = styled.div`
+const playContainerQuery = {
+  thin: {
+    maxWidth: 222
+  }
+};
+
+const LevelPlayBox = styled.div`
   display: flex;
-  width: 555px;
   max-width: 100vw;
+  max-height: 100vh;
 
   @media screen and (orientation:portrait) {
     flex-direction: column;
-    align-items: center;
   }
 
   @media screen and (orientation:landscape){
+  }
+`;
+
+const LevelViewBox = styled(Swipeable)`
+  background: #eee;
+  touch-action: none;
+  max-width: 80vh;
+  padding: 22px;
+
+  &.victory {
+    background: aquamarine;
   }
 `;
 
@@ -46,22 +64,20 @@ const LevelPanel = styled.div`
   display: flex;
   
   @media screen and (orientation:portrait) {
-    width: 100%;
+    --width: 100%;
+    --max-height: calc(20vh - 2em);
   }
   
   @media screen and (orientation:landscape) {
+    width: 50%;
     flex-direction: column;
   }
-`;
-
-const MoveDisplay = styled.div`
-  font-size: 2.33em;
 `;
 
 const defaultStore = getLevelPlayStore();
 const LevelPlay = observer(({ store = defaultStore }) => {
   return (
-    <LevelPlayContainer>
+    <LevelPlayBox>
       <KeyMap
         keyMap={{
           ArrowLeft: store.tryMoveLeft,
@@ -84,36 +100,40 @@ const LevelPlay = observer(({ store = defaultStore }) => {
         }}
       />
 
-      <Swipeable
-        onSwipedLeft={store.tryMoveLeft}
-        onSwipedDown={store.tryMoveDown}
-        onSwipedUp={store.tryMoveUp}
-        onSwipedRight={store.tryMoveRight}
-        style={{
-          background: hasWon(store.state.entities) ? "aquamarine" : "#eee",
-          touchAction: "none",
-          width: "100%",
-          padding: 22
-        }}
-      >
-        <LevelView entities={store.state.entities} />
-      </Swipeable>
+      <FullDiv>
+        <h2>Moves: {store.state.moveCount}</h2>
 
-      <LevelPanel>
-        <MoveDisplay>
-          Moves: {store.state.moveCount}
-        </MoveDisplay>
+        <LevelViewBox
+          onSwipedLeft={store.tryMoveLeft}
+          onSwipedDown={store.tryMoveDown}
+          onSwipedUp={store.tryMoveUp}
+          onSwipedRight={store.tryMoveRight}
+          className={hasWon(store.state.entities) && "victory"}
+        >
+          <LevelView entities={store.state.entities} />
+        </LevelViewBox>
+      </FullDiv>
 
-        <LevelControls store={store} />
+      <FullDiv>
+        <LevelPanel>
+          <Meta
+            content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;"
+            meta={{
+              content: "width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;"
+            }}
+          />
 
-        <ButtonContainer>
-          <GameButton onClick={store.undo}>Undo</GameButton>
-          <GameButton onClick={store.reset}>Start Over</GameButton>
-          <GameButton onClick={store.gotoEditor}>Edit</GameButton>
-          <GameButton onClick={store.goBack}>Menu</GameButton>
-        </ButtonContainer>
-      </LevelPanel>
-    </LevelPlayContainer>
+          <LevelControls store={store} />
+
+          <ButtonContainer>
+            <GameButton onClick={store.undo}>Undo</GameButton>
+            <GameButton onClick={store.reset}>Start Over</GameButton>
+            <GameButton onClick={store.gotoEditor}>Edit</GameButton>
+            <GameButton onClick={store.goBack}>Menu</GameButton>
+          </ButtonContainer>
+        </LevelPanel>
+      </FullDiv>
+    </LevelPlayBox>
   );
 });
 
