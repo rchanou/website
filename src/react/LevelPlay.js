@@ -2,6 +2,7 @@ import React from "react";
 import { autorun, createTransformer } from "mobx";
 import { observer, Observer } from "mobx-react";
 import Swipeable from "react-swipeable";
+import styled from "styled-components";
 
 import LevelView from "./LevelView";
 import LevelControls from "./Controls";
@@ -27,20 +28,40 @@ const hasWon = createTransformer(entities => {
   return true;
 });
 
-const moveCountStyle = { fontFamily: "sans-serif", fontSize: "3.33em" };
+const LevelPlayContainer = styled.div`
+  display: flex;
+  width: 555px;
+  max-width: 100vw;
+
+  @media screen and (orientation:portrait) {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  @media screen and (orientation:landscape){
+  }
+`;
+
+const LevelPanel = styled.div`
+  display: flex;
+  
+  @media screen and (orientation:portrait) {
+    width: 100%;
+  }
+  
+  @media screen and (orientation:landscape) {
+    flex-direction: column;
+  }
+`;
+
+const MoveDisplay = styled.div`
+  font-size: 2.33em;
+`;
 
 const defaultStore = getLevelPlayStore();
 const LevelPlay = observer(({ store = defaultStore }) => {
   return (
-    <div
-      style={{
-        maxWidth: "100vw",
-        width: 555,
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center"
-      }}
-    >
+    <LevelPlayContainer>
       <KeyMap
         keyMap={{
           ArrowLeft: store.tryMoveLeft,
@@ -78,19 +99,21 @@ const LevelPlay = observer(({ store = defaultStore }) => {
         <LevelView entities={store.state.entities} />
       </Swipeable>
 
-      <div style={moveCountStyle}>Moves: {store.state.moveCount}</div>
+      <LevelPanel>
+        <MoveDisplay>
+          Moves: {store.state.moveCount}
+        </MoveDisplay>
 
-      <div>
         <LevelControls store={store} />
 
         <ButtonContainer>
           <GameButton onClick={store.undo}>Undo</GameButton>
-          <GameButton onClick={store.reset}>Reset</GameButton>
+          <GameButton onClick={store.reset}>Start Over</GameButton>
           <GameButton onClick={store.gotoEditor}>Edit</GameButton>
           <GameButton onClick={store.goBack}>Menu</GameButton>
         </ButtonContainer>
-      </div>
-    </div>
+      </LevelPanel>
+    </LevelPlayContainer>
   );
 });
 

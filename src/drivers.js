@@ -84,4 +84,9 @@ export const runLevelEditorStore = store => {
 export const runGameStore = store => {
   runLevelRecordStore(store.levelRecordStore);
   runLevelEditorStore(store.editorStore);
+
+  autorun(() => {
+    store.state.currentView;
+    window.scrollTo(0, 0);
+  });
 };

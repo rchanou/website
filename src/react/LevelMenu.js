@@ -8,6 +8,7 @@ import State from "./State";
 import LevelView from "./LevelView";
 import DirectionMapper from "./DirectionMapper";
 import { GameButton } from "./Style";
+import styled from "styled-components";
 
 import { getMenuStore } from "../stores";
 import { getNextKeyInDir } from "../functions";
@@ -27,6 +28,11 @@ const LevelMenuItem = (
     <LevelView entities={level} />
   </div>
 );
+
+const LevelList = styled(DirectionMapper)`
+  display: flex;
+  flex-wrap: wrap;
+`;
 
 const LevelMenu = (
   {
@@ -79,10 +85,7 @@ const LevelMenu = (
             }}
           />
 
-          <DirectionMapper
-            style={{ display: "flex", flexWrap: "wrap" }}
-            onResize={me.handleResize}
-          >
+          <LevelList onResize={me.handleResize}>
             {levelRecords.map(rec => (
               <LevelMenuItem
                 key={rec.id}
@@ -92,7 +95,7 @@ const LevelMenu = (
                 onSelect={bindSelect(rec.id)}
               />
             ))}
-          </DirectionMapper>
+          </LevelList>
 
           <GameButton onClick={onCreateClick}>Create</GameButton>
         </div>

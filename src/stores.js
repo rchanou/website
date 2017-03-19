@@ -152,7 +152,6 @@ export const getLevelRecordStore = (initialState = {}) => {
   });
 
   const loadRecords = recordsToLoad => {
-    console.log(recordsToLoad, "to load");
     state.records = recordsToLoad;
     state.attemptingLoad = false;
   };
@@ -167,7 +166,7 @@ export const getLevelRecordStore = (initialState = {}) => {
 export const getMenuStore = (initial = {}) => {
   const {
     initialState = {},
-    levelRecordStore, // = getLevelRecordStore(),
+    levelRecordStore = getLevelRecordStore(),
     goBack = o => o
   } = initial;
 
@@ -187,7 +186,7 @@ export const getEditorStore = (initial = {}) => {
   const {
     initialState = {},
     goBack = o => o,
-    reload = o => console.log("no reload"),
+    reload = o => o,
     loadLevelRecord = o => o
   } = initial;
 
@@ -261,6 +260,7 @@ export const getEditorStore = (initial = {}) => {
     changeFromClick,
     submit,
     closeSubmit,
+    goBack,
     reload,
     loadLevelRecord,
 

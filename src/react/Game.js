@@ -4,6 +4,7 @@ import { observer } from "mobx-react";
 import LevelPlay from "./LevelPlay";
 import LevelMenu from "./LevelMenu";
 import LevelEditor from "./LevelEditor";
+import { MainDiv } from "./Style";
 
 import { getGameStore } from "../stores";
 
@@ -32,7 +33,7 @@ const Game = observer(({ store = defaultStore }) => {
   }
 
   return (
-    <div style={{ fontFamily: "sans-serif" }}>
+    <MainDiv>
       <h2>Sokoban</h2>
 
       <ViewToRender store={storeToUse} />
@@ -47,7 +48,7 @@ const Game = observer(({ store = defaultStore }) => {
         {" "}
         <a href="https://www.github.com/rchanou/website">here</a>.
       </div>
-    </div>
+    </MainDiv>
   );
 });
 

@@ -1,5 +1,14 @@
 import styled from "styled-components";
 
+export const MainDiv = styled.div`
+  font-family: sans-serif;
+  & * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+`;
+
 export const ButtonContainer = styled.div`
   display: flex;
   align-items: stretch;
@@ -16,7 +25,6 @@ export const GameButton = styled.button`
   font-size: 1.69em;
   flex-grow: 1;
   padding: 0.4em;
-  margin: 5px;
 
   &:disabled {
     background: gray;
