@@ -7,7 +7,7 @@ import KeyMap from "./KeyMap";
 import State from "./State";
 import LevelView from "./LevelView";
 import Recaptcha from "./Recaptcha";
-import { GameButton } from "./Style";
+import { ButtonContainer, GameButton } from "./Style";
 
 import { getEditorStore } from "../stores";
 import { getEntityRenderer } from "../functions";
@@ -112,7 +112,7 @@ const LevelEditor = observer(({ store = getEditorStore() }) => {
           Set cursor position with mouse or arrow keys. Place items with buttons below or keys.
         </div>
 
-        <div>
+        <ButtonContainer>
           <GameButton onClick={store.placeSpace}>
             Clear Space (spacebar)
           </GameButton>
@@ -134,7 +134,7 @@ const LevelEditor = observer(({ store = getEditorStore() }) => {
           >
             Back
           </GameButton>
-        </div>
+        </ButtonContainer>
 
         <Recaptcha onSubmit={store.submit} disabled={submission} />
       </div>
