@@ -27,7 +27,7 @@ export const ButtonContainer = styled.div`
 
 export const GameButton = styled.button`
   background: steelblue;
-  font-family: Cartwheel;
+  font-family: Cartwheel, Rockwell, sans-serif;
   --border-radius: 11.1px;
   border: none;
   color: white;
