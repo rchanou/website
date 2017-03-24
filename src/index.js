@@ -7,7 +7,7 @@ import { getGameStore } from "./stores";
 import { runGameStore } from "./drivers";
 import App from "./components/Game";
 import "../assets/base.css";
-import "../assets/MyFontsWebfontsKit.css";
+import "../public/MyFontsWebfontsKit.css";
 
 const initialStore = getGameStore();
 runGameStore(initialStore);
