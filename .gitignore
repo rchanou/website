@@ -9,14 +9,13 @@ node_modules
 # production
 /build
 
+# build
+app.min.js
+
 # misc
 .DS_Store
 .env
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-
-jsconfig.json
 .vscode
-
-app.min.js

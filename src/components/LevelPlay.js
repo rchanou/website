@@ -3,7 +3,6 @@ import { autorun, createTransformer } from "mobx";
 import { observer, Observer } from "mobx-react";
 import Swipeable from "react-swipeable";
 import styled from "styled-components";
-import Meta from "react-document-meta";
 import { applyContainerQuery } from "react-container-query";
 
 import LevelView from "./LevelView";
@@ -116,13 +115,6 @@ const LevelPlay = observer(({ store = defaultStore }) => {
 
       <FullDiv>
         <LevelPanel>
-          <Meta
-            content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;"
-            meta={{
-              content: "width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;"
-            }}
-          />
-
           <LevelControls store={store} />
 
           <ButtonContainer>
@@ -139,6 +131,6 @@ const LevelPlay = observer(({ store = defaultStore }) => {
 
 LevelPlay.displayName = "LevelPlay";
 
-window.serializeFocusedComponentProps = () => JSON.stringify($r.props);
+window.serializeFocusedComponentProps = () => JSON.stringify(window.$r.props);
 
 export default LevelPlay;

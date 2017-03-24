@@ -8,7 +8,7 @@ module.exports = function() {
     context: __dirname,
     devtool: "eval",
     resolve: {
-      extensions: [".js", ".jsx"]
+      extensions: ["", ".js", ".jsx"]
     },
     resolveLoader: {
       modules: [path.resolve(__dirname, "node_modules"), "node_modules"]
