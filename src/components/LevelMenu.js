@@ -8,9 +8,12 @@ import State from "./State";
 import LevelView from "./LevelView";
 import DirectionMapper from "./DirectionMapper";
 import { GameButton } from "./Style";
+import styled from "styled-components";
 
 import { getMenuStore } from "../stores";
 import { getNextKeyInDir } from "../functions";
+
+const creditSiteLink = "http://www.onlinespiele-sammlung.de/sokoban/sokobangames/skinner";
 
 const LevelMenuItem = (
   { level = [], highlighted, onSelect = o => o, onClick = o => o }
@@ -27,6 +30,11 @@ const LevelMenuItem = (
     <LevelView entities={level} />
   </div>
 );
+
+const LevelList = styled(DirectionMapper)`
+  display: flex;
+  flex-wrap: wrap;
+`;
 
 const LevelMenu = (
   {
@@ -79,10 +87,9 @@ const LevelMenu = (
             }}
           />
 
-          <DirectionMapper
-            style={{ display: "flex", flexWrap: "wrap" }}
-            onResize={me.handleResize}
-          >
+          <h2>Sokoban</h2>
+
+          <LevelList onResize={me.handleResize}>
             {levelRecords.map(rec => (
               <LevelMenuItem
                 key={rec.id}
@@ -92,9 +99,22 @@ const LevelMenu = (
                 onSelect={bindSelect(rec.id)}
               />
             ))}
-          </DirectionMapper>
+          </LevelList>
 
           <GameButton onClick={onCreateClick}>Create</GameButton>
+
+          <div>
+            <a href={creditSiteLink} rel="noopener noreferrer" target="_blank">
+              Featuring Levels Designed by David W. Skinner
+            </a>
+
+            <div>By Ron ChanOu</div>
+            <div>
+              Full website coming soon! Source viewable
+              {" "}
+              <a href="https://www.github.com/rchanou/website">here</a>.
+            </div>
+          </div>
         </div>
       );
     }}

@@ -5,7 +5,9 @@ import ReactDOM from "react-dom";
 
 import { getGameStore } from "./stores";
 import { runGameStore } from "./drivers";
-import App from "./react/Game";
+import App from "./components/Game";
+import "../assets/base.css";
+import "../assets/MyFontsWebfontsKit.css";
 
 const initialStore = getGameStore();
 runGameStore(initialStore);

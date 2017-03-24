@@ -1,18 +1,16 @@
-import ice from "icepick";
-
-export const physicalTypes = ice.freeze({
+export const physicalTypes = Object.freeze({
   pushable: "PUSHABLE",
   obstacle: "OBSTACLE"
 });
 
-export const groupTypes = ice.freeze({
+export const groupTypes = Object.freeze({
   player: "PLAYER",
   target: "TARGET",
   box: "BOX",
   wall: "WALL"
 });
 
-export const entitySchemas = ice.freeze({
+export const entitySchemas = Object.freeze({
   player: {
     isPlayer: true,
     group: groupTypes.player,
