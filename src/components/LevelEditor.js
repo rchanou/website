@@ -1,11 +1,7 @@
 import React from "react";
-import { createTransformer } from "mobx";
 import { observer } from "mobx-react";
-import { sortBy } from "lodash";
 
 import KeyMap from "./KeyMap";
-import State from "./State";
-import LevelView from "./LevelView";
 import Recaptcha from "./Recaptcha";
 import { ButtonContainer, GameButton } from "./Style";
 

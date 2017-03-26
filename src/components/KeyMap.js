@@ -1,6 +1,11 @@
-import React from "react";
+import React, { PropTypes } from "react";
 
 class KeyMap extends React.Component {
+  static propTypes = {
+    keyMap: PropTypes.objectOf(PropTypes.func),
+    children: PropTypes.node
+  }
+
   static defaultProps = {
     keyMap: {},
     children: null
@@ -21,8 +26,7 @@ class KeyMap extends React.Component {
   }
 
   render() {
-    const { keyMap, children } = this.props;
-    return children;
+    return this.props.children;
   }
 
   componentWillUnmount() {

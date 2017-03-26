@@ -11,6 +11,11 @@
   ],
   "plugins": [
     "transform-runtime",
-    "transform-class-properties"
-  ]
-}
+    "transform-class-properties",
+    [
+      "styled-components",
+      {
+        "displayName": true
+      }
+    ]
+  }

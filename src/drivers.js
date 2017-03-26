@@ -1,4 +1,4 @@
-import { autorun, toJS } from "mobx";
+import { autorun } from "mobx";
 
 const submitUrl = "https://qlrvsjbsr3.execute-api.us-west-2.amazonaws.com/prod/checkHumanBeforeCaptchaUpdate";
 const genericLevelLoadError = "An error occurred loading the levels. Refresh the page to try again.";
@@ -70,10 +70,8 @@ export const runLevelEditorStore = store => {
           }
         }
       } catch (ex) {
-        ex => {
-          alert(genericLevelSaveError);
-          console.error(ex);
-        };
+        alert(genericLevelSaveError);
+        console.error(ex);
       }
 
       store.closeSubmit();
@@ -84,9 +82,4 @@ export const runLevelEditorStore = store => {
 export const runGameStore = store => {
   runLevelRecordStore(store.levelRecordStore);
   runLevelEditorStore(store.editorStore);
-
-  autorun(() => {
-    store.state.currentView;
-    window.scrollTo(0, 0);
-  });
 };

@@ -1,11 +1,23 @@
-import React from "react";
 import styled from "styled-components";
 
-export const MainDiv = styled.div`
+export const AppDiv = styled.div`
+  background: #eee;
+
   & * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+  }
+`;
+
+export const MainBox = styled.main`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  & > * {
+    max-width: 960px;
   }
 `;
 
@@ -28,12 +40,16 @@ export const ButtonContainer = styled.div`
 export const GameButton = styled.button`
   background: steelblue;
   font-family: Cartwheel, Rockwell, sans-serif;
-  --border-radius: 11.1px;
   border: none;
   color: white;
   font-size: 1.69em;
   flex-grow: 1;
   padding: 0.4em;
+  cursor: pointer;
+
+  &:focus {
+    outline: none;
+  }
 
   &:disabled {
     background: gray;

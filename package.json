@@ -10,6 +10,7 @@
     "test": "react-scripts test --env=jsdom"
   },
   "devDependencies": {
+    "babel-plugin-styled-components": "^1.1.1",
     "babel-plugin-transform-class-properties": "^6.23.0",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.2.2",
@@ -33,6 +34,6 @@
     "react-loading": "^0.0.9",
     "react-swipeable": "^3.9.2",
     "shortid": "^2.2.8",
-    "styled-components": "^1.4.4"
+    "styled-components": "next"
   }
 }
