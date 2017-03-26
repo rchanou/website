@@ -357,7 +357,7 @@ export const getGameStore = (initial = {}) => {
   });
 
   editorStore.goBack = o => {
-    state.currentView = "PLAY";
+    state.currentView = editorStore.state.id ? "PLAY" : "MENU";
   };
 
   menuStore.loadLevel = id => {
@@ -376,6 +376,7 @@ export const getGameStore = (initial = {}) => {
   };
 
   menuStore.gotoCreateLevel = o => {
+    delete editorStore.state.id;
     editorStore.state.level = [];
     menuStore.state.highlightedLevelId = null;
     state.currentView = "EDITOR";

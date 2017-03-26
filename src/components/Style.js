@@ -1,6 +1,8 @@
 import styled from "styled-components";
 
 export const AppDiv = styled.div`
+  background: #eee;
+
   & * {
     box-sizing: border-box;
     margin: 0;
@@ -8,7 +10,7 @@ export const AppDiv = styled.div`
   }
 `;
 
-export const MainBox = styled.section`
+export const MainBox = styled.main`
   width: 100%;
   display: flex;
   flex-direction: column;

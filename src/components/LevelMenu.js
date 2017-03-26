@@ -6,7 +6,7 @@ import KeyMap from "./KeyMap";
 import State from "./State";
 import LevelView from "./LevelView";
 import DirectionMapper from "./DirectionMapper";
-import { MainBox, GameButton } from "./Style";
+import { MainBox } from "./Style";
 import styled from "styled-components";
 
 import { getMenuStore } from "../stores";
@@ -22,6 +22,7 @@ const Banner = styled.section`
 
   & h1 {
     font-size: 3em;
+    font-weight: normal;
   }
 
   & a {
@@ -33,18 +34,31 @@ const Banner = styled.section`
 const LevelList = styled(DirectionMapper)`
   display: flex;
   flex-wrap: wrap;
-  @media screen and (max-width: 400px) {
+  @media screen and (max-width: 640px) {
     justify-content: center;
   }
 `;
 
-const LevelMenuItemBox = styled.div`
-  width: 280px;
-  height: 280px;
+const MenuItemBox = styled.div`
+  width: 300px;
+  height: 300px;
   padding: 20px;
+  margin: 10px;
+
+  font-size: 3.45em;
+  color: #888;
+  background: #fafafa;
+  box-shadow: 1.11px 1.11px 1.11px 1.11px #aaa;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
 
   &.highlighted {
-    background: lightgreen;
+    background: paleturquoise;
   }
 `;
 
@@ -56,9 +70,9 @@ const LevelMenuItem = (
     onClick = o => o
   }
 ) => (
-  <LevelMenuItemBox onClick={onClick} className={highlighted && "highlighted"}>
+  <MenuItemBox onClick={onClick} className={highlighted && "highlighted"}>
     <LevelView entities={level} />
-  </LevelMenuItemBox>
+  </MenuItemBox>
 );
 
 const LevelMenu = (
@@ -132,19 +146,23 @@ const LevelMenu = (
 
           <MainBox>
             <LevelList onResize={me.handleResize}>
-              {levelRecords.map(rec => (
-                <LevelMenuItem
-                  key={rec.id}
-                  level={rec.level}
-                  highlighted={rec.id === highlightedLevelId}
-                  onClick={bindClick(rec.id)}
-                  onSelect={bindSelect(rec.id)}
-                />
-              ))}
+              {levelRecords
+                .map(rec => (
+                  <LevelMenuItem
+                    key={rec.id}
+                    level={rec.level}
+                    highlighted={rec.id === highlightedLevelId}
+                    onClick={bindClick(rec.id)}
+                    onSelect={bindSelect(rec.id)}
+                  />
+                ))
+                .concat(
+                  <MenuItemBox onClick={onCreateClick}>
+                    <div>Create</div>
+                    <div>Level</div>
+                  </MenuItemBox>
+                )}
             </LevelList>
-
-            <GameButton onClick={onCreateClick}>Create</GameButton>
-
           </MainBox>
         </div>
       );
