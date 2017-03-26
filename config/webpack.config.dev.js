@@ -65,12 +65,12 @@ module.exports = {
     // We use `fallback` instead of `root` because we want `node_modules` to "win"
     // if there any conflicts. This matches Node resolution mechanism.
     // https://github.com/facebookincubator/create-react-app/issues/253
-    fallback: paths.nodePaths,
+    modules: ["node_modules", ...paths.nodePaths],
     // These are the reasonable defaults supported by the Node ecosystem.
     // We also include JSX as a common component filename extension to support
     // some tools, although we do not recommend using it, see:
     // https://github.com/facebookincubator/create-react-app/issues/290
-    extensions: [".js", ".json", ".jsx", ""],
+    extensions: [".js", ".json", ".jsx"],
     alias: {
       // Support React Native Web
       // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
@@ -81,14 +81,13 @@ module.exports = {
   module: {
     // First, run the linter.
     // It's important to do this before Babel processes the JS.
-    preLoaders: [
+    rules: [
       {
+        enforce: "pre",
         test: /\.(js|jsx)$/,
         loader: "eslint",
         include: paths.appSrc
-      }
-    ],
-    loaders: [
+      },
       // ** ADDING/UPDATING LOADERS **
       // The "url" loader handles all assets unless explicitly excluded.
       // The `exclude` list *must* be updated with every change to loader extensions.
@@ -158,7 +157,7 @@ module.exports = {
   },
 
   // We use PostCSS for autoprefixing only.
-  postcss: function() {
+  /*postcss: function() {
     return [
       autoprefixer({
         browsers: [
@@ -169,7 +168,7 @@ module.exports = {
         ]
       })
     ];
-  },
+  },*/
   plugins: [
     // Makes some environment variables available in index.html.
     // The public URL is available as %PUBLIC_URL% in index.html, e.g.:
