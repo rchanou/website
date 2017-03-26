@@ -1,4 +1,3 @@
-import React from "react";
 import styled from "styled-components";
 
 export const AppDiv = styled.div`
@@ -16,7 +15,7 @@ export const MainBox = styled.section`
   align-items: center;
 
   & > * {
-    max-width: 1060px;
+    max-width: 960px;
   }
 `;
 
@@ -45,7 +44,7 @@ export const GameButton = styled.button`
   font-size: 1.69em;
   flex-grow: 1;
   padding: 0.4em;
-
+ 
   &:disabled {
     background: gray;
     cursor: not-allowed;

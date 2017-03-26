@@ -1,9 +1,8 @@
 import React from "react";
-import { autorun, createTransformer } from "mobx";
-import { observer, Observer } from "mobx-react";
+import { createTransformer } from "mobx";
+import { observer } from "mobx-react";
 import Swipeable from "react-swipeable";
 import styled from "styled-components";
-import { applyContainerQuery } from "react-container-query";
 
 import LevelView from "./LevelView";
 import LevelControls from "./Controls";
@@ -28,12 +27,6 @@ const hasWon = createTransformer(entities => {
   }
   return true;
 });
-
-const playContainerQuery = {
-  thin: {
-    maxWidth: 222
-  }
-};
 
 const LevelPlayBox = styled.div`
   display: flex;

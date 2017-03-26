@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-import { ButtonContainer, GameButton } from "./Style";
+import { GameButton } from "./Style";
 import { getLevelPlayStore } from "../stores";
 
 const squareMargin = 50 * (Math.sqrt(2) - 1);

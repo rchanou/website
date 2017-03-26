@@ -1,4 +1,4 @@
-import { observable, toJS } from "mobx";
+import { observable } from "mobx";
 import update from "immutability-helper";
 import shortid from "shortid";
 
@@ -19,7 +19,9 @@ export const getLevelPlayStore = (initialState = {}) => {
         (levelAtMove, nextMove) => {
           return Object.entries(nextMove).reduce(
             (levelAtSubMove, [id, position]) => {
-              const indexToMove = levelAtSubMove.findIndex(ent => ent.id == id);
+              const indexToMove = levelAtSubMove.findIndex(
+                ent => ent.id === id
+              );
 
               if (indexToMove === -1) {
                 return levelAtSubMove;
@@ -176,10 +178,10 @@ export const getMenuStore = (initial = {}) => {
   });
 
   const selectLevel = id => {
-    state.highlightedLevelId = id == state.highlightedLevelId ? -1 : id;
+    state.highlightedLevelId = id === state.highlightedLevelId ? -1 : id;
   };
 
-  return { state, levelRecordStore, selectLevel };
+  return { state, levelRecordStore, selectLevel, goBack };
 };
 
 export const getEditorStore = (initial = {}) => {
@@ -360,7 +362,7 @@ export const getGameStore = (initial = {}) => {
 
   menuStore.loadLevel = id => {
     id = id == null ? menuStore.state.highlightedLevelId : id;
-    const recordToLoad = levelRecordStore.state.records.find(r => r.id == id);
+    const recordToLoad = levelRecordStore.state.records.find(r => r.id === id);
 
     if (!recordToLoad) {
       console.warn("Level not found!");

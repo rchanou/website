@@ -1,5 +1,4 @@
 import React from "react";
-import { observable } from "mobx";
 import { Observer } from "mobx-react";
 import Loading from "react-loading";
 
@@ -31,10 +30,6 @@ const Banner = styled.section`
   }
 `;
 
-const Container = styled.section`
-  
-`;
-
 const LevelList = styled(DirectionMapper)`
   display: flex;
   flex-wrap: wrap;
@@ -44,9 +39,9 @@ const LevelList = styled(DirectionMapper)`
 `;
 
 const LevelMenuItemBox = styled.div`
-  width: 200px;
-  height: 200px;
-  padding: 10px;
+  width: 280px;
+  height: 280px;
+  padding: 20px;
 
   &.highlighted {
     background: lightgreen;
@@ -83,9 +78,8 @@ const LevelMenu = (
     }}
   >
     {me => {
-      const bindDirectionMove = (axis, dir) => {
-        const crossAxis = axis == "x" ? "y" : "x";
-        return () => {
+      const bindDirectionMove = (axis, dir) =>
+        () => {
           if (highlightedLevelId === -1) {
             bindSelect(levelRecords[0].id)();
           } else {
@@ -99,7 +93,6 @@ const LevelMenu = (
             bindSelect(nextKey)();
           }
         };
-      };
 
       return (
         <div>
@@ -143,7 +136,7 @@ const LevelMenu = (
                 <LevelMenuItem
                   key={rec.id}
                   level={rec.level}
-                  highlighted={rec.id == highlightedLevelId}
+                  highlighted={rec.id === highlightedLevelId}
                   onClick={bindClick(rec.id)}
                   onSelect={bindSelect(rec.id)}
                 />

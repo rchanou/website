@@ -1,8 +1,6 @@
 import React from "react";
-import { createTransformer } from "mobx";
 import { observer } from "mobx-react";
 import { getEntityRenderer } from "../functions";
-import { groupTypes } from "../constants";
 
 //const cachedGetEntityRenderer = createTransformer(getEntityRenderer);
 
