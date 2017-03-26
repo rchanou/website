@@ -1,11 +1,22 @@
 import React from "react";
 import styled from "styled-components";
 
-export const MainDiv = styled.div`
+export const AppDiv = styled.div`
   & * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+  }
+`;
+
+export const MainBox = styled.section`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  & > * {
+    max-width: 1060px;
   }
 `;
 

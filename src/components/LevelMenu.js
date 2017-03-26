@@ -7,7 +7,7 @@ import KeyMap from "./KeyMap";
 import State from "./State";
 import LevelView from "./LevelView";
 import DirectionMapper from "./DirectionMapper";
-import { GameButton } from "./Style";
+import { MainBox, GameButton } from "./Style";
 import styled from "styled-components";
 
 import { getMenuStore } from "../stores";
@@ -15,26 +15,56 @@ import { getNextKeyInDir } from "../functions";
 
 const creditSiteLink = "http://www.onlinespiele-sammlung.de/sokoban/sokobangames/skinner";
 
-const LevelMenuItem = (
-  { level = [], highlighted, onSelect = o => o, onClick = o => o }
-) => (
-  <div
-    onClick={onClick}
-    style={{
-      width: 200,
-      height: 200,
-      background: highlighted && "pink",
-      padding: 10
-    }}
-  >
-    <LevelView entities={level} />
-  </div>
-);
+const Banner = styled.section`
+  text-align: center;
+  background: palevioletred;
+  color: #eee;
+  padding: 0.2345em;
+
+  & h1 {
+    font-size: 3em;
+  }
+
+  & a {
+    text-decoration: none;
+    color: paleturquoise;
+  }
+`;
+
+const Container = styled.section`
+  
+`;
 
 const LevelList = styled(DirectionMapper)`
   display: flex;
   flex-wrap: wrap;
+  @media screen and (max-width: 400px) {
+    justify-content: center;
+  }
 `;
+
+const LevelMenuItemBox = styled.div`
+  width: 200px;
+  height: 200px;
+  padding: 10px;
+
+  &.highlighted {
+    background: lightgreen;
+  }
+`;
+
+const LevelMenuItem = (
+  {
+    level = [],
+    highlighted,
+    onSelect = o => o,
+    onClick = o => o
+  }
+) => (
+  <LevelMenuItemBox onClick={onClick} className={highlighted && "highlighted"}>
+    <LevelView entities={level} />
+  </LevelMenuItemBox>
+);
 
 const LevelMenu = (
   {
@@ -87,34 +117,42 @@ const LevelMenu = (
             }}
           />
 
-          <h2>Sokoban</h2>
-
-          <LevelList onResize={me.handleResize}>
-            {levelRecords.map(rec => (
-              <LevelMenuItem
-                key={rec.id}
-                level={rec.level}
-                highlighted={rec.id == highlightedLevelId}
-                onClick={bindClick(rec.id)}
-                onSelect={bindSelect(rec.id)}
-              />
-            ))}
-          </LevelList>
-
-          <GameButton onClick={onCreateClick}>Create</GameButton>
-
-          <div>
-            <a href={creditSiteLink} rel="noopener noreferrer" target="_blank">
-              Featuring Levels Designed by David W. Skinner
-            </a>
-
-            <div>By Ron ChanOu</div>
+          <Banner>
+            <h1>Sokoban</h1>
             <div>
-              Full website coming soon! Source viewable
-              {" "}
-              <a href="https://www.github.com/rchanou/website">here</a>.
+              <a
+                href={creditSiteLink}
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                Featuring Levels Designed by David W. Skinner
+              </a>
+
+              <div>By Ron ChanOu</div>
+              <div>
+                Full website coming soon! Source viewable
+                {" "}
+                <a href="https://www.github.com/rchanou/website">here</a>
+              </div>
             </div>
-          </div>
+          </Banner>
+
+          <MainBox>
+            <LevelList onResize={me.handleResize}>
+              {levelRecords.map(rec => (
+                <LevelMenuItem
+                  key={rec.id}
+                  level={rec.level}
+                  highlighted={rec.id == highlightedLevelId}
+                  onClick={bindClick(rec.id)}
+                  onSelect={bindSelect(rec.id)}
+                />
+              ))}
+            </LevelList>
+
+            <GameButton onClick={onCreateClick}>Create</GameButton>
+
+          </MainBox>
         </div>
       );
     }}
