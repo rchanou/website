@@ -4,6 +4,6 @@ module.exports = {
   publicPath: "public",
   globalImports: ["assets/base.css", "assets/MyFontsWebfontsKit.css"],
   containerQuerySelector: "#root",
-  webpackConfigPath: "react-scripts/config/webpack.config.dev",
+  webpackConfigPath: "./config/webpack.config.dev.js",
   hostname: process.env.COSMOS_HOST || "localhost"
 };

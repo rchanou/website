@@ -2,10 +2,7 @@
   "presets": [
     "stage-0",
     [
-      "env",
-      {
-        "modules": false
-      }
+      "env"
     ],
     "react"
   ],
@@ -13,9 +10,7 @@
     "transform-runtime",
     "transform-class-properties",
     [
-      "styled-components",
-      {
-        "displayName": true
-      }
+      "styled-components"
     ]
-  }
+  ]
+}
