@@ -1,5 +1,4 @@
 import React from "react";
-import { createTransformer } from "mobx";
 import { observer } from "mobx-react";
 import Swipeable from "react-swipeable";
 import styled from "styled-components";
@@ -10,28 +9,13 @@ import KeyMap from "./KeyMap";
 import { FullDiv, GameButton, ButtonContainer } from "./Style";
 
 import { getLevelPlayStore } from "../stores";
-import { groupTypes } from "../constants";
-
-const hasWon = createTransformer(entities => {
-  const targets = entities.filter(ent => ent.group === groupTypes.target);
-  const boxes = entities.filter(ent => ent.group === groupTypes.box);
-  for (const target of targets) {
-    const targetPos = target.position;
-    if (
-      !boxes.find(
-        box => box.position.x === targetPos.x && box.position.y === targetPos.y
-      )
-    ) {
-      return false;
-    }
-  }
-  return true;
-});
+import { hasWon } from "../functions";
 
 const LevelPlayBox = styled.div`
   display: flex;
   max-width: 100vw;
   max-height: 100vh;
+  background: #fafafa;
 
   @media screen and (orientation:portrait) {
     flex-direction: column;
@@ -42,13 +26,12 @@ const LevelPlayBox = styled.div`
 `;
 
 const LevelViewBox = styled(Swipeable)`
-  background: #eee;
   touch-action: none;
   max-width: 80vh;
   padding: 22px;
 
   &.victory {
-    background: aquamarine;
+    background: lightgreen;
   }
 `;
 
@@ -66,8 +49,17 @@ const LevelPanel = styled.div`
   }
 `;
 
+const ScorePanel = styled.div`
+  padding: 9.999px;
+  color: #333;
+  font-size: 2.34em;
+  display: flex;
+  justify-content: space-between;
+`;
+
 const defaultStore = getLevelPlayStore();
 const LevelPlay = observer(({ store = defaultStore }) => {
+  const { state } = store;
   return (
     <LevelPlayBox>
       <KeyMap
@@ -93,16 +85,19 @@ const LevelPlay = observer(({ store = defaultStore }) => {
       />
 
       <FullDiv>
-        <h2>Moves: {store.state.moveCount}</h2>
+        <ScorePanel>
+          <span>Moves: {store.state.moveCount}</span>
+          {hasWon(state.entities) && <span>Great Job!</span>}
+        </ScorePanel>
 
         <LevelViewBox
           onSwipedLeft={store.tryMoveLeft}
           onSwipedDown={store.tryMoveDown}
           onSwipedUp={store.tryMoveUp}
           onSwipedRight={store.tryMoveRight}
-          className={hasWon(store.state.entities) && "victory"}
+          className={hasWon(state.entities) && "victory"}
         >
-          <LevelView entities={store.state.entities} />
+          <LevelView entities={state.entities} />
         </LevelViewBox>
       </FullDiv>
 

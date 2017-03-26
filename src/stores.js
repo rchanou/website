@@ -3,6 +3,7 @@ import update from "immutability-helper";
 import shortid from "shortid";
 
 import { groupTypes, physicalTypes, entitySchemas } from "./constants";
+import { hasWon } from "./functions";
 
 export const getLevelPlayStore = (initialState = {}) => {
   const {
@@ -61,6 +62,10 @@ export const getLevelPlayStore = (initialState = {}) => {
 
   const tryMove = (axis, step) => {
     if (!state.player) {
+      return;
+    }
+
+    if (hasWon(state.entities)) {
       return;
     }
 

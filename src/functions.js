@@ -1,9 +1,26 @@
 import React from "react";
 import styled from "styled-components";
+import { createTransformer } from "mobx";
 import { sortBy } from "lodash";
 
 import { getLevelPlayStore } from "./stores";
 import { entitySchemas, groupTypes } from "./constants";
+
+export const hasWon = createTransformer(entities => {
+  const targets = entities.filter(ent => ent.group === groupTypes.target);
+  const boxes = entities.filter(ent => ent.group === groupTypes.box);
+  for (const target of targets) {
+    const targetPos = target.position;
+    if (
+      !boxes.find(
+        box => box.position.x === targetPos.x && box.position.y === targetPos.y
+      )
+    ) {
+      return false;
+    }
+  }
+  return true;
+});
 
 export const getNextKeyInDir = (positions, currentPosKey, axis, dir) => {
   const crossAxis = axis === "x" ? "y" : "x";
@@ -37,7 +54,6 @@ export const getEntityRenderer = (entities, units, hash) => {
 
   return ent => {
     const startStyle = {
-      // ...baseEntityStyle,
       width: `${unit}%`,
       height: `${unit}%`,
       top: `${ent.position.y * unit}%`,
@@ -62,7 +78,18 @@ export const getEntityRenderer = (entities, units, hash) => {
       };
     }
     if (ent.group === groupTypes.box) {
-      finalStyle = { ...startStyle, background: "brown" };
+      if (
+        entities.find(
+          otherEnt =>
+            otherEnt.group === groupTypes.target &&
+              otherEnt.position.x === ent.position.x &&
+              otherEnt.position.y === ent.position.y
+        )
+      ) {
+        finalStyle = { ...startStyle, background: "darkorchid" };
+      } else {
+        finalStyle = { ...startStyle, background: "brown" };
+      }
     }
 
     return <Sprite key={ent.id} style={finalStyle} />;

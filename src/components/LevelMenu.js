@@ -157,7 +157,7 @@ const LevelMenu = (
                   />
                 ))
                 .concat(
-                  <MenuItemBox onClick={onCreateClick}>
+                  <MenuItemBox onClick={onCreateClick} key="CREATE_LEVEL">
                     <div>Create</div>
                     <div>Level</div>
                   </MenuItemBox>

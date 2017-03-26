@@ -45,7 +45,7 @@ const Arrows = styled.div`
   & button {
     width: 50%;
     height: 50%;
-    font-size: 2.11em;
+    --font-size: 2.11em;
   }
   
   @media screen and (orientation:landscape){   
