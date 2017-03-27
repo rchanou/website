@@ -1,5 +1,6 @@
 import React from "react";
-import { observer } from "mobx-react";
+import { observer, Observer } from "mobx-react";
+import styled from "styled-components";
 
 import LevelPlay from "./LevelPlay";
 import LevelMenu from "./LevelMenu";
@@ -9,6 +10,100 @@ import { AppDiv } from "./Style";
 import { getGameStore } from "../stores";
 
 const defaultStore = getGameStore();
+
+const creditSiteLink = "http://www.onlinespiele-sammlung.de/sokoban/sokobangames/skinner";
+
+const Banner = styled.section`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: darkorchid;
+  color: #eee;
+  padding: 0.2345em;
+  height: ${props => props.height};
+  box-shadow: 1.11px 1.11px 1.11px 1.11px #aaa;
+
+  & nav {
+    width: 960px;
+    max-width: 100vw;
+    padding: 0 6.54321px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 3.333rem;
+  }
+
+  & .icon {
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 4.321rem;
+  }
+  
+  & h1 {
+    font-size: 3.1415em;
+    font-weight: normal;
+  }
+
+  & a {
+    text-decoration: none;
+    color: paleturquoise;
+  }
+`;
+
+const BannerSwitch = ({ store }) => {
+  const confirmAndGoBack = () => {
+    const confirmed = confirm("Leave without saving?");
+    if (confirmed) {
+      store.editorStore.goBack();
+    }
+  };
+
+  switch (store.state.currentView) {
+    case "MENU":
+      return (
+        <Banner height="6.78em">
+          <h1>Sokoban</h1>
+          <a href={creditSiteLink} rel="noopener noreferrer" target="_blank">
+            Featuring Levels Designed by David W. Skinner
+          </a>
+
+          <div>By Ron ChanOu</div>
+          <div>
+            Full website coming soon! Source viewable
+            {" "}
+            <a href="https://www.github.com/rchanou/website">here</a>
+          </div>
+        </Banner>
+      );
+    case "PLAY":
+      return (
+        <Banner>
+          <nav>
+            <div className="icon" onClick={store.levelPlayStore.goBack}>⌂</div>
+            Moves: <Observer>
+              {() => store.levelPlayStore.state.moveCount}
+            </Observer>
+            <div className="icon" onClick={store.levelPlayStore.gotoEditor}>
+              ✎
+            </div>
+          </nav>
+        </Banner>
+      );
+    case "EDITOR":
+      return (
+        <Banner>
+          <nav>
+            <div className="icon" onClick={confirmAndGoBack}>
+              ⇐
+            </div>
+            <div />
+          </nav>
+        </Banner>
+      );
+    default:
+  }
+};
 
 const Game = observer(({ store = defaultStore }) => {
   let ViewToRender, storeToUse;
@@ -32,6 +127,7 @@ const Game = observer(({ store = defaultStore }) => {
 
   return (
     <AppDiv>
+      <BannerSwitch store={store} />
       <ViewToRender store={storeToUse} />
     </AppDiv>
   );

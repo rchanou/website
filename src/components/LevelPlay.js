@@ -6,19 +6,21 @@ import styled from "styled-components";
 import LevelView from "./LevelView";
 import LevelControls from "./Controls";
 import KeyMap from "./KeyMap";
-import { FullDiv, GameButton, ButtonContainer } from "./Style";
+import { MainBox, GameButton, ButtonContainer } from "./Style";
 
 import { getLevelPlayStore } from "../stores";
 import { hasWon } from "../functions";
 
 const LevelPlayBox = styled.div`
   display: flex;
+  width: 960px;
   max-width: 100vw;
-  max-height: 100vh;
+  height: calc(100vh - );
   background: #fafafa;
+  flex-direction: column;
+  box-shadow: 1.11px 1.11px 1.11px 1.11px #aaa;
 
   @media screen and (orientation:portrait) {
-    flex-direction: column;
   }
 
   @media screen and (orientation:landscape){
@@ -42,53 +44,35 @@ const LevelPanel = styled.div`
     --width: 100%;
     --max-height: calc(20vh - 2em);
   }
-  
-  @media screen and (orientation:landscape) {
-    width: 50%;
-    flex-direction: column;
-  }
-`;
-
-const ScorePanel = styled.div`
-  padding: 9.999px;
-  color: #333;
-  font-size: 2.34em;
-  display: flex;
-  justify-content: space-between;
 `;
 
 const defaultStore = getLevelPlayStore();
 const LevelPlay = observer(({ store = defaultStore }) => {
   const { state } = store;
   return (
-    <LevelPlayBox>
-      <KeyMap
-        keyMap={{
-          ArrowLeft: store.tryMoveLeft,
-          ArrowDown: store.tryMoveDown,
-          ArrowUp: store.tryMoveUp,
-          ArrowRight: store.tryMoveRight,
-          Left: store.tryMoveLeft,
-          Down: store.tryMoveDown,
-          Up: store.tryMoveUp,
-          Right: store.tryMoveRight,
-          e: store.tryMoveUp,
-          s: store.tryMoveLeft,
-          d: store.tryMoveDown,
-          f: store.tryMoveRight,
-          u: store.undo,
-          " ": store.undo,
-          Spacebar: store.undo,
-          Escape: store.reset,
-          Esc: store.reset
-        }}
-      />
-
-      <FullDiv>
-        <ScorePanel>
-          <span>Moves: {store.state.moveCount}</span>
-          {hasWon(state.entities) && <span>Great Job!</span>}
-        </ScorePanel>
+    <MainBox>
+      <LevelPlayBox>
+        <KeyMap
+          keyMap={{
+            ArrowLeft: store.tryMoveLeft,
+            ArrowDown: store.tryMoveDown,
+            ArrowUp: store.tryMoveUp,
+            ArrowRight: store.tryMoveRight,
+            Left: store.tryMoveLeft,
+            Down: store.tryMoveDown,
+            Up: store.tryMoveUp,
+            Right: store.tryMoveRight,
+            e: store.tryMoveUp,
+            s: store.tryMoveLeft,
+            d: store.tryMoveDown,
+            f: store.tryMoveRight,
+            u: store.undo,
+            " ": store.undo,
+            Spacebar: store.undo,
+            Escape: store.reset,
+            Esc: store.reset
+          }}
+        />
 
         <LevelViewBox
           onSwipedLeft={store.tryMoveLeft}
@@ -99,21 +83,20 @@ const LevelPlay = observer(({ store = defaultStore }) => {
         >
           <LevelView entities={state.entities} />
         </LevelViewBox>
-      </FullDiv>
 
-      <FullDiv>
         <LevelPanel>
-          <LevelControls store={store} />
+          {hasWon(state.entities)
+            ? <h1>Great Job!</h1>
+            : <LevelControls store={store} />}
 
           <ButtonContainer>
             <GameButton onClick={store.undo}>Undo</GameButton>
             <GameButton onClick={store.reset}>Start Over</GameButton>
-            <GameButton onClick={store.gotoEditor}>Edit</GameButton>
-            <GameButton onClick={store.goBack}>Menu</GameButton>
+            {/*<GameButton onClick={store.gotoEditor}>Edit</GameButton>*/}
           </ButtonContainer>
         </LevelPanel>
-      </FullDiv>
-    </LevelPlayBox>
+      </LevelPlayBox>
+    </MainBox>
   );
 });
 

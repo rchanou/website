@@ -12,29 +12,11 @@ import styled from "styled-components";
 import { getMenuStore } from "../stores";
 import { getNextKeyInDir } from "../functions";
 
-const creditSiteLink = "http://www.onlinespiele-sammlung.de/sokoban/sokobangames/skinner";
-
-const Banner = styled.section`
-  text-align: center;
-  background: palevioletred;
-  color: #eee;
-  padding: 0.2345em;
-
-  & h1 {
-    font-size: 3em;
-    font-weight: normal;
-  }
-
-  & a {
-    text-decoration: none;
-    color: paleturquoise;
-  }
-`;
-
 const LevelList = styled(DirectionMapper)`
   display: flex;
   flex-wrap: wrap;
-  @media screen and (max-width: 640px) {
+
+  @media screen and (max-width: 660px) {
     justify-content: center;
   }
 `;
@@ -124,26 +106,6 @@ const LevelMenu = (
             }}
           />
 
-          <Banner>
-            <h1>Sokoban</h1>
-            <div>
-              <a
-                href={creditSiteLink}
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                Featuring Levels Designed by David W. Skinner
-              </a>
-
-              <div>By Ron ChanOu</div>
-              <div>
-                Full website coming soon! Source viewable
-                {" "}
-                <a href="https://www.github.com/rchanou/website">here</a>
-              </div>
-            </div>
-          </Banner>
-
           <MainBox>
             <LevelList onResize={me.handleResize}>
               {levelRecords
@@ -157,7 +119,14 @@ const LevelMenu = (
                   />
                 ))
                 .concat(
-                  <MenuItemBox onClick={onCreateClick} key="CREATE_LEVEL">
+                  <MenuItemBox
+                    onClick={onCreateClick}
+                    key="CREATE_LEVEL"
+                    highlighted={
+                      !highlightedLevelId ||
+                        highlightedLevelId === "CREATE_LEVEL"
+                    }
+                  >
                     <div>Create</div>
                     <div>Level</div>
                   </MenuItemBox>

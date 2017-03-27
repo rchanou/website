@@ -1,4 +1,3 @@
-import { observable } from "mobx";
 import { getLevelPlayStore } from "../../../stores";
 
 export default {

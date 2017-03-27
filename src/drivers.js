@@ -82,4 +82,10 @@ export const runLevelEditorStore = store => {
 export const runGameStore = store => {
   runLevelRecordStore(store.levelRecordStore);
   runLevelEditorStore(store.editorStore);
+
+  autorun(() => {
+    // eslint-disable-next-line
+    store.state.currentView;
+    window.scrollTo(null, 0);
+  });
 };

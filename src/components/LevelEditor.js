@@ -94,7 +94,7 @@ const LevelEditor = observer(({ store = getEditorStore() }) => {
         }}
       />
 
-      <div style={{ maxWidth: 888 }}>
+      <div style={{ maxWidth: 960 }}>
         <div style={editorStyle} onClick={store.changeFromClick}>
           {editSquare}
 
@@ -122,13 +122,6 @@ const LevelEditor = observer(({ store = getEditorStore() }) => {
 
           <GameButton onClick={store.placeBoxTarget}>
             Box & Target (g)
-          </GameButton>
-
-          <GameButton
-            style={{ background: "tomato" }}
-            onClick={confirmAndGoBack}
-          >
-            Back
           </GameButton>
         </ButtonContainer>
 

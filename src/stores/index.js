@@ -2,8 +2,8 @@ import { observable } from "mobx";
 import update from "immutability-helper";
 import shortid from "shortid";
 
-import { groupTypes, physicalTypes, entitySchemas } from "./constants";
-import { hasWon } from "./functions";
+import { groupTypes, physicalTypes, entitySchemas } from "../constants";
+import { compactPuzzle, hasWon } from "../functions";
 
 export const getLevelPlayStore = (initialState = {}) => {
   const {
@@ -227,7 +227,7 @@ export const getEditorStore = (initial = {}) => {
       ...captchaObj,
       doc: {
         id: state.id || shortid.generate(),
-        level: state.level
+        level: compactPuzzle(state.level)
       }
     };
   };
@@ -370,7 +370,8 @@ export const getGameStore = (initial = {}) => {
     const recordToLoad = levelRecordStore.state.records.find(r => r.id === id);
 
     if (!recordToLoad) {
-      console.warn("Level not found!");
+      menuStore.state.highlightedLevelId = null;
+      state.currentView = "EDITOR";
       return;
     }
 
@@ -381,7 +382,7 @@ export const getGameStore = (initial = {}) => {
   };
 
   menuStore.gotoCreateLevel = o => {
-    delete editorStore.state.id;
+    editorStore.state.id = null;
     editorStore.state.level = [];
     menuStore.state.highlightedLevelId = null;
     state.currentView = "EDITOR";

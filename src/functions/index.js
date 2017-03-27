@@ -2,9 +2,10 @@ import React from "react";
 import styled from "styled-components";
 import { createTransformer } from "mobx";
 import { sortBy } from "lodash";
+import update from "immutability-helper";
 
-import { getLevelPlayStore } from "./stores";
-import { entitySchemas, groupTypes } from "./constants";
+import { getLevelPlayStore } from "../stores";
+import { entitySchemas, groupTypes } from "../constants";
 
 export const hasWon = createTransformer(entities => {
   const targets = entities.filter(ent => ent.group === groupTypes.target);
@@ -37,8 +38,11 @@ export const getNextKeyInDir = (positions, currentPosKey, axis, dir) => {
   return sortedPositions[nextPosIndex].key;
 };
 
-const getMax = (axis, entities) =>
-  Math.max.apply(null, entities.map(ent => ent.position[axis])) + 1;
+export const getMin = (axis, entities) =>
+  Math.min.apply(null, entities.map(ent => ent.position[axis]));
+
+export const getMax = (axis, entities) =>
+  Math.max.apply(null, entities.map(ent => ent.position[axis]));
 
 const Sprite = styled.div`
   position: absolute;
@@ -49,7 +53,8 @@ const Sprite = styled.div`
 `;
 
 export const getEntityRenderer = (entities, units, hash) => {
-  units = units || Math.max(getMax("x", entities), getMax("y", entities));
+  units = units ||
+    Math.max(getMax("x", entities) + 1, getMax("y", entities) + 1);
   const unit = 100 / units;
 
   return ent => {
@@ -82,8 +87,8 @@ export const getEntityRenderer = (entities, units, hash) => {
         entities.find(
           otherEnt =>
             otherEnt.group === groupTypes.target &&
-              otherEnt.position.x === ent.position.x &&
-              otherEnt.position.y === ent.position.y
+            otherEnt.position.x === ent.position.x &&
+            otherEnt.position.y === ent.position.y
         )
       ) {
         finalStyle = { ...startStyle, background: "darkorchid" };
@@ -160,8 +165,22 @@ export const loadSokobanMap = levelMap => {
         default:
       }
     }
-    //console.table(entities);
   });
+
   return getLevelPlayStore({ initialLevelState: entities, moves: [] });
-  //return new LevelStore(entities);
+};
+
+export const compactPuzzle = puzzle => {
+  const minX = getMin("x", puzzle);
+  const minY = getMin("y", puzzle);
+
+  return puzzle.map(ent => {
+    const { x, y } = ent.position;
+    return update(ent, {
+      position: {
+        x: { $set: x - minX },
+        y: { $set: y - minY }
+      }
+    });
+  });
 };

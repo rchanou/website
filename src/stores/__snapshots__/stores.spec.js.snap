@@ -1,0 +1,74 @@
+exports[`test getGameStore() without parameters uses defaults 1`] = `
+Object {
+  "editorStore": Object {
+    "changeFromClick": [Function],
+    "closeSubmit": [Function],
+    "goBack": [Function],
+    "loadLevelRecord": [Function],
+    "moveDown": [Function],
+    "moveLeft": [Function],
+    "moveRight": [Function],
+    "moveUp": [Function],
+    "placeBox": [Function],
+    "placeBoxTarget": [Function],
+    "placePlayer": [Function],
+    "placePlayerTarget": [Function],
+    "placeSpace": [Function],
+    "placeTarget": [Function],
+    "placeWall": [Function],
+    "reload": [Function],
+    "state": Object {
+      "bound": 20,
+      "editingPos": Object {
+        "x": 9,
+        "y": 9,
+      },
+      "level": Array [],
+      "submission": false,
+    },
+    "submit": [Function],
+  },
+  "levelPlayStore": Object {
+    "goBack": [Function],
+    "gotoEditor": [Function],
+    "reset": [Function],
+    "state": Object {
+      "levelStart": Array [],
+      "moves": Array [],
+    },
+    "tryMoveDown": [Function],
+    "tryMoveLeft": [Function],
+    "tryMoveRight": [Function],
+    "tryMoveUp": [Function],
+    "undo": [Function],
+  },
+  "levelRecordStore": Object {
+    "finishLoad": [Function],
+    "loadRecords": [Function],
+    "state": Object {
+      "attemptingLoad": true,
+      "records": Array [],
+    },
+  },
+  "menuStore": Object {
+    "goBack": [Function],
+    "gotoCreateLevel": [Function],
+    "levelRecordStore": Object {
+      "finishLoad": [Function],
+      "loadRecords": [Function],
+      "state": Object {
+        "attemptingLoad": true,
+        "records": Array [],
+      },
+    },
+    "loadLevel": [Function],
+    "selectLevel": [Function],
+    "state": Object {
+      "highlightedLevelId": -1,
+    },
+  },
+  "state": Object {
+    "currentView": "MENU",
+  },
+}
+`;

@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const AppDiv = styled.div`
-  background: #eee;
+  max-width: 100vw;
 
   & * {
     box-sizing: border-box;
@@ -12,6 +12,7 @@ export const AppDiv = styled.div`
 
 export const MainBox = styled.main`
   width: 100%;
+  max-width: 100vw;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -19,10 +20,6 @@ export const MainBox = styled.main`
   & > * {
     max-width: 960px;
   }
-`;
-
-export const FullDiv = styled.div`
-  width: 100%;
 `;
 
 export const ButtonContainer = styled.div`
