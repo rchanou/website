@@ -15,7 +15,6 @@ const LevelPlayBox = styled.div`
   display: flex;
   width: 620px;
   max-width: 100vw;
-  //height: calc(100vh - );
   background: #fafafa;
   flex-direction: column;
   box-shadow: 1.11px 1.11px 1.11px 1.11px #aaa;

@@ -13,6 +13,10 @@ import { getEntityRenderer } from "../functions";
 
 //const cachedGetEntityRenderer = createTransformer(getEntityRenderer);
 
+const Wrapper = styled.div` 
+  margin: 10px; 
+`;
+
 const Line = styled.div`
   position: absolute;
   pointer-events: none;
@@ -26,7 +30,7 @@ const EditSquare = styled.div`
 
 const EditorBox = styled.div`
   position: relative;
-  width: 960px;
+  width: 720px;
   max-width: 100vw;
   padding-top: 100%;
   background: #fafafa;
@@ -37,8 +41,15 @@ const EditorButtonContainer = styled(ButtonContainer)`
   flex-direction: row;
 
   & > button {
-    width: calc(50% - 22.22px);
+    margin: 6.06px;
+    width: calc(${100 / 3}% - 12.12px);
+    font-size: 1.1111rem;
+    padding: 0.4em 0;
   }
+`;
+
+const FitRecaptcha = styled(Recaptcha)`
+  margin: 0 10px;
 `;
 
 const LevelEditor = observer(({ store = getEditorStore() }) => {
@@ -120,7 +131,7 @@ const LevelEditor = observer(({ store = getEditorStore() }) => {
         }}
       />
 
-      <div>
+      <Wrapper>
         <EditorBox onClick={store.setFromClick}>
 
           {xLines}
@@ -156,8 +167,8 @@ const LevelEditor = observer(({ store = getEditorStore() }) => {
           </GameButton>
         </EditorButtonContainer>
 
-        <Recaptcha onSubmit={store.submit} disabled={submission} />
-      </div>
+        <FitRecaptcha onSubmit={store.submit} disabled={submission} />
+      </Wrapper>
     </MainBox>
   );
 });
