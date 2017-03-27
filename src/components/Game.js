@@ -99,6 +99,7 @@ const BannerSwitch = ({ store }) => {
             <div className="icon" onClick={confirmAndGoBack}>
               ⇐
             </div>
+            <div>Editor</div>
             <div />
           </nav>
         </Banner>
