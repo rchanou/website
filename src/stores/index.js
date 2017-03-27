@@ -1,6 +1,7 @@
 import { observable } from "mobx";
 import update from "immutability-helper";
 import shortid from "shortid";
+import { find, findIndex } from "lodash";
 
 import { groupTypes, physicalTypes, entitySchemas } from "../constants";
 import { compactPuzzle, hasWon } from "../functions";
@@ -20,9 +21,7 @@ export const getLevelPlayStore = (initialState = {}) => {
         (levelAtMove, nextMove) => {
           return Object.entries(nextMove).reduce(
             (levelAtSubMove, [id, position]) => {
-              const indexToMove = levelAtSubMove.findIndex(
-                ent => ent.id === id
-              );
+              const indexToMove = findIndex(levelAtSubMove, { id });
 
               if (indexToMove === -1) {
                 return levelAtSubMove;
@@ -215,7 +214,7 @@ export const getEditorStore = (initial = {}) => {
     e => {
       e.preventDefault();
       clearAtPos(state.editingPos);
-      
+
       for (const group of groups) {
         const action = group === groupTypes.target ? "unshift" : "push";
         state.level[action]({
@@ -226,18 +225,42 @@ export const getEditorStore = (initial = {}) => {
       }
     };
 
-  const changeFromClick = e => {
+  const setFromClick = e => {
     const x = Math.floor(
       state.bound * ((e.pageX - e.target.offsetLeft) / e.target.offsetWidth)
     );
     const y = Math.floor(
       state.bound * ((e.pageY - e.target.offsetTop) / e.target.offsetHeight)
     );
+    state.editingPos = { x, y };
+  };
 
+  const setFromPress = e => {
     if (e instanceof TouchEvent) {
+      setFromClick(e.changedTouches[0]);
+      const entAtPos = find(state.level, { position: state.editingPos });
+      console.log(entAtPos);
     } else {
-      state.editingPos = { x, y };
+      setFromClick(e);
     }
+  };
+
+  const placePlayer = e => {
+    if (e) {
+      e.preventDefault();
+    }
+    state.level = state.level.filter(ent => ent.group !== groupTypes.player);
+    state.level.push({
+      id: shortid.generate(),
+      ...entitySchemas.player,
+      position: { ...state.editingPos }
+    });
+  };
+
+  const setPlayer = e => {
+    console.log(e);
+    setFromClick(e.touches[0]);
+    placePlayer();
   };
 
   const submit = captchaObj => {
@@ -271,7 +294,9 @@ export const getEditorStore = (initial = {}) => {
   return {
     state,
 
-    changeFromClick,
+    setFromPress,
+    setFromClick,
+
     submit,
     closeSubmit,
     goBack,
@@ -282,17 +307,11 @@ export const getEditorStore = (initial = {}) => {
     moveDown: bindMove("y", +1),
     moveUp: bindMove("y", -1),
     moveRight: bindMove("x", +1),
-    // TODO: DRY
+
+    placePlayer,
+    setPlayer,
+
     placeSpace: bindPlace(),
-    placePlayer(e) {
-      e.preventDefault();
-      state.level = state.level.filter(ent => ent.group !== groupTypes.player);
-      state.level.push({
-        id: shortid.generate(),
-        ...entitySchemas.player,
-        position: { ...state.editingPos }
-      });
-    },
     placeWall: bindPlace("wall"),
     placeBox: bindPlace("box"),
     placeTarget: bindPlace("target"),
@@ -313,7 +332,7 @@ export const getGameStore = (initial = {}) => {
       },
       loadLevelRecord(record) {
         const { records } = levelRecordStore.state;
-        const levelIndex = records.findIndex(rec => rec.id === record.id);
+        const levelIndex = findIndex(records, { id: record.id });
         if (levelIndex === -1) {
           records.push(record);
         } else {

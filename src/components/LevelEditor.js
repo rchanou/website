@@ -111,7 +111,7 @@ const LevelEditor = observer(({ store = getEditorStore() }) => {
       />
 
       <div>
-        <Touch onPress={store.changeFromClick} onLongPress={(console.log)}>
+        <Touch onPress={store.setFromPress} onLongPress={store.setPlayer}>
           <EditorBox>
             {editSquare}
 

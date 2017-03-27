@@ -1,7 +1,6 @@
 exports[`test getGameStore() without parameters uses defaults 1`] = `
 Object {
   "editorStore": Object {
-    "changeFromClick": [Function],
     "closeSubmit": [Function],
     "goBack": [Function],
     "loadLevelRecord": [Function],
@@ -16,6 +15,9 @@ Object {
     "placeTarget": [Function],
     "placeWall": [Function],
     "reload": [Function],
+    "setFromClick": [Function],
+    "setFromPress": [Function],
+    "setPlayer": [Function],
     "state": Object {
       "bound": 20,
       "editingPos": Object {

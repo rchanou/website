@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { createTransformer } from "mobx";
-import { sortBy } from "lodash";
+import { find, sortBy } from "lodash";
 import update from "immutability-helper";
 
 import { getLevelPlayStore } from "../stores";
@@ -12,11 +12,7 @@ export const hasWon = createTransformer(entities => {
   const boxes = entities.filter(ent => ent.group === groupTypes.box);
   for (const target of targets) {
     const targetPos = target.position;
-    if (
-      !boxes.find(
-        box => box.position.x === targetPos.x && box.position.y === targetPos.y
-      )
-    ) {
+    if (!find(boxes, { position: targetPos })) {
       return false;
     }
   }
@@ -110,12 +106,7 @@ export const getEntityRenderer = (entities, units, hash) => {
     }
     if (ent.group === groupTypes.box) {
       if (
-        entities.find(
-          otherEnt =>
-            otherEnt.group === groupTypes.target &&
-            otherEnt.position.x === ent.position.x &&
-            otherEnt.position.y === ent.position.y
-        )
+        find(entities, { group: groupTypes.target, position: ent.position })
       ) {
         finalStyle = { ...startStyle, background: "darkorchid" };
       } else {
