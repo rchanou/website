@@ -1,7 +1,7 @@
 import { observable } from "mobx";
 import update from "immutability-helper";
 import shortid from "shortid";
-import { find, findIndex } from "lodash";
+import { filter, findIndex } from "lodash";
 
 import { groupTypes, physicalTypes, entitySchemas } from "../constants";
 import { compactPuzzle, hasWon } from "../functions";
@@ -212,7 +212,10 @@ export const getEditorStore = (initial = {}) => {
 
   const bindPlace = (...groups) =>
     e => {
-      e.preventDefault();
+      if (e) {
+        e.preventDefault();
+      }
+
       clearAtPos(state.editingPos);
 
       for (const group of groups) {
@@ -224,6 +227,12 @@ export const getEditorStore = (initial = {}) => {
         });
       }
     };
+
+  const placeSpace = bindPlace();
+  const placeWall = bindPlace("wall");
+  const placeBox = bindPlace("box");
+  const placeTarget = bindPlace("target");
+  const placeBoxTarget = bindPlace("target", "box");
 
   const setFromClick = e => {
     const x = Math.floor(
@@ -238,8 +247,39 @@ export const getEditorStore = (initial = {}) => {
   const setFromPress = e => {
     if (e instanceof TouchEvent) {
       setFromClick(e.changedTouches[0]);
-      const entAtPos = find(state.level, { position: state.editingPos });
-      console.log(entAtPos);
+      const entsAtPos = state.level.filter(
+        ent =>
+          !ent.isPlayer &&
+          ent.position.x === state.editingPos.x &&
+          ent.position.y === state.editingPos.y
+      );
+
+      console.log(entsAtPos);
+
+      if (!entsAtPos.length) {
+        // empty space
+        placeWall();
+        return;
+      }
+
+      if (entsAtPos.length > 1) {
+        // box and target most likely
+        placeSpace();
+        return;
+      }
+
+      switch (entsAtPos[0].group) {
+        case groupTypes.wall:
+          placeBox();
+          break;
+        case groupTypes.box:
+          placeTarget();
+          break;
+        case groupTypes.target:
+          placeBoxTarget();
+          break;
+        default:
+      }
     } else {
       setFromClick(e);
     }
@@ -311,11 +351,11 @@ export const getEditorStore = (initial = {}) => {
     placePlayer,
     setPlayer,
 
-    placeSpace: bindPlace(),
-    placeWall: bindPlace("wall"),
-    placeBox: bindPlace("box"),
-    placeTarget: bindPlace("target"),
-    placeBoxTarget: bindPlace("target", "box")
+    placeSpace,
+    placeWall,
+    placeBox,
+    placeTarget,
+    placeBoxTarget
   };
 };
 
