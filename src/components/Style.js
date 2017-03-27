@@ -24,13 +24,14 @@ export const MainBox = styled.main`
 
 export const ButtonContainer = styled.div`
   display: flex;
+  flex-direction: column;
   align-items: stretch;
   justify-content: space-between;
   flex-wrap: wrap;
 
   & > button {
-    width: calc(50% - 11.10px);
-    margin: 5.55px;
+    width: 100%;
+    margin: 11.11px;
   }
 `;
 

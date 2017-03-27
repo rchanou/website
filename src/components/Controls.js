@@ -4,20 +4,11 @@ import styled from "styled-components";
 import { GameButton } from "./Style";
 import { getLevelPlayStore } from "../stores";
 
-const squareMargin = 50 * (Math.sqrt(2) - 1);
-
 const ScaleableSquare = styled.div`
   display: flex;
   position: relative;
-
-  @media screen and (orientation:portrait) {
-    width: 50%;
-    margin: 9%;
-  }
-
-  @media screen and (orientation:landscape){
-    margin: ${squareMargin / 2}%;
-  }
+  width: 50%;
+  margin: 9%;
 
   &:after {
     content: '';
@@ -45,13 +36,6 @@ const Arrows = styled.div`
   & button {
     width: 50%;
     height: 50%;
-    --font-size: 2.11em;
-  }
-  
-  @media screen and (orientation:landscape){   
-    & button {
-      font-size: 2.11em;  
-    }
   }
 
   & > button > div {

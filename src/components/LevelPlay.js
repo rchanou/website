@@ -33,12 +33,18 @@ const LevelViewBox = styled(Swipeable)`
 
 const LevelPanel = styled.div`
   display: flex;
-  
 `;
 
 const defaultStore = getLevelPlayStore();
 const LevelPlay = observer(({ store = defaultStore }) => {
   const { state } = store;
+
+  const confirmAndStartOver = () => {
+    if (confirm("Are you sure you want to start over?")) {
+      store.reset();
+    }
+  };
+
   return (
     <MainBox>
       <LevelPlayBox>
@@ -80,9 +86,15 @@ const LevelPlay = observer(({ store = defaultStore }) => {
             : <LevelControls store={store} />}
 
           <ButtonContainer>
-            <GameButton onClick={store.undo}>Undo</GameButton>
-            <GameButton onClick={store.reset}>Start Over</GameButton>
-            {/*<GameButton onClick={store.gotoEditor}>Edit</GameButton>*/}
+            <GameButton disabled={!store.state.moveCount} onClick={store.undo}>
+              Undo
+            </GameButton>
+            <GameButton
+              disabled={!store.state.moveCount}
+              onClick={confirmAndStartOver}
+            >
+              Start Over
+            </GameButton>
           </ButtonContainer>
         </LevelPanel>
       </LevelPlayBox>

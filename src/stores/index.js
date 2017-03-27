@@ -219,7 +219,9 @@ export const getEditorStore = (initial = {}) => {
       clearAtPos(state.editingPos);
 
       for (const group of groups) {
-        const action = group === groupTypes.target ? "unshift" : "push";
+        const action = entitySchemas[group].group === groupTypes.target
+          ? "unshift"
+          : "push";
         state.level[action]({
           id: shortid.generate(),
           ...entitySchemas[group],
@@ -253,8 +255,6 @@ export const getEditorStore = (initial = {}) => {
           ent.position.x === state.editingPos.x &&
           ent.position.y === state.editingPos.y
       );
-
-      console.log(entsAtPos);
 
       if (!entsAtPos.length) {
         // empty space
