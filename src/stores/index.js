@@ -236,7 +236,8 @@ export const getEditorStore = (initial = {}) => {
   const placeTarget = bindPlace("target");
   const placeBoxTarget = bindPlace("target", "box");
 
-  const setFromClick = e => { console.log('u wot ', e)
+  const setFromClick = e => {
+    console.log("u wot ", e);
     const x = Math.floor(
       state.bound * ((e.pageX - e.target.offsetLeft) / e.target.offsetWidth)
     );
@@ -247,8 +248,9 @@ export const getEditorStore = (initial = {}) => {
   };
 
   const setFromPress = e => {
-    e.stopImmediatePropagation();
-    
+    console.log(e);
+    e.preventDefault();
+
     const entsAtPos = state.level.filter(
       ent =>
         !ent.isPlayer &&
@@ -291,8 +293,11 @@ export const getEditorStore = (initial = {}) => {
   };
 
   const setPlayer = e => {
-    console.log(e);
-    setFromClick(e.touches[0]);
+    if (e instanceof TouchEvent) {
+      setFromClick(e.touches[0]);
+    } else {
+      setFromClick(e);
+    }
     placePlayer();
   };
 
