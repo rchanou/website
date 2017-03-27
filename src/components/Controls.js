@@ -8,7 +8,7 @@ const ScaleableSquare = styled.div`
   display: flex;
   position: relative;
   width: 50%;
-  margin: 9%;
+  margin: 12.34%;
 
   &:after {
     content: '';

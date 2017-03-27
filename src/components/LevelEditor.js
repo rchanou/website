@@ -33,6 +33,14 @@ const EditorBox = styled.div`
   box-shadow: 1.11px 1.11px 1.11px 1.11px #aaa;
 `;
 
+const EditorButtonContainer = styled(ButtonContainer)`
+  flex-direction: row;
+
+  & > button {
+    width: calc(50% - 22.22px);
+  }
+`;
+
 const LevelEditor = observer(({ store = getEditorStore() }) => {
   const { level, bound, editingPos, submission } = store.state;
   const unit = 100 / bound;
@@ -126,7 +134,7 @@ const LevelEditor = observer(({ store = getEditorStore() }) => {
           Set cursor position with mouse or arrow keys. Place items with buttons below or keys.
         </div>
 
-        <ButtonContainer>
+        <EditorButtonContainer>
           <GameButton onClick={store.placeSpace}>
             Clear Space (spacebar)
           </GameButton>
@@ -138,7 +146,7 @@ const LevelEditor = observer(({ store = getEditorStore() }) => {
           <GameButton onClick={store.placeBoxTarget}>
             Box & Target (g)
           </GameButton>
-        </ButtonContainer>
+        </EditorButtonContainer>
 
         <Recaptcha onSubmit={store.submit} disabled={submission} />
       </div>

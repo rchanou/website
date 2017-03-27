@@ -95,7 +95,7 @@ const BannerSwitch = ({ store }) => {
     case "EDITOR":
       return (
         <Banner>
-          <nav>
+          <nav style={{ width: 960 }}>
             <div className="icon" onClick={confirmAndGoBack}>
               ⇐
             </div>
