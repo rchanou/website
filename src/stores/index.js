@@ -1,7 +1,7 @@
 import { observable } from "mobx";
 import update from "immutability-helper";
 import shortid from "shortid";
-import { filter, findIndex } from "lodash";
+import { findIndex } from "lodash";
 
 import { groupTypes, physicalTypes, entitySchemas } from "../constants";
 import { compactPuzzle, hasWon } from "../functions";
@@ -236,7 +236,7 @@ export const getEditorStore = (initial = {}) => {
   const placeTarget = bindPlace("target");
   const placeBoxTarget = bindPlace("target", "box");
 
-  const setFromClick = e => {
+  const setFromClick = e => { console.log('u wot ', e)
     const x = Math.floor(
       state.bound * ((e.pageX - e.target.offsetLeft) / e.target.offsetWidth)
     );
@@ -247,27 +247,22 @@ export const getEditorStore = (initial = {}) => {
   };
 
   const setFromPress = e => {
-    if (e instanceof TouchEvent) {
-      setFromClick(e.changedTouches[0]);
-      const entsAtPos = state.level.filter(
-        ent =>
-          !ent.isPlayer &&
-          ent.position.x === state.editingPos.x &&
-          ent.position.y === state.editingPos.y
-      );
+    e.stopImmediatePropagation();
+    console.log(e);
+    const entsAtPos = state.level.filter(
+      ent =>
+        !ent.isPlayer &&
+        ent.position.x === state.editingPos.x &&
+        ent.position.y === state.editingPos.y
+    );
 
-      if (!entsAtPos.length) {
-        // empty space
-        placeWall();
-        return;
-      }
-
-      if (entsAtPos.length > 1) {
-        // box and target most likely
-        placeSpace();
-        return;
-      }
-
+    if (!entsAtPos.length) {
+      // empty space
+      placeWall();
+    } else if (entsAtPos.length > 1) {
+      // box and target most likely
+      placeSpace();
+    } else {
       switch (entsAtPos[0].group) {
         case groupTypes.wall:
           placeBox();
@@ -280,9 +275,10 @@ export const getEditorStore = (initial = {}) => {
           break;
         default:
       }
-    } else {
-      setFromClick(e);
     }
+    const savedPos = { ...state.editingPos };
+    state.editingPos = { x: 0, y: 0 };
+    //state.editingPos = savedPos;
   };
 
   const placePlayer = e => {

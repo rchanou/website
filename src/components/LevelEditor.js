@@ -20,8 +20,8 @@ const Line = styled.div`
 
 const EditSquare = styled.div`
   position: absolute;
-  pointer-events: none;
-  background: paleturquoise;
+  z-index: 9999;
+  border: medium solid hsla(180,50%,70%,0.5);
 `;
 
 const EditorBox = styled.div`
@@ -69,14 +69,16 @@ const LevelEditor = observer(({ store = getEditorStore() }) => {
   ));
 
   const editSquare = (
-    <EditSquare
-      style={{
-        width: `${unit}%`,
-        height: `${unit}%`,
-        left: `${editingPos.x * unit}%`,
-        top: `${editingPos.y * unit}%`
-      }}
-    />
+    <Touch onPress={store.setFromPress}>
+      <EditSquare
+        style={{
+          width: `${unit}%`,
+          height: `${unit}%`,
+          left: `${editingPos.x * unit}%`,
+          top: `${editingPos.y * unit}%`
+        }}
+      />
+    </Touch>
   );
 
   const confirmAndGoBack = o => {
@@ -119,19 +121,18 @@ const LevelEditor = observer(({ store = getEditorStore() }) => {
       />
 
       <div>
-        <Touch onPress={store.setFromPress} onLongPress={store.setPlayer}>
-          <EditorBox>
-            {editSquare}
+        <EditorBox onClick={store.setFromClick}>
 
-            {xLines}
-            {yLines}
+          {xLines}
+          {yLines}
 
-            {level.map(getEntityRenderer(level, bound))}
-          </EditorBox>
-        </Touch>
+          {level.map(getEntityRenderer(level, bound))}
+
+          {editSquare}
+        </EditorBox>
 
         <div>
-          Set cursor position with mouse or arrow keys. Place items with buttons below or keys.
+          Set cursor by tap or arrow keys. Tap cursor to toggle through items, or use buttons below.
         </div>
 
         <EditorButtonContainer>
