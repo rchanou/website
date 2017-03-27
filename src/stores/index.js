@@ -248,7 +248,7 @@ export const getEditorStore = (initial = {}) => {
 
   const setFromPress = e => {
     e.stopImmediatePropagation();
-    console.log(e);
+    
     const entsAtPos = state.level.filter(
       ent =>
         !ent.isPlayer &&
@@ -276,9 +276,6 @@ export const getEditorStore = (initial = {}) => {
         default:
       }
     }
-    const savedPos = { ...state.editingPos };
-    state.editingPos = { x: 0, y: 0 };
-    //state.editingPos = savedPos;
   };
 
   const placePlayer = e => {
