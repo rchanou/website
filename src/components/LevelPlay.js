@@ -13,24 +13,18 @@ import { hasWon } from "../functions";
 
 const LevelPlayBox = styled.div`
   display: flex;
-  width: 960px;
+  width: 620px;
   max-width: 100vw;
-  height: calc(100vh - );
+  //height: calc(100vh - );
   background: #fafafa;
   flex-direction: column;
   box-shadow: 1.11px 1.11px 1.11px 1.11px #aaa;
-
-  @media screen and (orientation:portrait) {
-  }
-
-  @media screen and (orientation:landscape){
-  }
+  padding: 20px;
+  margin: 10px;
 `;
 
 const LevelViewBox = styled(Swipeable)`
   touch-action: none;
-  max-width: 80vh;
-  padding: 22px;
 
   &.victory {
     background: lightgreen;
@@ -40,10 +34,6 @@ const LevelViewBox = styled(Swipeable)`
 const LevelPanel = styled.div`
   display: flex;
   
-  @media screen and (orientation:portrait) {
-    --width: 100%;
-    --max-height: calc(20vh - 2em);
-  }
 `;
 
 const defaultStore = getLevelPlayStore();

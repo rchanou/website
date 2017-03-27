@@ -1,6 +1,7 @@
 import React from "react";
 import { observer, Observer } from "mobx-react";
 import styled from "styled-components";
+import { Helmet } from "react-helmet";
 
 import LevelPlay from "./LevelPlay";
 import LevelMenu from "./LevelMenu";
@@ -18,26 +19,27 @@ const Banner = styled.section`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  text-align: center;
   background: darkorchid;
   color: #eee;
-  padding: 0.2345em;
+  padding: 0 0.2345em;
   height: ${props => props.height};
   box-shadow: 1.11px 1.11px 1.11px 1.11px #aaa;
 
   & nav {
-    width: 960px;
+    width: 620px;
     max-width: 100vw;
     padding: 0 6.54321px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 3.333rem;
+    font-size: 2.1212rem;
   }
 
   & .icon {
     font-weight: bold;
     cursor: pointer;
-    font-size: 4.321rem;
+    font-size: 3.14159rem;
   }
   
   & h1 {
@@ -127,6 +129,12 @@ const Game = observer(({ store = defaultStore }) => {
 
   return (
     <AppDiv>
+      <Helmet>
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+        />
+      </Helmet>
       <BannerSwitch store={store} />
       <ViewToRender store={storeToUse} />
     </AppDiv>

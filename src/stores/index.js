@@ -211,6 +211,21 @@ export const getEditorStore = (initial = {}) => {
     );
   };
 
+  const bindPlace = (...groups) =>
+    e => {
+      e.preventDefault();
+      clearAtPos(state.editingPos);
+      
+      for (const group of groups) {
+        const action = group === groupTypes.target ? "unshift" : "push";
+        state.level[action]({
+          id: shortid.generate(),
+          ...entitySchemas[group],
+          position: { ...state.editingPos }
+        });
+      }
+    };
+
   const changeFromClick = e => {
     const x = Math.floor(
       state.bound * ((e.pageX - e.target.offsetLeft) / e.target.offsetWidth)
@@ -219,7 +234,10 @@ export const getEditorStore = (initial = {}) => {
       state.bound * ((e.pageY - e.target.offsetTop) / e.target.offsetHeight)
     );
 
-    state.editingPos = { x, y };
+    if (e instanceof TouchEvent) {
+    } else {
+      state.editingPos = { x, y };
+    }
   };
 
   const submit = captchaObj => {
@@ -250,17 +268,6 @@ export const getEditorStore = (initial = {}) => {
         : nextAxisPos < 0 ? state.bound - 1 : nextAxisPos;
     };
 
-  const bindPlace = group =>
-    e => {
-      e.preventDefault();
-      clearAtPos(state.editingPos);
-      state.level.push({
-        id: shortid.generate(),
-        ...entitySchemas[group],
-        position: { ...state.editingPos }
-      });
-    };
-
   return {
     state,
 
@@ -276,10 +283,7 @@ export const getEditorStore = (initial = {}) => {
     moveUp: bindMove("y", -1),
     moveRight: bindMove("x", +1),
     // TODO: DRY
-    placeSpace(e) {
-      e.preventDefault();
-      clearAtPos(state.editingPos);
-    },
+    placeSpace: bindPlace(),
     placePlayer(e) {
       e.preventDefault();
       state.level = state.level.filter(ent => ent.group !== groupTypes.player);
@@ -291,44 +295,8 @@ export const getEditorStore = (initial = {}) => {
     },
     placeWall: bindPlace("wall"),
     placeBox: bindPlace("box"),
-    placeTarget(e) {
-      e.preventDefault();
-      clearAtPos(state.editingPos);
-      state.level.unshift({
-        id: shortid.generate(),
-        ...entitySchemas.target,
-        position: { ...state.editingPos }
-      });
-    },
-    placeBoxTarget(e) {
-      e.preventDefault();
-      clearAtPos(state.editingPos);
-      state.level.unshift({
-        id: shortid.generate(),
-        ...entitySchemas.target,
-        position: { ...state.editingPos }
-      });
-      state.level.push({
-        id: shortid.generate(),
-        ...entitySchemas.box,
-        position: { ...state.editingPos }
-      });
-    },
-    placePlayerTarget(e) {
-      e.preventDefault();
-      clearAtPos(state.editingPos);
-      state.level = state.level.filter(ent => ent.group !== groupTypes.player);
-      state.level.unshift({
-        id: shortid.generate(),
-        ...entitySchemas.target,
-        position: { ...state.editingPos }
-      });
-      state.level.push({
-        id: shortid.generate(),
-        ...entitySchemas.player,
-        position: { ...state.editingPos }
-      });
-    }
+    placeTarget: bindPlace("target"),
+    placeBoxTarget: bindPlace("target", "box")
   };
 };
 

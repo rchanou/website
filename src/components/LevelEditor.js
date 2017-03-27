@@ -1,21 +1,37 @@
 import React from "react";
 import { observer } from "mobx-react";
+import styled from "styled-components";
+import { Helmet } from "react-helmet";
+import Touch from "rc-touchable";
 
 import KeyMap from "./KeyMap";
 import Recaptcha from "./Recaptcha";
-import { ButtonContainer, GameButton } from "./Style";
+import { MainBox, ButtonContainer, GameButton } from "./Style";
 
 import { getEditorStore } from "../stores";
 import { getEntityRenderer } from "../functions";
 
 //const cachedGetEntityRenderer = createTransformer(getEntityRenderer);
 
-const editorStyle = {
-  position: "relative",
-  width: "100%",
-  paddingTop: "100%",
-  background: "#eee"
-};
+const Line = styled.div`
+  position: absolute;
+  pointer-events: none;
+`;
+
+const EditSquare = styled.div`
+  position: absolute;
+  pointer-events: none;
+  background: paleturquoise;
+`;
+
+const EditorBox = styled.div`
+  position: relative;
+  width: 960px;
+  max-width: 100vw;
+  padding-top: 100%;
+  background: #fafafa;
+  box-shadow: 1.11px 1.11px 1.11px 1.11px #aaa;
+`;
 
 const LevelEditor = observer(({ store = getEditorStore() }) => {
   const { level, bound, editingPos, submission } = store.state;
@@ -23,11 +39,9 @@ const LevelEditor = observer(({ store = getEditorStore() }) => {
 
   const markers = Array.from(Array(bound));
   const xLines = markers.map((_, i) => (
-    <div
+    <Line
       key={i}
       style={{
-        position: "absolute",
-        pointerEvents: "none",
         width: "100%",
         top: `${unit * i}%`,
         borderBottom: "thin solid #ccc"
@@ -35,11 +49,9 @@ const LevelEditor = observer(({ store = getEditorStore() }) => {
     />
   ));
   const yLines = markers.map((__, i) => (
-    <div
+    <Line
       key={i}
       style={{
-        position: "absolute",
-        pointerEvents: "none",
         height: "100%",
         top: 0,
         left: `${unit * i}%`,
@@ -49,11 +61,8 @@ const LevelEditor = observer(({ store = getEditorStore() }) => {
   ));
 
   const editSquare = (
-    <div
+    <EditSquare
       style={{
-        background: "aquamarine",
-        pointerEvents: "none",
-        position: "absolute",
         width: `${unit}%`,
         height: `${unit}%`,
         left: `${editingPos.x * unit}%`,
@@ -70,7 +79,15 @@ const LevelEditor = observer(({ store = getEditorStore() }) => {
   };
 
   return (
-    <div>
+    <MainBox>
+      <Helmet>
+        <title>Sokoban: Edit Puzzle</title>
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, user-scalable=1"
+        />
+      </Helmet>
+
       <KeyMap
         keyMap={{
           ArrowLeft: store.moveLeft,
@@ -88,21 +105,22 @@ const LevelEditor = observer(({ store = getEditorStore() }) => {
           b: store.placeBox,
           t: store.placeTarget,
           g: store.placeBoxTarget,
-          z: store.placePlayerTarget,
           Escape: confirmAndGoBack,
           Esc: confirmAndGoBack
         }}
       />
 
-      <div style={{ maxWidth: 960 }}>
-        <div style={editorStyle} onClick={store.changeFromClick}>
-          {editSquare}
+      <div>
+        <Touch onPress={store.changeFromClick} onLongPress={(console.log)}>
+          <EditorBox>
+            {editSquare}
 
-          {xLines}
-          {yLines}
+            {xLines}
+            {yLines}
 
-          {level.map(getEntityRenderer(level, bound))}
-        </div>
+            {level.map(getEntityRenderer(level, bound))}
+          </EditorBox>
+        </Touch>
 
         <div>
           Set cursor position with mouse or arrow keys. Place items with buttons below or keys.
@@ -116,9 +134,6 @@ const LevelEditor = observer(({ store = getEditorStore() }) => {
           <GameButton onClick={store.placeWall}>Wall (w)</GameButton>
           <GameButton onClick={store.placeBox}>Box (b)</GameButton>
           <GameButton onClick={store.placeTarget}>Target (t)</GameButton>
-          <GameButton onClick={store.placePlayerTarget}>
-            Player & Target (z)
-          </GameButton>
 
           <GameButton onClick={store.placeBoxTarget}>
             Box & Target (g)
@@ -127,7 +142,7 @@ const LevelEditor = observer(({ store = getEditorStore() }) => {
 
         <Recaptcha onSubmit={store.submit} disabled={submission} />
       </div>
-    </div>
+    </MainBox>
   );
 });
 

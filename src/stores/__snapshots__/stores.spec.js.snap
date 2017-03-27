@@ -12,7 +12,6 @@ Object {
     "placeBox": [Function],
     "placeBoxTarget": [Function],
     "placePlayer": [Function],
-    "placePlayerTarget": [Function],
     "placeSpace": [Function],
     "placeTarget": [Function],
     "placeWall": [Function],

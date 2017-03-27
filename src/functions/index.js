@@ -44,12 +44,38 @@ export const getMin = (axis, entities) =>
 export const getMax = (axis, entities) =>
   Math.max.apply(null, entities.map(ent => ent.position[axis]));
 
-const Sprite = styled.div`
+const SpriteBox = styled.div`
   position: absolute;
   opacity: 0.8;
   transition: 0.2s;
   background: gray;
-  pointerEvents: none;
+  pointer-events: none;
+`;
+
+const Sprite = styled.div`
+  position: absolute;
+  opacity: 0.8;
+  transition: 0.2s;
+  width: ${props => props.unit}%;
+  height: ${props => props.unit}%;
+  top: ${props => props.entity.position.y * props.unit}%;
+  left: ${props => props.entity.position.x * props.unit}%;
+  background: ${props => {
+  switch (props.entity.group) {
+    case groupTypes.player:
+      return "orange";
+    case groupTypes.target:
+      return "tomato";
+    case groupTypes.box:
+      const { entities, entity } = props;
+      if (entities.find(otherEnt => otherEnt.group === groupTypes.target && otherEnt.position.x === entity.position.x && otherEnt.position.y === entity.position.y)) {
+        return "darkorchid";
+      }
+      break;
+    default:
+      return "gray";
+  }
+}}
 `;
 
 export const getEntityRenderer = (entities, units, hash) => {
@@ -97,7 +123,7 @@ export const getEntityRenderer = (entities, units, hash) => {
       }
     }
 
-    return <Sprite key={ent.id} style={finalStyle} />;
+    return <SpriteBox key={ent.id} style={finalStyle} />;
   };
 };
 
