@@ -23,7 +23,7 @@ const Banner = styled.section`
   text-align: center;
   background: darkorchid;
   color: #eee;
-  padding: 0 0.2345em;
+  padding: 0 0.2345rem;
   height: ${props => props.height};
   box-shadow: 1.11px 1.11px 1.11px 1.11px #aaa;
 
@@ -50,7 +50,7 @@ const Banner = styled.section`
   }
   
   & h1 {
-    font-size: 3.1415em;
+    font-size: 3.1415rem;
     font-weight: normal;
   }
 
@@ -73,6 +73,7 @@ const Help = styled.div`
     width: 432px;
     max-width: 90vw;
     text-align: left;
+    font-size: 1.3579rem;
 
     color: #333;
     background: #fafafa;
@@ -92,8 +93,8 @@ const helpEl = (
         ?
         {me.state.show &&
           <div className="hint" onClick={me.toggle}>
-            Select a square by tap or arrow keys.<br /><br /> 
-            Tap selected square again to toggle the item there, or use the buttons below.<br /><br />
+            Select a square by tapping it, or move it with arrow keys.<br /><br /> 
+            Tap the square again to toggle through items, or use the buttons below.<br /><br />
             Tip: Zoom in for easier editing.
           </div>}
       </Help>
