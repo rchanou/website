@@ -27,6 +27,12 @@ const Banner = styled.section`
   height: ${props => props.height};
   box-shadow: 1.11px 1.11px 1.11px 1.11px #aaa;
 
+  text-shadow:
+    -1px -1px 0 #333,  
+    1px -1px 0 #333,
+    -1px 1px 0 #333,
+    1px 1px 0 #333;
+  
   & nav {
     width: 620px;
     max-width: 100vw;
@@ -59,6 +65,7 @@ const Help = styled.div`
   cursor: pointer;
 
   & .hint {
+    text-shadow: none;
     position: absolute;
     right: 0;
     z-index: 9999;
@@ -106,7 +113,7 @@ const BannerSwitch = ({ store }) => {
     case "MENU":
       return (
         <Banner height="6.78em">
-          <h1>Sokoban</h1>
+          <h1 className="title">Sokoban</h1>
           <a href={creditSiteLink} rel="noopener noreferrer" target="_blank">
             Featuring Levels Designed by David W. Skinner
           </a>
@@ -123,11 +130,13 @@ const BannerSwitch = ({ store }) => {
       return (
         <Banner>
           <nav>
-            <div className="icon" onClick={store.levelPlayStore.goBack}>⌂</div>
-            Moves: <Observer>
-              {() => store.levelPlayStore.state.moveCount}
-            </Observer>
-            <div className="icon" onClick={store.levelPlayStore.gotoEditor}>
+            <div className="icon title" onClick={store.levelPlayStore.goBack}>⌂</div>
+            <div className="title">
+              Moves: <Observer>
+                {() => store.levelPlayStore.state.moveCount}
+              </Observer>
+            </div>
+            <div className="icon title" onClick={store.levelPlayStore.gotoEditor}>
               ✎
             </div>
           </nav>

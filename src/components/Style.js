@@ -37,7 +37,7 @@ export const ButtonContainer = styled.div`
   }
 
   &.control-row > button {
-    width: calc(${100/3}% - 22.22px);
+    width: calc(${100 / 3}% - 22.22px);
   }
 `;
 

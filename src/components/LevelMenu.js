@@ -139,11 +139,24 @@ const LevelMenu = (
   </State>
 );
 
+const LoadBox = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const loadingEl = <LoadBox><Loading type="spin" color="gray" /></LoadBox>;
+
 const ObservedLevelMenu = ({ store = getMenuStore() }) => (
   <Observer>
     {() =>
       store.levelRecordStore.state.attemptingLoad
-        ? <div><Loading type="spin" color="gray" /></div>
+        ? loadingEl
         : <LevelMenu
             levelRecords={store.levelRecordStore.state.records}
             highlightedLevelId={store.state.highlightedLevelId}
