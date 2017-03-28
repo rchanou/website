@@ -15,10 +15,7 @@ import { getNextKeyInDir } from "../functions";
 const LevelList = styled(DirectionMapper)`
   display: flex;
   flex-wrap: wrap;
-
-  @media screen and (max-width: 660px) {
-    justify-content: center;
-  }
+  justify-content: center;
 `;
 
 const MenuItemBox = styled.div`
@@ -56,6 +53,11 @@ const LevelMenuItem = (
     <LevelView entities={level} />
   </MenuItemBox>
 );
+
+// HACK: Used to make visible items left-aligned while keeping container centered
+// no easy to do in flexbox without hacks :(
+// see http://stackoverflow.com/questions/16377972/how-to-align-left-last-row-line-in-multiple-line-flexbox
+const Placeholder = styled(MenuItemBox)`visibility: hidden;`;
 
 const LevelMenu = (
   {
@@ -131,6 +133,7 @@ const LevelMenu = (
                     <div>Level</div>
                   </MenuItemBox>
                 )}
+              <Placeholder /><Placeholder />
             </LevelList>
           </MainBox>
         </div>
