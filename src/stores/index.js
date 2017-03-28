@@ -237,7 +237,6 @@ export const getEditorStore = (initial = {}) => {
   const placeBoxTarget = bindPlace("target", "box");
 
   const setFromClick = e => {
-    console.log("u wot ", e);
     const x = Math.floor(
       state.bound * ((e.pageX - e.target.offsetLeft) / e.target.offsetWidth)
     );
@@ -248,7 +247,6 @@ export const getEditorStore = (initial = {}) => {
   };
 
   const setFromPress = e => {
-    console.log(e);
     e.preventDefault();
 
     const entsAtPos = state.level.filter(

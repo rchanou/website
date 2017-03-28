@@ -52,6 +52,8 @@ const FitRecaptcha = styled(Recaptcha)`
   margin: 0 10px;
 `;
 
+const stopPropagation = e => e.stopPropagation();
+
 const LevelEditor = observer(({ store = getEditorStore() }) => {
   const { level, bound, editingPos, submission } = store.state;
   const unit = 100 / bound;
@@ -82,6 +84,7 @@ const LevelEditor = observer(({ store = getEditorStore() }) => {
   const editSquare = (
     <Touch onPress={store.setFromPress}>
       <EditSquare
+        onClick={stopPropagation}
         style={{
           width: `${unit}%`,
           height: `${unit}%`,
