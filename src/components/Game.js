@@ -7,6 +7,7 @@ import LevelPlay from "./LevelPlay";
 import LevelMenu from "./LevelMenu";
 import LevelEditor from "./LevelEditor";
 import { AppDiv } from "./Style";
+import State from "./State";
 
 import { getGameStore } from "../stores";
 
@@ -53,6 +54,46 @@ const Banner = styled.section`
   }
 `;
 
+const Help = styled.div`
+  position: relative;
+  cursor: pointer;
+
+  & .hint {
+    position: absolute;
+    right: 0;
+    z-index: 9999;
+    padding: 12.345px;
+    width: 90vh;
+    max-width: 432.1px;
+    text-align: left;
+
+    color: #333;
+    background: #fafafa;
+    box-shadow: 1.11px 1.11px 1.11px 1.11px #aaa;
+  }
+`;
+
+const helpEl = (
+  <State
+    init={me => {
+      me.state = { show: false };
+      me.toggle = () => me.setState({ show: !me.state.show });
+    }}
+  >
+    {me => (
+      <Help onClick={me.toggle}>
+        ?
+        {me.state.show &&
+          <div className="hint" onClick={me.toggle}>
+            Select a square by tap or arrow keys.<br /><br /> 
+            Tap selected square again to toggle the item there, or use the buttons below.
+          </div>}
+      </Help>
+    )}
+  </State>
+);
+
+// TODO: banner should really just be moved into corresponding pages
 const BannerSwitch = ({ store }) => {
   const confirmAndGoBack = () => {
     const confirmed = confirm("Leave without saving?");
@@ -100,6 +141,7 @@ const BannerSwitch = ({ store }) => {
               ⇐
             </div>
             <div>Editor</div>
+            {helpEl}
           </nav>
         </Banner>
       );

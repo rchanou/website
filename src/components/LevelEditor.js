@@ -105,7 +105,7 @@ const LevelEditor = observer(({ store = getEditorStore() }) => {
   return (
     <MainBox>
       <Helmet>
-        <title>Sokoban: Edit Puzzle</title>
+        <title>Sokoban: Editor</title>
         <meta
           name="viewport"
           content="width=device-width, initial-scale=1.0, user-scalable=1"
@@ -144,10 +144,6 @@ const LevelEditor = observer(({ store = getEditorStore() }) => {
 
           {editSquare}
         </EditorBox>
-
-        <div>
-          Set cursor by tap or arrow keys. Tap cursor to toggle through items, or use buttons below.
-        </div>
 
         <EditorButtonContainer>
           <GameButton onClick={store.placeSpace}>

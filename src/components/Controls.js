@@ -7,7 +7,8 @@ import { getLevelPlayStore } from "../stores";
 const ScaleableSquare = styled.div`
   display: flex;
   position: relative;
-  width: 50%;
+  min-width: 50%;
+  max-width: 50%;
   margin: 12.34%;
 
   &:after {

@@ -4,7 +4,6 @@ import Swipeable from "react-swipeable";
 import styled from "styled-components";
 
 import LevelView from "./LevelView";
-import LevelControls from "./Controls";
 import KeyMap from "./KeyMap";
 import { MainBox, GameButton, ButtonContainer } from "./Style";
 
@@ -13,26 +12,46 @@ import { hasWon } from "../functions";
 
 const LevelPlayBox = styled.div`
   display: flex;
+  flex-direction: column;
+  align-items: center;
+
   width: 620px;
   max-width: 100vw;
-  background: #fafafa;
-  flex-direction: column;
-  box-shadow: 1.11px 1.11px 1.11px 1.11px #aaa;
+
   padding: 20px;
   margin: 10px;
+  
+  background: #fafafa;
+  box-shadow: 1.11px 1.11px 1.11px 1.11px #aaa;
 `;
 
-const LevelViewBox = styled(Swipeable)`
+const SwipeZone = styled(Swipeable)`
   touch-action: none;
+  position: relative;
+
+  width: 100%;
+  max-width: 60vh;
 
   &.victory {
     background: lightgreen;
   }
 `;
 
-const LevelPanel = styled.div`
-  display: flex;
+const Victory = styled.h1`
+  position: absolute;
+  top: 50%;
+  width: 100%;
+  text-align: center;
+  color: white;
+  text-shadow:
+    -1px -1px 0 #333,  
+    1px -1px 0 #333,
+    -1px 1px 0 #333,
+    1px 1px 0 #333;
+  -webkit-text-stroke: 1px #333;
 `;
+
+const victoryEl = <Victory>Puzzle Solved!</Victory>;
 
 const defaultStore = getLevelPlayStore();
 const LevelPlay = observer(({ store = defaultStore }) => {
@@ -43,6 +62,8 @@ const LevelPlay = observer(({ store = defaultStore }) => {
       store.reset();
     }
   };
+
+  const won = hasWon(state.entities);
 
   return (
     <MainBox>
@@ -69,7 +90,7 @@ const LevelPlay = observer(({ store = defaultStore }) => {
           }}
         />
 
-        <LevelViewBox
+        <SwipeZone
           onSwipedLeft={store.tryMoveLeft}
           onSwipedDown={store.tryMoveDown}
           onSwipedUp={store.tryMoveUp}
@@ -77,25 +98,32 @@ const LevelPlay = observer(({ store = defaultStore }) => {
           className={hasWon(state.entities) && "victory"}
         >
           <LevelView entities={state.entities} />
-        </LevelViewBox>
+          {won && victoryEl}
+        </SwipeZone>
 
-        <LevelPanel>
-          {hasWon(state.entities)
-            ? <h1>Great Job!</h1>
-            : <LevelControls store={store} />}
-
-          <ButtonContainer>
-            <GameButton disabled={!store.state.moveCount} onClick={store.undo}>
-              Undo
-            </GameButton>
-            <GameButton
-              disabled={!store.state.moveCount}
-              onClick={confirmAndStartOver}
-            >
-              Start Over
-            </GameButton>
-          </ButtonContainer>
-        </LevelPanel>
+        <ButtonContainer className="control-row">
+          <GameButton disabled={!store.state.moveCount} onClick={store.undo}>
+            Undo
+          </GameButton>
+          <GameButton disabled={won} onClick={store.tryMoveUp}>
+            <div>▲</div>
+          </GameButton>
+          <GameButton
+            disabled={!store.state.moveCount}
+            onClick={confirmAndStartOver}
+          >
+            Start Over
+          </GameButton>
+          <GameButton disabled={won} onClick={store.tryMoveLeft}>
+            <div>◀</div>
+          </GameButton>
+          <GameButton disabled={won} onClick={store.tryMoveDown}>
+            <div>▼</div>
+          </GameButton>
+          <GameButton disabled={won} onClick={store.tryMoveRight}>
+            <div>▶</div>
+          </GameButton>
+        </ButtonContainer>
       </LevelPlayBox>
     </MainBox>
   );
