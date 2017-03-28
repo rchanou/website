@@ -22,9 +22,22 @@ const Line = styled.div`
   pointer-events: none;
 `;
 
+const XLine = styled(Line)`
+  width: 100%;
+  border-bottom: thin solid #ccc;
+  top: ${props => props.top}%;
+`;
+
+const YLine = styled(Line)`
+  top: 0;
+  height: 100%;
+  border-right: thin solid #ccc;
+  left: ${props => props.left}%;
+`;
+
 const EditSquare = styled.div`
   position: absolute;
-  z-index: 9999;
+  z-index: 9998;
   border: medium solid hsla(180,50%,70%,0.5);
 `;
 
@@ -59,27 +72,8 @@ const LevelEditor = observer(({ store = getEditorStore() }) => {
   const unit = 100 / bound;
 
   const markers = Array.from(Array(bound));
-  const xLines = markers.map((_, i) => (
-    <Line
-      key={i}
-      style={{
-        width: "100%",
-        top: `${unit * i}%`,
-        borderBottom: "thin solid #ccc"
-      }}
-    />
-  ));
-  const yLines = markers.map((__, i) => (
-    <Line
-      key={i}
-      style={{
-        height: "100%",
-        top: 0,
-        left: `${unit * i}%`,
-        borderRight: "thin solid #ccc"
-      }}
-    />
-  ));
+  const xLines = markers.map((_, i) => <XLine key={i} top={unit * i} />);
+  const yLines = markers.map((__, i) => <YLine key={i} left={unit * i} />);
 
   const editSquare = (
     <Touch onPress={store.setFromPress}>

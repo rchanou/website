@@ -70,8 +70,8 @@ const Help = styled.div`
     right: 0;
     z-index: 9999;
     padding: 12.345px;
-    width: 90vh;
-    max-width: 432.1px;
+    width: 432px;
+    max-width: 90vw;
     text-align: left;
 
     color: #333;
@@ -93,7 +93,8 @@ const helpEl = (
         {me.state.show &&
           <div className="hint" onClick={me.toggle}>
             Select a square by tap or arrow keys.<br /><br /> 
-            Tap selected square again to toggle the item there, or use the buttons below.
+            Tap selected square again to toggle the item there, or use the buttons below.<br /><br />
+            Tip: Zoom in for easier editing.
           </div>}
       </Help>
     )}
