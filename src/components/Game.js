@@ -63,6 +63,7 @@ const Banner = styled.section`
 const Help = styled.div`
   position: relative;
   cursor: pointer;
+  min-width: 2rem;
 
   & .hint {
     text-shadow: none;
@@ -89,13 +90,17 @@ const helpEl = (
     }}
   >
     {me => (
-      <Help onClick={me.toggle}>
+      <Help onClick={me.toggle} title="Editor Help">
         ?
         {me.state.show &&
           <div className="hint" onClick={me.toggle}>
-            Select a square by tapping it, or move it with arrow keys.<br /><br /> 
-            Tap the square again to toggle through items, or use the buttons below.<br /><br />
-            Tip: Zoom in for easier editing.
+            Select a square by tapping it, or move it with arrow keys.
+            <br />
+            <br />
+            Tap the square again to toggle through items, or use the buttons to place them at the square.
+            <br />
+            <br />
+            You can zoom in for easier editing.
           </div>}
       </Help>
     )}
@@ -132,13 +137,23 @@ const BannerSwitch = ({ store }) => {
       return (
         <Banner>
           <nav>
-            <div className="icon title" onClick={store.levelPlayStore.goBack}>⌂</div>
+            <div
+              className="icon title"
+              onClick={store.levelPlayStore.goBack}
+              title="Return to Puzzle Menu"
+            >
+              ⌂
+            </div>
             <div className="title">
               Moves: <Observer>
                 {() => store.levelPlayStore.state.moveCount}
               </Observer>
             </div>
-            <div className="icon title" onClick={store.levelPlayStore.gotoEditor}>
+            <div
+              title="Edit Puzzle"
+              className="icon title"
+              onClick={store.levelPlayStore.gotoEditor}
+            >
               ✎
             </div>
           </nav>
@@ -148,7 +163,11 @@ const BannerSwitch = ({ store }) => {
       return (
         <Banner>
           <nav style={{ width: 720 }}>
-            <div className="icon" onClick={confirmAndGoBack}>
+            <div
+              className="icon"
+              onClick={confirmAndGoBack}
+              title="Return to Previous Page"
+            >
               ⇐
             </div>
             <div>Editor</div>

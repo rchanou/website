@@ -89,7 +89,7 @@ const LevelEditor = observer(({ store = getEditorStore() }) => {
     </Touch>
   );
 
-  const confirmAndGoBack = o => {
+  const confirmAndGoBack = () => {
     const confirmed = confirm("Leave without saving?");
     if (confirmed) {
       store.goBack();

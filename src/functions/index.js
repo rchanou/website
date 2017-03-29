@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { createTransformer } from "mobx";
 import { find, sortBy } from "lodash";
 import update from "immutability-helper";
@@ -40,14 +40,39 @@ export const getMin = (axis, entities) =>
 export const getMax = (axis, entities) =>
   Math.max.apply(null, entities.map(ent => ent.position[axis]));
 
+const glowAnimation = keyframes`
+  from {
+    stroke-opacity: 1;
+    fill-opacity: 1;
+    rotate(0deg);
+  }
+  }
+  50% {
+    stroke-opacity: 0.5;
+    fill-opacity: 0.5;
+    rotate(180deg);
+  }
+  to {
+    stroke-opacity: 1;
+    fill-opacity: 1;
+    rotate(360deg);
+  }
+`;
+
 const SpriteBox = styled.div`
   position: absolute;
   opacity: 0.8;
   transition: 0.2s;
   background: gray;
   pointer-events: none;
+
+  animation: ${glowAnimation};
+  animation-duration: 1.2s;
+  animation-iteration-count: infinite;
+  
 `;
 
+// TODO: finish, use to replace SpriteBox + inline styles
 const Sprite = styled.div`
   position: absolute;
   opacity: 0.8;
@@ -104,17 +129,20 @@ export const getEntityRenderer = (entities, units, hash) => {
         transform: "scale(0.5)"
       };
     }
+
+    const otherProps = {};
     if (ent.group === groupTypes.box) {
       if (
         find(entities, { group: groupTypes.target, position: ent.position })
       ) {
         finalStyle = { ...startStyle, background: "darkorchid" };
+        otherProps.className = "animated";
       } else {
         finalStyle = { ...startStyle, background: "brown" };
       }
     }
 
-    return <SpriteBox key={ent.id} style={finalStyle} />;
+    return <SpriteBox key={ent.id} style={finalStyle} {...otherProps} />;
   };
 };
 

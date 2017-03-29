@@ -2,12 +2,12 @@ import React from "react";
 
 export default class DirectionMapper extends React.Component {
   static defaultProps = {
-    onResize(){}
+    onResize() {}
   };
 
   static propTypes = {
     onResize: React.PropTypes.func
-  }
+  };
 
   saveMe = c => this.me = c;
 
@@ -40,10 +40,19 @@ export default class DirectionMapper extends React.Component {
           continue;
         }
 
+        if (kid.style && kid.style.visibility === "hidden") {
+          continue;
+        }
+
+        const child = children[i];
+        if (!child) {
+          continue;
+        }
+
         positions.push({
           x: (kid.offsetLeft - xOrigin) / xUnit,
           y: (kid.offsetTop - yOrigin) / yUnit,
-          key: children[i].key
+          key: child.key
         });
       }
       this.props.onResize(positions);

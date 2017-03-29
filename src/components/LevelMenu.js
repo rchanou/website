@@ -75,7 +75,7 @@ const LevelMenu = (
   <State
     init={me => {
       me.state = { positions: [] };
-      me.handleResize = ps => me.setState({ positions: ps });
+      me.handleResize = ps => console.log(ps) & me.setState({ positions: ps });
     }}
   >
     {me => {
@@ -113,8 +113,8 @@ const LevelMenu = (
 
           <MainBox>
             <LevelList onResize={me.handleResize}>
-              {levelRecords
-                .map(rec => (
+              {[
+                ...levelRecords.map(rec => (
                   <LevelMenuItem
                     key={rec.id}
                     level={rec.level}
@@ -122,21 +122,22 @@ const LevelMenu = (
                     onClick={bindClick(rec.id)}
                     onSelect={bindSelect(rec.id)}
                   />
-                ))
-                .concat(
-                  <MenuItemBox
-                    onClick={onCreateClick}
-                    key="CREATE_LEVEL"
-                    highlighted={
-                      !highlightedLevelId ||
-                        highlightedLevelId === "CREATE_LEVEL"
-                    }
-                  >
-                    <div>Create</div>
-                    <div>Level</div>
-                  </MenuItemBox>
-                )}
-              <Placeholder /><Placeholder />
+                )),
+
+                <MenuItemBox
+                  onClick={onCreateClick}
+                  key="CREATE_LEVEL"
+                  highlighted={
+                    !highlightedLevelId || highlightedLevelId === "CREATE_LEVEL"
+                  }
+                >
+                  <div>Create</div>
+                  <div>Level</div>
+                </MenuItemBox>,
+                
+                <Placeholder />,
+                <Placeholder />
+              ]}
             </LevelList>
           </MainBox>
         </div>
