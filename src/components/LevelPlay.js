@@ -8,7 +8,7 @@ import KeyMap from "./KeyMap";
 import { MainBox, GameButton, ButtonContainer } from "./Style";
 
 import { getLevelPlayStore } from "../stores";
-import { hasWon } from "../functions";
+import { hasWon, getHueFromHash } from "../functions";
 
 const LevelPlayBox = styled.div`
   display: flex;
@@ -54,7 +54,7 @@ const Victory = styled.h1`
 const victoryEl = <Victory>Puzzle Solved!</Victory>;
 
 const defaultStore = getLevelPlayStore();
-const LevelPlay = observer(({ store = defaultStore }) => {
+const LevelPlay = observer(({ store = defaultStore, menuStore }) => {
   const { state } = store;
 
   const confirmAndStartOver = () => {
@@ -97,7 +97,10 @@ const LevelPlay = observer(({ store = defaultStore }) => {
           onSwipedRight={store.tryMoveRight}
           className={hasWon(state.entities) && "victory"}
         >
-          <LevelView entities={state.entities} />
+          <LevelView
+            entities={state.entities}
+            baseHue={getHueFromHash(menuStore.state.highlightedLevelId)}
+          />
           {won && victoryEl}
         </SwipeZone>
 

@@ -180,23 +180,25 @@ const BannerSwitch = ({ store }) => {
 };
 
 const Game = observer(({ store = defaultStore }) => {
-  let ViewToRender, storeToUse;
+  let ViewToRender, props = {};
   switch (store.state.currentView) {
     case "MENU":
       ViewToRender = LevelMenu;
-      storeToUse = store.menuStore;
+      props.store = store.menuStore;
       break;
     case "PLAY":
       ViewToRender = LevelPlay;
-      storeToUse = store.levelPlayStore;
+      props.store = store.levelPlayStore;
+      props.menuStore = store.menuStore;
       break;
     case "EDITOR":
       ViewToRender = LevelEditor;
-      storeToUse = store.editorStore;
+      props.store = store.editorStore;
       break;
     default:
       ViewToRender = LevelPlay;
-      storeToUse = store.levelPlayStore;
+      props.store = store.levelPlayStore;
+      props.menuStore = store.menuStore;
   }
 
   return (
@@ -208,7 +210,7 @@ const Game = observer(({ store = defaultStore }) => {
         />
       </Helmet>
       <BannerSwitch store={store} />
-      <ViewToRender store={storeToUse} />
+      <ViewToRender {...props} />
     </AppDiv>
   );
 });

@@ -10,7 +10,7 @@ import { MainBox } from "./Style";
 import styled from "styled-components";
 
 import { getMenuStore } from "../stores";
-import { getNextKeyInDir } from "../functions";
+import { getNextKeyInDir, getHueFromHash } from "../functions";
 
 const LevelList = styled(DirectionMapper)`
   display: flex;
@@ -45,12 +45,13 @@ const LevelMenuItem = (
   {
     level = [],
     highlighted,
+    baseHue,
     onSelect = o => o,
     onClick = o => o
   }
 ) => (
   <MenuItemBox onClick={onClick} className={highlighted && "highlighted"}>
-    <LevelView entities={level} />
+    <LevelView entities={level} baseHue={baseHue} />
   </MenuItemBox>
 );
 
@@ -75,7 +76,7 @@ const LevelMenu = (
   <State
     init={me => {
       me.state = { positions: [] };
-      me.handleResize = ps => console.log(ps) & me.setState({ positions: ps });
+      me.handleResize = ps => me.setState({ positions: ps });
     }}
   >
     {me => {
@@ -121,6 +122,7 @@ const LevelMenu = (
                     highlighted={rec.id === highlightedLevelId}
                     onClick={bindClick(rec.id)}
                     onSelect={bindSelect(rec.id)}
+                    baseHue={getHueFromHash(rec.id)}
                   />
                 )),
 
@@ -134,7 +136,7 @@ const LevelMenu = (
                   <div>Create</div>
                   <div>Level</div>
                 </MenuItemBox>,
-                
+
                 <Placeholder />,
                 <Placeholder />
               ]}

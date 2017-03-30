@@ -89,6 +89,10 @@ const SpriteBox = styled.div`
     transform-origin: 50% 50%;
     transform: scale(0.5);
   }
+
+  &.animated {
+    background: darkorchid;
+  }
 `;
 
 // TODO: finish, use to replace SpriteBox + inline styles
@@ -126,44 +130,52 @@ export const getHueFromHash = hash => {
   return hue % 360;
 };
 
-export const getEntityRenderer = (entities, units, hash) => {
+export const getEntityRenderer = (entities, units, baseHue) => {
   units = units ||
     Math.max(getMax("x", entities) + 1, getMax("y", entities) + 1);
   const unit = 100 / units;
 
-  return ent => {
-    const otherProps = {};
+  const wallColor = `hsl(${baseHue},15%,66%)`;
+  const targetColor = `hsl(${(baseHue + 90) % 360},99%,55%)`;
+  const boxColor = `hsl(${(baseHue + 180) % 360}, 40%, 60%)`;
+  const boxTargetColor = `hsl(${(baseHue + 270) % 360},88%,55%)`;
 
-    const startStyle = {
-      width: `${unit}%`,
-      height: `${unit}%`,
-      top: `${ent.position.y * unit}%`,
-      left: `${ent.position.x * unit}%`
+  return ent => {
+    const props = {
+      style: {
+        width: `${unit}%`,
+        height: `${unit}%`,
+        top: `${ent.position.y * unit}%`,
+        left: `${ent.position.x * unit}%`
+      }
     };
 
-    let finalStyle = startStyle;
-    if (ent.group === groupTypes.player) {
-      finalStyle = startStyle;
-      otherProps.className = "player";
-    }
-    if (ent.group === groupTypes.target) {
-      finalStyle = startStyle;
-      otherProps.className = "target";
+    switch (ent.group) {
+      case groupTypes.wall:
+        props.style.background = wallColor;
+        break;
+      case groupTypes.player:
+        props.className = "player";
+        break;
+      case groupTypes.target:
+        props.className = "target";
+        props.style.background = targetColor;
+        break;
+      case groupTypes.box:
+        if (
+          find(entities, { group: groupTypes.target, position: ent.position })
+        ) {
+          props.className = "animated box";
+          props.style.background = boxTargetColor;
+        } else {
+          props.className = "box";
+          props.style.background = boxColor;
+        }
+        break;
+      default:
     }
 
-    if (ent.group === groupTypes.box) {
-      if (
-        find(entities, { group: groupTypes.target, position: ent.position })
-      ) {
-        otherProps.className = "animated box";
-        finalStyle = { ...startStyle, background: "darkorchid" };
-      } else {
-        otherProps.className = "box";
-        finalStyle = startStyle;
-      }
-    }
-
-    return <SpriteBox key={ent.id} style={finalStyle} {...otherProps} />;
+    return <SpriteBox key={ent.id} {...props} />;
   };
 };
 

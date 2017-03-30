@@ -12,8 +12,8 @@ const LevelViewBox = styled.div`
   padding-top: 100%;
 `;
 
-const LevelView = observer(({ entities = [] }) => {
-  const renderEntities = getEntityRenderer(entities);
+const LevelView = observer(({ entities = [], baseHue }) => {
+  const renderEntities = getEntityRenderer(entities, undefined, baseHue);
   return (
     <LevelViewBox>
       {entities.map(renderEntities)}
