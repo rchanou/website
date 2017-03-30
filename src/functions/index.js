@@ -61,15 +61,34 @@ const glowAnimation = keyframes`
 
 const SpriteBox = styled.div`
   position: absolute;
-  opacity: 0.8;
   transition: 0.2s;
-  background: gray;
+  background: slategray;
   pointer-events: none;
 
   animation: ${glowAnimation};
   animation-duration: 1.2s;
   animation-iteration-count: infinite;
   
+  &.player {
+    background: gold;
+    border-radius: 50%;
+    border: thin solid #333;
+  }
+
+  &.box {    
+    background: chocolate;
+    opacity: 0.8;
+    border: thin solid #333;
+    border-radius: 8.7654321%;
+  }
+
+  &.target {
+    background: hotpink;
+    border: none;
+    border-radius: 50%;
+    transform-origin: 50% 50%;
+    transform: scale(0.5);
+  }
 `;
 
 // TODO: finish, use to replace SpriteBox + inline styles
@@ -99,12 +118,22 @@ const Sprite = styled.div`
 }}
 `;
 
+export const getHueFromHash = hash => {
+  let hue = 0;
+  for (var i in hash) {
+    hue += Math.pow(hash.charCodeAt(i), 2);
+  }
+  return hue % 360;
+};
+
 export const getEntityRenderer = (entities, units, hash) => {
   units = units ||
     Math.max(getMax("x", entities) + 1, getMax("y", entities) + 1);
   const unit = 100 / units;
 
   return ent => {
+    const otherProps = {};
+
     const startStyle = {
       width: `${unit}%`,
       height: `${unit}%`,
@@ -114,31 +143,23 @@ export const getEntityRenderer = (entities, units, hash) => {
 
     let finalStyle = startStyle;
     if (ent.group === groupTypes.player) {
-      finalStyle = {
-        ...startStyle,
-        background: "orange",
-        borderRadius: "50%"
-      };
+      finalStyle = startStyle;
+      otherProps.className = "player";
     }
     if (ent.group === groupTypes.target) {
-      finalStyle = {
-        ...startStyle,
-        background: "tomato",
-        borderRadius: "50%",
-        transformOrigin: "50% 50%",
-        transform: "scale(0.5)"
-      };
+      finalStyle = startStyle;
+      otherProps.className = "target";
     }
 
-    const otherProps = {};
     if (ent.group === groupTypes.box) {
       if (
         find(entities, { group: groupTypes.target, position: ent.position })
       ) {
+        otherProps.className = "animated box";
         finalStyle = { ...startStyle, background: "darkorchid" };
-        otherProps.className = "animated";
       } else {
-        finalStyle = { ...startStyle, background: "brown" };
+        otherProps.className = "box";
+        finalStyle = startStyle;
       }
     }
 
