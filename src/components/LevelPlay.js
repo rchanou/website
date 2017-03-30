@@ -23,6 +23,10 @@ const LevelPlayBox = styled.div`
   
   background: #fafafa;
   box-shadow: 1.11px 1.11px 1.11px 1.11px #aaa;
+
+  &.victory {
+    background: lightgreen;
+  }
 `;
 
 const SwipeZone = styled(Swipeable)`
@@ -31,10 +35,6 @@ const SwipeZone = styled(Swipeable)`
 
   width: 100%;
   max-width: 60vh;
-
-  &.victory {
-    background: lightgreen;
-  }
 `;
 
 const Victory = styled.h1`
@@ -67,7 +67,7 @@ const LevelPlay = observer(({ store = defaultStore }) => {
 
   return (
     <MainBox>
-      <LevelPlayBox>
+      <LevelPlayBox className={won && "victory"}>
         <KeyMap
           keyMap={{
             ArrowLeft: store.tryMoveLeft,
@@ -95,7 +95,6 @@ const LevelPlay = observer(({ store = defaultStore }) => {
           onSwipedDown={store.tryMoveDown}
           onSwipedUp={store.tryMoveUp}
           onSwipedRight={store.tryMoveRight}
-          className={hasWon(state.entities) && "victory"}
         >
           <LevelView entities={state.entities} />
           {won && victoryEl}
