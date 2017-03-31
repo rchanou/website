@@ -173,7 +173,8 @@ export const getMenuStore = (initial = {}) => {
   const {
     initialState = {},
     levelRecordStore = getLevelRecordStore(),
-    goBack = o => o
+    goBack = o => o,
+    gotoCreateLevel = o => o
   } = initial;
 
   const state = observable({
@@ -185,7 +186,13 @@ export const getMenuStore = (initial = {}) => {
     state.highlightedLevelId = id === state.highlightedLevelId ? -1 : id;
   };
 
-  return { state, levelRecordStore, selectLevel, goBack };
+  return {
+    state,
+    levelRecordStore,
+    selectLevel,
+    goBack,
+    gotoCreateLevel
+  };
 };
 
 export const getEditorStore = (initial = {}) => {

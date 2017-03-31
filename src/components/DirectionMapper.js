@@ -40,7 +40,7 @@ export default class DirectionMapper extends React.Component {
           continue;
         }
 
-        if (kid.style && kid.style.visibility === "hidden") {
+        if (kid.dataset && kid.dataset.skip) {
           continue;
         }
 

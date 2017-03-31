@@ -75,7 +75,7 @@ const LevelMenu = (
   <State
     init={me => {
       me.state = { positions: [] };
-      me.handleResize = ps => console.log(ps) & me.setState({ positions: ps });
+      me.handleResize = ps => me.setState({ positions: ps });
     }}
   >
     {me => {
@@ -91,6 +91,7 @@ const LevelMenu = (
               axis,
               dir
             );
+            console.log(nextKey);
             bindSelect(nextKey)();
           }
         };
@@ -125,6 +126,9 @@ const LevelMenu = (
                 )),
 
                 <MenuItemBox
+                  className={
+                    highlightedLevelId === "CREATE_LEVEL" && "highlighted"
+                  }
                   onClick={onCreateClick}
                   key="CREATE_LEVEL"
                   highlighted={
@@ -134,9 +138,9 @@ const LevelMenu = (
                   <div>Create</div>
                   <div>Level</div>
                 </MenuItemBox>,
-                
-                <Placeholder />,
-                <Placeholder />
+
+                <Placeholder key="p1" data-skip />,
+                <Placeholder key="p2" data-skip />
               ]}
             </LevelList>
           </MainBox>
@@ -167,8 +171,8 @@ const ObservedLevelMenu = ({ store = getMenuStore() }) => (
         : <LevelMenu
             levelRecords={store.levelRecordStore.state.records}
             highlightedLevelId={store.state.highlightedLevelId}
-            bindClick={id => o => store.loadLevel(id)}
-            bindSelect={id => o => store.selectLevel(id)}
+            bindClick={id => () => store.loadLevel(id)}
+            bindSelect={id => () => store.selectLevel(id)}
             loadLevel={store.loadLevel}
             onCreateClick={store.gotoCreateLevel}
           />}
