@@ -11,6 +11,8 @@ It experiments with mobx for state management and some interesting React compone
 - Dynamically calculating keyboard arrow navigation of flex wrap elements
 - Integrating Recaptcha
 
+(Note: I plan on refactoring the store system using a different, less tangled approach. I'm aware it's a bit of mess now.)
+
 You can play with the components using `yarn add` and `yarn run cosmos` to run the development playground.
 
 It uses serverless AWS services for the back end. Some of the AWS code is in the `aws` folder for reference. 
