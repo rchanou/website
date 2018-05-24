@@ -1,6 +1,6 @@
 # Sokoban
 
-This implementation of the classic box puzzle game uses Mobx for state management, and some interesting React component patterns, such as for:
+Yet another implementation of the classic box puzzle game, along with an editor for creating, editing, and saving puzzles. It uses Mobx for state management, and demonstrates some interesting React component patterns, such as for:
 - Declaring key-press/action maps
 - Dynamically calculating keyboard arrow navigation of flex wrap elements
 - Integrating Recaptcha
